@@ -1,16 +1,16 @@
 openapi: 3.0.0
 info:
     version: 1.0.0
-    title: 'Monki Projects Users API'
+    title: Monki Projects Users API
 servers:
-    - url: 'https://api.monkiprojects.com/v1'
-      description: 'Monki Projects API (prod)'
+    - url: https://users.api.monkiprojects.com/v1
+      description: Monki Projects Users API v1 (prod)
 paths:
     '/users':
         post:
-            summary: 'Create User'
-            description: 'Creates a user.'
-            operationId: 'createUser'
+            summary: Create User
+            description: Creates a user.
+            operationId: createUser
             requestBody:
                 content:
                     application/json:
@@ -18,13 +18,13 @@ paths:
                             $ref: '#/components/schemas/CreateUser'
             responses:
                 201:
-                    description: 'A user token'
+                    description: A user token
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/UserToken'
                 409:
-                    description: 'Conflict with other user'
+                    description: Conflict with other user
                     content:
                         application/json:
                             schema:
@@ -33,43 +33,43 @@ paths:
                                 UsernameNotAvailable:
                                     value:
                                         error: true
-                                        message: 'This username is not available.'
+                                        message: This username is not available.
                                 InvalidEmail:
                                     value:
                                         error: true
-                                        message: 'Your email address is invalid.'
+                                        message: Your email address is invalid.
         get:
-            summary: 'List Users'
-            description: 'Returns the list of all users.'
-            operationId: 'listUsers'
+            summary: List Users
+            description: Returns the list of all users.
+            operationId: listUsers
             responses:
                 200:
-                    description: 'Success'
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfUsers'
     '/users/{username}':
         get:
-            summary: 'User Details'
-            description: 'Returns details about a particular user'
-            operationId: 'getUser'
+            summary: User Details
+            description: Returns details about a particular user
+            operationId: getUser
             parameters:
-              - name: 'username'
-                description: "A user's `username` or `id`"
+              - name: username
+                description: A user's `username` or `id`
                 in: path
                 schema:
                     type: string
                 required: true
             responses:
                 200:
-                    description: 'Success'
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/User.Public.Full'
                 400:
-                    description: 'Bad Request'
+                    description: Bad Request
                     content:
                         application/json:
                             schema:
@@ -78,14 +78,14 @@ paths:
                                 error: true
                                 message: 'Could not find a username in path (format: `GET /users/:username`).'
                 404:
-                    description: 'Not Found'
+                    description: Not Found
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Error'
                             example: 
                                 error: true
-                                message: 'User not found.'
+                                message: User not found.
     '/login':
         post:
             security:
@@ -101,7 +101,7 @@ components:
         BearerAuth:
             type: http
             scheme: bearer
-            #bearerFormat: 'JWT' # Optional, arbitrary value for documentation purposes
+            #bearerFormat: JWT # Optional, arbitrary value for documentation purposes
     schemas:
         User.Public.Small:
             type: object
@@ -117,7 +117,7 @@ components:
                 htmlUrl:
                     type: string
                 avatarUrl:
-                    description: "Used by websites as `<img>`'s `src` field"
+                    description: Used by websites as `<img>`'s `src` field
                     type: string
                     nullable: true
                 avatar: #ImageOrAssetSource?
@@ -129,11 +129,11 @@ components:
                 type: #UserType
                     type: string
                 updatedAt:
-                    description: 'A date used to update data client side'
+                    description: A date used to update data client side
                     type: string
                     format: date-time
         User.Public.Full:
-            description: 'Public details about a user'
+            description: Public details about a user
             type: object
             required:
                 - id
@@ -144,7 +144,7 @@ components:
                 name:
                     type: string
         User.Private.Full:
-            description: 'Private details about a user'
+            description: Private details about a user
             type: object
             required:
                 - id
@@ -164,27 +164,27 @@ components:
                 - confirmPassword
             properties:
                 username:
-                    description: 'User name'
+                    description: User name
                     type: string
                 displayName:
-                    description: 'User display name'
+                    description: User display name
                     type: string
                 email:
-                    description: 'Email'
+                    description: Email
                     type: string
                     format: email
                 password:
-                    description: 'Password'
+                    description: Password
                     type: string
                 confirmPassword:
-                    description: 'Password confirmation'
+                    description: Password confirmation
                     type: string
             example:
-                username: 'vapor'
-                displayName: 'Vapor'
-                email: 'test@vapor.codes'
-                password: 'password'
-                confirmPassword: 'password'
+                username: vapor
+                displayName: Vapor
+                email: test@vapor.codes
+                password: password
+                confirmPassword: password
         UserToken:
             type: object
             required:
@@ -194,9 +194,9 @@ components:
                 token:
                     type: string
                 user:
-                    $ref: "#/components/schemas/User.Private.Full"
+                    $ref: '#/components/schemas/User.Private.Full'
         ArrayOfUsers:
-            description: 'An array of users'
+            description: An array of users
             type: array
             items:
                 $ref: '#/components/schemas/User.Public.Small'
@@ -212,7 +212,7 @@ components:
                     type: string
     responses:
         UnauthorizedError:
-            description: 'Authentication information is missing or is invalid.'
+            description: Authentication information is missing or is invalid.
             headers:
                 WWW_Authenticate:
                     schema:

@@ -1,0 +1,714 @@
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: Monki Map Placemarks API
+servers:
+    - url: https://api.monkiprojects.com/v1
+      description: Monki Projects API (prod)
+paths:
+    '/placemarks':
+        post:
+            summary: Create Placemark
+            description: Creates a placemark.
+            operationId: createPlacemark
+            tags:
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/Locale'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreatePlacemark'
+            responses:
+                202:
+                    description: Accepted
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlacemarkFullDetails'
+                400:
+                    description: Bad Request
+                    content:
+                        text/plain:
+                            examples:
+                                InvalidCoordinates:
+                                    $ref: '#/components/examples/InvalidCoordinates'
+                                InvalidType:
+                                    $ref: '#/components/examples/InvalidType'
+                                InvalidFeature:
+                                    $ref: '#/components/examples/InvalidFeature'
+                                InvalidTechnique:
+                                    $ref: '#/components/examples/InvalidTechnique'
+                                InvalidBenefit:
+                                    $ref: '#/components/examples/InvalidBenefit'
+                                InvalidHazard:
+                                    $ref: '#/components/examples/InvalidHazard'
+                401:
+                    $ref: '#/components/responses/UnauthorizedError'
+        get:
+            summary: List Placemarks
+            description: Lists all published placemarks.
+            operationId: listPlacemarks
+            tags:
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkPublicationStatus'
+                - $ref: '#/components/parameters/Locale'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlacemarkFullDetails'
+    '/placemarks/{placemarkId}':
+        get:
+            summary: Get Placemark
+            description: Gets a placemark's details.
+            operationId: getPlacemark
+            tags:
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+                - $ref: '#/components/parameters/Locale'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfPlacemarks'
+                404:
+                    $ref: '#/components/responses/PlacemarkNotFound'
+    '/features':
+        get:
+            tags:
+                - listing
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/Locale'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
+    '/techniques':
+        get:
+            tags:
+                - listing
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/Locale'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfParkourTechniques'
+    '/benefits':
+        get:
+            tags:
+                - listing
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/Locale'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
+    '/hazards':
+        get:
+            tags:
+                - listing
+                - localized
+            parameters:
+                - $ref: '#/components/parameters/Locale'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
+components:
+    parameters:
+        PlacemarkId:
+            in: path
+            name: placemarkId
+            description: A placemark `ID`.
+            required: true
+            schema:
+                $ref: '#/components/schemas/UUID'
+        PlacemarkPublicationStatus:
+            in: query
+            name: publicationStatus
+            description: A publication status to filter placemarks.
+            schema:
+                $ref: '#/components/schemas/PlacemarkPublicationStatus'
+        Locale:
+            in: query
+            name: locale
+            description: The desired locale for response localization.
+            schema:
+                $ref: '#/components/schemas/Locale'
+    schemas:
+        # === Molecules ===
+        CreatePlacemark:
+            type: object
+            required:
+                - name
+                - latitude
+                - longitude
+                - type
+            properties:
+                name:
+                    $ref: '#/components/schemas/PlacemarkName'
+                latitude:
+                    $ref: '#/components/schemas/Latitude'
+                longitude:
+                    $ref: '#/components/schemas/Longitude'
+                type:
+                    $ref: '#/components/schemas/PlacemarkTypeId'
+                caption:
+                    $ref: '#/components/schemas/PlacemarkCaption'
+                images:
+                    $ref: '#/components/schemas/ArrayOfImages'
+                features:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkFeatureIds'
+                goodForTraining:
+                    $ref: '#/components/schemas/ArrayOfParkourTechniqueIds'
+                benefits:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkBenefitIds'
+                hazards:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkHazardIds'
+        PlacemarkFullDetails:
+            type: object
+            required:
+                - id
+                - name
+                - latitude
+                - longitude
+                - type
+                - category
+                - publicationStatus
+                - caption
+                - satelliteImage
+                - images
+                - city
+                - country
+                - features
+                - goodForTraining
+                - benefits
+                - hazards
+                - url
+                - htmlUrl
+                - createdAt
+                - updatedAt
+            properties:
+                id:
+                    $ref: '#/components/schemas/UUID'
+                name:
+                    $ref: '#/components/schemas/PlacemarkName'
+                latitude:
+                    $ref: '#/components/schemas/Latitude'
+                longitude:
+                    $ref: '#/components/schemas/Longitude'
+                type:
+                    $ref: '#/components/schemas/PlacemarkType'
+                category:
+                    $ref: '#/components/schemas/PlacemarkCategory'
+                publicationStatus:
+                    $ref: '#/components/schemas/PlacemarkPublicationStatus'
+                caption:
+                    $ref: '#/components/schemas/PlacemarkCaption'
+                satelliteImage:
+                    $ref: '#/components/schemas/Image'
+                images:
+                    $ref: '#/components/schemas/ArrayOfImages'
+                city:
+                    $ref: '#/components/schemas/PlacemarkCity'
+                country:
+                    $ref: '#/components/schemas/PlacemarkCountry'
+                features:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
+                goodForTraining:
+                    $ref: '#/components/schemas/ArrayOfParkourTechniques'
+                benefits:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
+                hazards:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
+                url:
+                    $ref: '#/components/schemas/URL'
+                htmlUrl:
+                    $ref: '#/components/schemas/URL'
+                createdAt:
+                    $ref: '#/components/schemas/DateTime'
+                updatedAt:
+                    $ref: '#/components/schemas/DateTime'
+        Placemark:
+            type: object
+            required:
+                - id
+                - name
+                - latitude
+                - longitude
+                - type
+                - category
+                - publicationStatus
+                - url
+                - htmlUrl
+                - createdAt
+                - updatedAt
+            properties:
+                id:
+                    $ref: '#/components/schemas/UUID'
+                name:
+                    $ref: '#/components/schemas/PlacemarkName'
+                latitude:
+                    $ref: '#/components/schemas/Latitude'
+                longitude:
+                    $ref: '#/components/schemas/Longitude'
+                type:
+                    $ref: '#/components/schemas/PlacemarkType'
+                category:
+                    $ref: '#/components/schemas/PlacemarkCategory'
+                publicationStatus:
+                    $ref: '#/components/schemas/PlacemarkPublicationStatus'
+                url:
+                    $ref: '#/components/schemas/URL'
+                htmlUrl:
+                    $ref: '#/components/schemas/URL'
+                createdAt:
+                    $ref: '#/components/schemas/DateTime'
+                updatedAt:
+                    $ref: '#/components/schemas/DateTime'
+            example:
+                $ref: '#/components/examples/Spot1'
+        ArrayOfPlacemarks:
+            description: An array of placemarks.
+            type: array
+            items:
+                $ref: '#/components/schemas/Placemark'
+            uniqueItems: true
+            example:
+                - $ref: '#/components/examples/Spot1'
+                - $ref: '#/components/examples/Spot2'
+        # === Atoms ===
+        # Placemark Data
+        PlacemarkName:
+            description: A placemark `name`.
+            type: string
+            minLength: 3
+            maxLength: 48
+        PlacemarkCaption:
+            description: A placemark `caption`. Either inexistent or not empty.
+            type: string
+            minLength: 1
+            nullable: true
+        PlacemarkCity:
+            description: The city in which a placemark is.
+            type: string
+            minLength: 1
+        PlacemarkCountry:
+            description: The country in which a placemark is.
+            type: string
+            minLength: 1
+        PlacemarkPublicationStatus:
+            description: A placemark publication status.
+            type: string
+            enum: [draft, local, submitted, published, rejected]
+        # Placemark Types
+        PlacemarkType:
+            description: A placemark `type`.
+            type: object
+            required:
+                - id
+                - title
+                - locale
+            properties:
+                id:
+                    $ref: '#/components/schemas/PlacemarkTypeId'
+                title:
+                    $ref: '#/components/schemas/LocalizedTitle'
+                locale:
+                    $ref: '#/components/schemas/Locale'
+            example:
+                id: training_spot
+                title: Lieu d'entraînement
+                locale: fr-FR
+        PlacemarkTypeId:
+            description: A placemark type `ID`.
+            type: string
+            pattern: '^(?:[a-z0-9]+_)*[a-z0-9]+$'
+        # Placemark Categories
+        PlacemarkCategory:
+            description: A placemark `category`.
+            type: object
+            required:
+                - id
+                - title
+                - locale
+            properties:
+                id:
+                    $ref: '#/components/schemas/PlacemarkCategoryId'
+                title:
+                    $ref: '#/components/schemas/LocalizedTitle'
+                locale:
+                    $ref: '#/components/schemas/Locale'
+            example:
+                id: facility
+                title: Salle
+                locale: fr-FR
+        PlacemarkCategoryId:
+            description: A placemark category `ID`.
+            type: string
+            enum: [spot, facility, misc]
+        # Placemark Features
+        PlacemarkFeature:
+            description: A placemark feature.
+            type: object
+            required:
+                - id
+                - title
+                - locale
+            properties:
+                id:
+                    $ref: '#/components/schemas/PlacemarkFeatureId'
+                title:
+                    $ref: '#/components/schemas/LocalizedTitle'
+                locale:
+                    $ref: '#/components/schemas/Locale'
+            example:
+                $ref: '#/components/examples/Feature1'
+        ArrayOfPlacemarkFeatures:
+            description: An array of placemark features.
+            type: array
+            items:
+                $ref: '#/components/schemas/PlacemarkFeature'
+            uniqueItems: true
+            example:
+                - $ref: '#/components/examples/Feature1'
+                - $ref: '#/components/examples/Feature2'
+        PlacemarkFeatureId:
+            description: A placemark feature `ID`.
+            type: string
+            pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
+        ArrayOfPlacemarkFeatureIds:
+            description: An array of placemark feature `ID`s.
+            type: array
+            items:
+                $ref: '#/components/schemas/PlacemarkFeatureId'
+            uniqueItems: true
+            example: [grass, small_wall, stairs]
+        # Parkour Techniques
+        ParkourTechnique:
+            description: A parkour technique.
+            type: object
+            required:
+                - id
+                - title
+                - locale
+            properties:
+                id:
+                    $ref: '#/components/schemas/ParkourTechniqueId'
+                title:
+                    $ref: '#/components/schemas/LocalizedTitle'
+                locale:
+                    $ref: '#/components/schemas/Locale'
+            example:
+                $ref: '#/components/examples/Technique1'
+        ArrayOfParkourTechniques:
+            description: An array of parkour techniques.
+            type: array
+            items:
+                $ref: '#/components/schemas/ParkourTechnique'
+            uniqueItems: true
+            example:
+                - $ref: '#/components/examples/Technique1'
+                - $ref: '#/components/examples/Technique2'
+        ParkourTechniqueId:
+            description: A parkour technique `ID`.
+            type: string
+            pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
+        ArrayOfParkourTechniqueIds:
+            description: An array of parkour technique `ID`s.
+            type: array
+            items:
+                $ref: '#/components/schemas/ParkourTechniqueId'
+            uniqueItems: true
+            example: [double_kong, precision_jump]
+        # Placemark Benefits
+        PlacemarkBenefit:
+            description: A placemark benefit.
+            type: object
+            required:
+                - id
+                - title
+                - locale
+            properties:
+                id:
+                    $ref: '#/components/schemas/PlacemarkBenefitId'
+                title:
+                    $ref: '#/components/schemas/LocalizedTitle'
+                locale:
+                    $ref: '#/components/schemas/Locale'
+            example:
+                $ref: '#/components/examples/Benefit1'
+        ArrayOfPlacemarkBenefits:
+            description: An array of placemark benefits.
+            type: array
+            items:
+                $ref: '#/components/schemas/PlacemarkBenefit'
+            uniqueItems: true
+            example:
+                - $ref: '#/components/examples/Benefit1'
+                - $ref: '#/components/examples/Benefit2'
+        PlacemarkBenefitId:
+            description: A placemark benefit `ID`.
+            type: string
+            pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
+        ArrayOfPlacemarkBenefitIds:
+            description: An array of placemark benefit `ID`s.
+            type: array
+            items:
+                $ref: '#/components/schemas/PlacemarkBenefitId'
+            uniqueItems: true
+            example: [covered_area, drinking_fountain]
+        # Placemark Hazards
+        PlacemarkHazard:
+            description: A placemark hazard.
+            type: object
+            required:
+                - id
+                - title
+                - locale
+            properties:
+                id:
+                    $ref: '#/components/schemas/PlacemarkHazardId'
+                title:
+                    $ref: '#/components/schemas/LocalizedTitle'
+                locale:
+                    $ref: '#/components/schemas/Locale'
+            example:
+                $ref: '#/components/examples/Hazard1'
+        ArrayOfPlacemarkHazards:
+            description: An array of placemark hazards.
+            type: array
+            items:
+                $ref: '#/components/schemas/PlacemarkHazard'
+            uniqueItems: true
+            example:
+                - $ref: '#/components/examples/Hazard1'
+                - $ref: '#/components/examples/Hazard2'
+        PlacemarkHazardId:
+            description: A placemark hazard `ID`.
+            type: string
+            pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
+        ArrayOfPlacemarkHazardIds:
+            description: An array of placemark hazard `ID`s.
+            type: array
+            items:
+                $ref: '#/components/schemas/PlacemarkHazardId'
+            uniqueItems: true
+            example: [security, security_cam, slippery_surface]
+        # Coordinates
+        Latitude:
+            description: The latitude component of a coordinate.
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+        Longitude:
+            description: The longitude component of a coordinate.
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+        # Locales
+        Locale:
+            description: A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).
+            type: string
+            format: locale
+            minLength: 2
+            default: en
+            example: fr-FR
+        LocalizedTitle:
+            description: A localized `title`.
+            type: string
+            minLength: 1
+        # Other
+        UUID:
+            description: A `UUID` (or `GUID`).
+            type: string
+            format: uuid
+            example: ad959e79-55c3-4445-8c51-a74b6d52691a
+        DateTime:
+            description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+            type: string
+            format: date-time
+            example: 2017-07-21T17:32:28Z
+        URL:
+            description: An `URL`.
+            type: string
+            format: uri
+        Image:
+            description: An image `URL`.
+            type: string
+            format: uri
+        ArrayOfImages:
+            description: An array of image `URL`s.
+            type: array
+            items:
+                $ref: '#/components/schemas/Image'
+            maxItems: 48
+            uniqueItems: true
+        # === Errors ===
+        Error:
+            type: object
+            required:
+                - error
+                - message
+            properties:
+                error:
+                    type: boolean
+                message:
+                    type: string
+    responses:
+        # Placemarks
+        PlacemarkNotFound:
+            description: Not Found
+            content:
+                text/plain:
+                    schema:
+                        type: string
+                    example: Placemark not found.
+        # Errors
+        UnauthorizedError:
+            description: Authentication information is missing or is invalid.
+            headers:
+                WWW_Authenticate:
+                    schema:
+                        type: string
+    examples:
+        # Placemarks
+        Spot1:
+            summary: Example spot
+            value:
+                id: 4f9058b3-3f8f-4b10-b3c0-e28c654012e4
+                name: Espace de street workout Vincent Gâche
+                latitude: 47.207423
+                longitude: -1.547817
+                type:
+                    id: calisthenics_park
+                    title: Parc de street workout
+                    locale: fr-FR
+                category:
+                    id: spot
+                    title: Spot
+                    locale: fr-FR
+                publicationStatus: published
+                url: https://api.monkiprojects.com/v1/placemarks/4f9058b3-3f8f-4b10-b3c0-e28c654012e4
+                htmlUrl: https://monkiprojects.com/placemarks/4f9058b3-3f8f-4b10-b3c0-e28c654012e4
+                createdAt: 2020-12-02T01:43:52.285Z
+                updatedAt: 2020-12-22T22:26:11.618Z
+        Spot2:
+            summary: Example spot
+            value:
+                id: 31256d06-7786-4555-8592-ec20e9c9cdfb
+                name: Porte des deux moulins
+                latitude: 46.155295
+                longitude: -1.159034
+                type:
+                    id: training_spot
+                    title: Lieu d'entraînement
+                    locale: fr-FR
+                category:
+                    id: spot
+                    title: Spot
+                    locale: fr-FR
+                publicationStatus: published
+                url: https://api.monkiprojects.com/v1/placemarks/31256d06-7786-4555-8592-ec20e9c9cdfb
+                htmlUrl: https://monkiprojects.com/placemarks/31256d06-7786-4555-8592-ec20e9c9cdfb
+                createdAt: 2020-04-15T15:28:41.729Z
+                updatedAt: 2020-04-15T15:28:41.729Z
+        # Placemark Features
+        Feature1:
+            summary: Example placemark feature
+            value:
+                id: grass
+                title: Herbe
+                locale: fr-FR
+        Feature2:
+            summary: Example placemark feature
+            value:
+                id: small_wall
+                title: Petit mur
+                locale: fr-FR
+        # Parkour Techniques
+        Technique1:
+            summary: Example parkour technique
+            value:
+                id: double_kong
+                title: Double saut de chat
+                locale: fr-FR
+        Technique2:
+            summary: Example parkour technique
+            value:
+                id: precision_jump
+                title: Saut de précision
+                locale: fr-FR
+        # Placemark Benefits
+        Benefit1:
+            summary: Example placemark benefit
+            value:
+                id: covered_area
+                title: Espace couvert
+                locale: fr-FR
+        Benefit2:
+            summary: Example placemark benefit
+            value:
+                id: drinking_fountain
+                title: Fontaine à eau
+                locale: fr-FR
+        # Placemark Hazards
+        Hazard1:
+            summary: Example placemark hazard
+            value:
+                id: security
+                title: Sécurité
+                locale: fr-FR
+        Hazard2:
+            summary: Example placemark hazard
+            value:
+                id: security_cam
+                title: Caméra de sécurité
+                locale: fr-FR
+        # Bad Requests
+        InvalidCoordinates:
+            value: The provided coordinates are invalid.
+        InvalidType:
+            value: The provided placemark type is invalid.
+        InvalidFeature:
+            value: The placemark feature lörem/ispUm is not valid. Query `GET /features` for an exhaustive list of available features.
+        InvalidTechnique:
+            value: The parkour technique lörem/ispUm is not valid. Query `GET /techniques` for an exhaustive list of available techniques.
+        InvalidBenefit:
+            value: The placemark benefit lörem/ispUm is not valid. Query `GET /benefits` for an exhaustive list of available benefits.
+        InvalidHazard:
+            value: The placemark hazard lörem/ispUm is not valid. Query `GET /hazards` for an exhaustive list of available hazards.
+tags:
+  - name: localized
+    description: Endpoints with localizable responses.
+#    externalDocs:
+#      url: https://docs.api.monkiprojects.com/localized
+  - name: listing
+    description: Helper endpoints used to list available data.
+#    externalDocs:
+#      url: http://docs.my-api.com/store-orders.htm

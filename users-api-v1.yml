@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+    version: 1.0.0
+    title: 'Monki Projects Users API'
+servers:
+    - url: 'https://api.monkiprojects.com/v1'
+      description: 'Monki Projects API (prod)'
+paths:
+    '/users':
+        post:
+            summary: 'Create User'
+            description: 'Creates a user.'
+            operationId: 'createUser'
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUser'
+            responses:
+                201:
+                    description: 'A user token'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserToken'
+                409:
+                    description: 'Conflict with other user'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                UsernameNotAvailable:
+                                    value:
+                                        error: true
+                                        message: 'This username is not available.'
+                                InvalidEmail:
+                                    value:
+                                        error: true
+                                        message: 'Your email address is invalid.'
+        get:
+            summary: 'List Users'
+            description: 'Returns the list of all users.'
+            operationId: 'listUsers'
+            responses:
+                200:
+                    description: 'Success'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfUsers'
+    '/users/{username}':
+        get:
+            summary: 'User Details'
+            description: 'Returns details about a particular user'
+            operationId: 'getUser'
+            parameters:
+              - name: 'username'
+                description: "A user's `username` or `id`"
+                in: path
+                schema:
+                    type: string
+                required: true
+            responses:
+                200:
+                    description: 'Success'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User.Public.Full'
+                400:
+                    description: 'Bad Request'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example: 
+                                error: true
+                                message: 'Could not find a username in path (format: `GET /users/:username`).'
+                404:
+                    description: 'Not Found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example: 
+                                error: true
+                                message: 'User not found.'
+    '/login':
+        post:
+            security:
+              - BasicAuth: []
+            responses:
+                401:
+                    $ref: '#/components/responses/UnauthorizedError'
+components:
+    securitySchemes:
+        BasicAuth:
+            type: http
+            scheme: basic
+        BearerAuth:
+            type: http
+            scheme: bearer
+            #bearerFormat: 'JWT' # Optional, arbitrary value for documentation purposes
+    schemas:
+        User.Public.Small:
+            type: object
+            properties:
+                id: #UUID
+                    type: string
+                username:
+                    type: string
+                displayName:
+                    type: string
+                url:
+                    type: string
+                htmlUrl:
+                    type: string
+                avatarUrl:
+                    description: "Used by websites as `<img>`'s `src` field"
+                    type: string
+                    nullable: true
+                avatar: #ImageOrAssetSource?
+                    type: string
+                    nullable: true
+                country:
+                    type: string
+                    nullable: true
+                type: #UserType
+                    type: string
+                updatedAt:
+                    description: 'A date used to update data client side'
+                    type: string
+                    format: date-time
+        User.Public.Full:
+            description: 'Public details about a user'
+            type: object
+            required:
+                - id
+                - name
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+        User.Private.Full:
+            description: 'Private details about a user'
+            type: object
+            required:
+                - id
+                - name
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+        CreateUser:
+            type: object
+            required:
+                - username
+                - displayName
+                - email
+                - password
+                - confirmPassword
+            properties:
+                username:
+                    description: 'User name'
+                    type: string
+                displayName:
+                    description: 'User display name'
+                    type: string
+                email:
+                    description: 'Email'
+                    type: string
+                    format: email
+                password:
+                    description: 'Password'
+                    type: string
+                confirmPassword:
+                    description: 'Password confirmation'
+                    type: string
+            example:
+                username: 'vapor'
+                displayName: 'Vapor'
+                email: 'test@vapor.codes'
+                password: 'password'
+                confirmPassword: 'password'
+        UserToken:
+            type: object
+            required:
+                - token
+                - user
+            properties:
+                token:
+                    type: string
+                user:
+                    $ref: "#/components/schemas/User.Private.Full"
+        ArrayOfUsers:
+            description: 'An array of users'
+            type: array
+            items:
+                $ref: '#/components/schemas/User.Public.Small'
+        Error:
+            type: object
+            required:
+                - error
+                - message
+            properties:
+                error:
+                    type: boolean
+                message:
+                    type: string
+    responses:
+        UnauthorizedError:
+            description: 'Authentication information is missing or is invalid.'
+            headers:
+                WWW_Authenticate:
+                    schema:
+                        type: string

@@ -146,6 +146,9 @@ paths:
                     $ref: '#/components/responses/PlacemarkNotFound'
     '/features':
         get:
+            summary: List Placemark Features
+            description: Lists placemark features.
+            operationId: listPlacemarkFeatures
             tags:
                 - listing
                 - localized
@@ -160,6 +163,9 @@ paths:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
     '/techniques':
         get:
+            summary: List Parkour Techniques
+            description: Lists parkour techniques.
+            operationId: listParkourTechniques
             tags:
                 - listing
                 - localized
@@ -174,6 +180,9 @@ paths:
                                 $ref: '#/components/schemas/ArrayOfParkourTechniques'
     '/benefits':
         get:
+            summary: List Placemark Benefits
+            description: Lists placemark benefits.
+            operationId: listPlacemarkBenefits
             tags:
                 - listing
                 - localized
@@ -188,6 +197,9 @@ paths:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
     '/hazards':
         get:
+            summary: List Placemark Hazards
+            description: Lists placemark hazards.
+            operationId: listPlacemarkHazards
             tags:
                 - listing
                 - localized
@@ -202,6 +214,9 @@ paths:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
     '/publication-review-opinions':
         get:
+            summary: List Publication Review Opinions
+            description: Lists publication review opinions.
+            operationId: listPublicationReviewOpinions
             tags:
                 - listing
             responses:
@@ -804,17 +819,6 @@ components:
             description: A flag saying something has been moderated.
             type: boolean
             example: true
-        # === Errors ===
-        Error:
-            type: object
-            required:
-                - error
-                - message
-            properties:
-                error:
-                    type: boolean
-                message:
-                    type: string
     responses:
         # Placemarks
         PlacemarkNotFound:

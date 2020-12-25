@@ -97,6 +97,26 @@ paths:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
+        post:
+            summary: Add Placemark Publication Review
+            description: Adds a publication review to a placemark.
+            operationId: addPlacemarkPublicationReview
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+            requestBody:
+                content:
+                  application/json:
+                    schema:
+                        $ref: '#/components/schemas/CreatePlacemarkPublicationReview'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlacemarkPublicationReview'
+                404:
+                    $ref: '#/components/responses/PlacemarkNotFound'
     '/features':
         get:
             tags:
@@ -319,6 +339,23 @@ components:
             example:
                 - $ref: '#/components/examples/Spot1'
                 - $ref: '#/components/examples/Spot2'
+        CreatePlacemarkPublicationReview:
+            description: An object with data required to create a new placemark publication review.
+            type: object
+            required:
+                - opinion
+                - comment
+            properties:
+                opinion:
+                    $ref: '#/components/schemas/PublicationReviewOpinion'
+                comment:
+                    $ref: '#/components/schemas/ReviewComment'
+                issues:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
+                moderated:
+                    $ref: '#/components/schemas/ModeratedFlag'
+            example:
+                $ref: '#/components/examples/CreatePlacemarkPublicationReview1'
         PlacemarkPublicationReview:
             description: A placemark publication review.
             type: object
@@ -814,6 +851,11 @@ components:
                 title: Caméra de sécurité
                 locale: fr-FR
         # Placemark Publication Reviews
+        CreatePlacemarkPublicationReview1:
+            summary: Example placemark publication review creation
+            value:
+                opinion: positive
+                comment: Everything looks good.
         PlacemarkPublicationReview1:
             summary: Example placemark publication review
             value:

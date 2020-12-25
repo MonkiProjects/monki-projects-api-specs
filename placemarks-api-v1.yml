@@ -115,6 +115,17 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/PlacemarkPublicationReview'
+                400:
+                    description: Bad Request
+                    content:
+                        text/plain:
+                            examples:
+                                InvalidOpinion:
+                                    $ref: '#/components/examples/InvalidPublicationReviewOpinion'
+                401:
+                    $ref: '#/components/responses/UnauthorizedError'
+                403:
+                    $ref: '#/components/responses/ForbiddenModeratedFlag'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
     '/placemarks/{placemarkId}/publication/report':
@@ -189,6 +200,17 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
+    '/publication-review-opinions':
+        get:
+            tags:
+                - listing
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfPublicationReviewOpinions'
 components:
     parameters:
         PlacemarkId:
@@ -712,6 +734,13 @@ components:
             type: string
             enum: [positive, needs-changes, negative, accepted, rejected]
             example: accepted
+        ArrayOfPublicationReviewOpinions:
+            description: An array of placemark publication review opinions.
+            type: array
+            items:
+                $ref: '#/components/schemas/PublicationReviewOpinion'
+            uniqueItems: true
+            example: [positive, needs-changes, negative, accepted, rejected]
         # Coordinates
         Latitude:
             description: The latitude component of a coordinate.
@@ -794,6 +823,16 @@ components:
                 WWW_Authenticate:
                     schema:
                         type: string
+            content:
+                text/plain:
+                    example:
+                        value: You need to create an account in order to send such a request.
+        ForbiddenModeratedFlag:
+            description: Cannot use `moderated` flag.
+            content:
+                text/plain:
+                    example:
+                        value: You need to be a moderator in order to use the `moderated` flag.
     examples:
         # Placemarks
         Spot1:
@@ -960,13 +999,15 @@ components:
         InvalidType:
             value: The provided placemark type is invalid.
         InvalidFeature:
-            value: The placemark feature lörem/ispUm is not valid. Query `GET /features` for an exhaustive list of available features.
+            value: The placemark feature 'lörem/ispUm' is not valid. Query `GET /features` for an exhaustive list of available features.
         InvalidTechnique:
-            value: The parkour technique lörem/ispUm is not valid. Query `GET /techniques` for an exhaustive list of available techniques.
+            value: The parkour technique 'lörem/ispUm' is not valid. Query `GET /techniques` for an exhaustive list of available techniques.
         InvalidBenefit:
-            value: The placemark benefit lörem/ispUm is not valid. Query `GET /benefits` for an exhaustive list of available benefits.
+            value: The placemark benefit 'lörem/ispUm' is not valid. Query `GET /benefits` for an exhaustive list of available benefits.
         InvalidHazard:
-            value: The placemark hazard lörem/ispUm is not valid. Query `GET /hazards` for an exhaustive list of available hazards.
+            value: The placemark hazard 'lörem/ispUm' is not valid. Query `GET /hazards` for an exhaustive list of available hazards.
+        InvalidPublicationReviewOpinion:
+            value: The publication review opinion 'lörem/ispUm' is not valid. Query `GET /publication-review-opinions` for an exhaustive list of available publication review opinions.
 tags:
   - name: localized
     description: Endpoints with localizable responses.

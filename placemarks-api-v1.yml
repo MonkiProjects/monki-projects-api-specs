@@ -117,6 +117,22 @@ paths:
                                 $ref: '#/components/schemas/PlacemarkPublicationReview'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
+    '/placemarks/{placemarkId}/publication/report':
+        get:
+            summary: Get Placemark Publication Report
+            description: Get a placemark's publication report.
+            operationId: getPlacemarkPublicationReport
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlacemarkPublicationReport'
+                404:
+                    $ref: '#/components/responses/PlacemarkNotFound'
     '/features':
         get:
             tags:
@@ -394,6 +410,28 @@ components:
             example:
                 - $ref: '#/components/examples/PlacemarkPublicationReview1'
                 - $ref: '#/components/examples/PlacemarkPublicationReview2'
+        PlacemarkPublicationReport:
+            description: An array of placemark publication reviews.
+            type: object
+            required:
+                - id
+                - placemark
+                - reviews
+                - createdAt
+                - updatedAt
+            properties:
+                id:
+                    $ref: '#/components/schemas/UUID'
+                placemark:
+                    $ref: '#/components/schemas/UUID'
+                reviews:
+                    $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
+                createdAt:
+                    $ref: '#/components/schemas/DateTime'
+                updatedAt:
+                    $ref: '#/components/schemas/DateTime'
+            example:
+                $ref: '#/components/examples/PlacemarkPublicationReport1'
         # === Atoms ===
         # Placemark Data
         PlacemarkName:
@@ -875,7 +913,17 @@ components:
                 comment: I know this place, there's no spot here! This should not be accepted.
                 issues:
                     - $ref: '#/components/examples/PlacemarkLocationIssue'
+                createdAt: 2020-10-05T09:23:21.836Z
+        PlacemarkPublicationReport1:
+            summary: Example placemark publication report
+            value:
+                id: 24ffb61e-ad56-4244-bbd5-673944e74116
+                placemark: 6af987db-b1f9-4f9d-ab2e-c330b4ec78bd
+                reviews:
+                    - $ref: '#/components/examples/PlacemarkPublicationReview1'
+                    - $ref: '#/components/examples/PlacemarkPublicationReview2'
                 createdAt: 2020-09-23T07:46:57.524Z
+                updatedAt: 2020-10-05T09:23:21.836Z
         # Placemark Issues
         PlacemarkIssue1:
             summary: Example placemark issue

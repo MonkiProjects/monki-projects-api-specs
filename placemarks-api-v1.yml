@@ -53,7 +53,7 @@ paths:
             tags:
                 - localized
             parameters:
-                - $ref: '#/components/parameters/PlacemarkPublicationState'
+                - $ref: '#/components/parameters/PlacemarkState'
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
@@ -220,12 +220,12 @@ components:
             required: true
             schema:
                 $ref: '#/components/schemas/UUID'
-        PlacemarkPublicationState:
+        PlacemarkState:
             in: query
-            name: publicationState
-            description: A publication state to filter placemarks.
+            name: state
+            description: A state to filter placemarks.
             schema:
-                $ref: '#/components/schemas/PlacemarkPublicationState'
+                $ref: '#/components/schemas/PlacemarkState'
         Locale:
             in: query
             name: locale
@@ -273,7 +273,7 @@ components:
                 - longitude
                 - type
                 - category
-                - publicationState
+                - state
                 - caption
                 - satelliteImage
                 - images
@@ -300,8 +300,8 @@ components:
                     $ref: '#/components/schemas/PlacemarkType'
                 category:
                     $ref: '#/components/schemas/PlacemarkCategory'
-                publicationState:
-                    $ref: '#/components/schemas/PlacemarkPublicationState'
+                state:
+                    $ref: '#/components/schemas/PlacemarkState'
                 caption:
                     $ref: '#/components/schemas/PlacemarkCaption'
                 satelliteImage:
@@ -338,7 +338,7 @@ components:
                 - longitude
                 - type
                 - category
-                - publicationState
+                - state
                 - url
                 - htmlUrl
                 - createdAt
@@ -356,8 +356,8 @@ components:
                     $ref: '#/components/schemas/PlacemarkType'
                 category:
                     $ref: '#/components/schemas/PlacemarkCategory'
-                publicationState:
-                    $ref: '#/components/schemas/PlacemarkPublicationState'
+                state:
+                    $ref: '#/components/schemas/PlacemarkState'
                 url:
                     $ref: '#/components/schemas/URL'
                 htmlUrl:
@@ -438,6 +438,7 @@ components:
             required:
                 - id
                 - placemark
+                - state
                 - reviews
                 - createdAt
                 - updatedAt
@@ -446,6 +447,8 @@ components:
                     $ref: '#/components/schemas/UUID'
                 placemark:
                     $ref: '#/components/schemas/UUID'
+                state:
+                    $ref: '#/components/schemas/PlacemarkPublicationState'
                 reviews:
                     $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
                 createdAt:
@@ -473,7 +476,7 @@ components:
             description: The country in which a placemark is.
             type: string
             minLength: 1
-        PlacemarkPublicationState:
+        PlacemarkState:
             description: A placemark publication state.
             type: string
             enum: [draft, local, submitted, published, rejected]
@@ -741,6 +744,11 @@ components:
                 $ref: '#/components/schemas/PublicationReviewOpinion'
             uniqueItems: true
             example: [positive, needs-changes, negative, accepted, rejected]
+        PlacemarkPublicationState:
+            description: The state of a placemark publication.
+            type: string
+            enum: [submitted, accepted, rejected, moderated]
+            example: submitted
         # Coordinates
         Latitude:
             description: The latitude component of a coordinate.
@@ -850,7 +858,7 @@ components:
                     id: spot
                     title: Spot
                     locale: fr-FR
-                publicationState: published
+                state: published
                 url: https://api.monkiprojects.com/v1/placemarks/4f9058b3-3f8f-4b10-b3c0-e28c654012e4
                 htmlUrl: https://monkiprojects.com/placemarks/4f9058b3-3f8f-4b10-b3c0-e28c654012e4
                 createdAt: 2020-12-02T01:43:52.285Z
@@ -870,7 +878,7 @@ components:
                     id: spot
                     title: Spot
                     locale: fr-FR
-                publicationState: published
+                state: published
                 url: https://api.monkiprojects.com/v1/placemarks/31256d06-7786-4555-8592-ec20e9c9cdfb
                 htmlUrl: https://monkiprojects.com/placemarks/31256d06-7786-4555-8592-ec20e9c9cdfb
                 createdAt: 2020-04-15T15:28:41.729Z

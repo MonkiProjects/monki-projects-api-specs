@@ -82,21 +82,6 @@ paths:
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
     '/placemarks/{placemarkId}/publication/reviews':
-        get:
-            summary: List Placemark Publication Reviews
-            description: Lists a placemark's publication reviews.
-            operationId: listPlacemarkPublicationReviews
-            parameters:
-                - $ref: '#/components/parameters/PlacemarkId'
-            responses:
-                200:
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
-                404:
-                    $ref: '#/components/responses/PlacemarkNotFound'
         post:
             summary: Add Placemark Publication Review
             description: Adds a publication review to a placemark.
@@ -126,6 +111,21 @@ paths:
                     $ref: '#/components/responses/UnauthorizedError'
                 403:
                     $ref: '#/components/responses/ForbiddenModeratedFlag'
+                404:
+                    $ref: '#/components/responses/PlacemarkNotFound'
+        get:
+            summary: List Placemark Publication Reviews
+            description: Lists a placemark's publication reviews.
+            operationId: listPlacemarkPublicationReviews
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+            responses:
+                200:
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
     '/placemarks/{placemarkId}/publication/report':

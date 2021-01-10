@@ -81,32 +81,32 @@ paths:
                                 $ref: '#/components/schemas/ArrayOfPlacemarks'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
-    '/placemarks/{placemarkId}/publication/reviews':
+    '/placemarks/{placemarkId}/submission/reviews':
         post:
-            summary: Add Placemark Publication Review
-            description: Adds a publication review to a placemark.
-            operationId: addPlacemarkPublicationReview
+            summary: Add Placemark Submission Review
+            description: Adds a submission review to a placemark.
+            operationId: addPlacemarkSubmissionReview
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
             requestBody:
                 content:
                   application/json:
                     schema:
-                        $ref: '#/components/schemas/CreatePlacemarkPublicationReview'
+                        $ref: '#/components/schemas/CreatePlacemarkSubmissionReview'
             responses:
                 200:
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/PlacemarkPublicationReview'
+                                $ref: '#/components/schemas/PlacemarkSubmissionReview'
                 400:
                     description: Bad Request
                     content:
                         text/plain:
                             examples:
                                 InvalidOpinion:
-                                    $ref: '#/components/examples/InvalidPublicationReviewOpinion'
+                                    $ref: '#/components/examples/InvalidSubmissionReviewOpinion'
                 401:
                     $ref: '#/components/responses/UnauthorizedError'
                 403:
@@ -114,9 +114,9 @@ paths:
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
         get:
-            summary: List Placemark Publication Reviews
-            description: Lists a placemark's publication reviews.
-            operationId: listPlacemarkPublicationReviews
+            summary: List Placemark Submission Reviews
+            description: Lists a placemark's submission reviews.
+            operationId: listPlacemarkSubmissionReviews
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
             responses:
@@ -125,14 +125,14 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
+                                $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
-    '/placemarks/{placemarkId}/publication/report':
+    '/placemarks/{placemarkId}/submission/report':
         get:
-            summary: Get Placemark Publication Report
-            description: Get a placemark's publication report.
-            operationId: getPlacemarkPublicationReport
+            summary: Get Placemark Submission Report
+            description: Get a placemark's submission report.
+            operationId: getPlacemarkSubmissionReport
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
             responses:
@@ -141,7 +141,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/PlacemarkPublicationReport'
+                                $ref: '#/components/schemas/PlacemarkSubmissionReport'
                 404:
                     $ref: '#/components/responses/PlacemarkNotFound'
     '/features':
@@ -212,11 +212,11 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
-    '/publication-review-opinions':
+    '/submission-review-opinions':
         get:
-            summary: List Publication Review Opinions
-            description: Lists publication review opinions.
-            operationId: listPublicationReviewOpinions
+            summary: List Submission Review Opinions
+            description: Lists submission review opinions.
+            operationId: listSubmissionReviewOpinions
             tags:
                 - listing
             responses:
@@ -225,7 +225,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfPublicationReviewOpinions'
+                                $ref: '#/components/schemas/ArrayOfSubmissionReviewOpinions'
 components:
     parameters:
         PlacemarkId:
@@ -392,15 +392,15 @@ components:
             example:
                 - $ref: '#/components/examples/Spot1'
                 - $ref: '#/components/examples/Spot2'
-        CreatePlacemarkPublicationReview:
-            description: An object with data required to create a new placemark publication review.
+        CreatePlacemarkSubmissionReview:
+            description: An object with data required to create a new placemark submission review.
             type: object
             required:
                 - opinion
                 - comment
             properties:
                 opinion:
-                    $ref: '#/components/schemas/PublicationReviewOpinion'
+                    $ref: '#/components/schemas/SubmissionReviewOpinion'
                 comment:
                     $ref: '#/components/schemas/ReviewComment'
                 issues:
@@ -408,9 +408,9 @@ components:
                 moderated:
                     $ref: '#/components/schemas/ModeratedFlag'
             example:
-                $ref: '#/components/examples/CreatePlacemarkPublicationReview1'
-        PlacemarkPublicationReview:
-            description: A placemark publication review.
+                $ref: '#/components/examples/CreatePlacemarkSubmissionReview1'
+        PlacemarkSubmissionReview:
+            description: A placemark submission review.
             type: object
             required:
                 - id
@@ -427,7 +427,7 @@ components:
                 reviewer:
                     $ref: '#/components/schemas/UUID'
                 opinion:
-                    $ref: '#/components/schemas/PublicationReviewOpinion'
+                    $ref: '#/components/schemas/SubmissionReviewOpinion'
                 comment:
                     $ref: '#/components/schemas/ReviewComment'
                 issues:
@@ -437,18 +437,18 @@ components:
                 createdAt:
                     $ref: '#/components/schemas/DateTime'
             example:
-                $ref: '#/components/examples/PlacemarkPublicationReview1'
-        ArrayOfPlacemarkPublicationReviews:
-            description: An array of placemark publication reviews.
+                $ref: '#/components/examples/PlacemarkSubmissionReview1'
+        ArrayOfPlacemarkSubmissionReviews:
+            description: An array of placemark submission reviews.
             type: array
             items:
-                $ref: '#/components/schemas/PlacemarkPublicationReview'
+                $ref: '#/components/schemas/PlacemarkSubmissionReview'
             uniqueItems: true
             example:
-                - $ref: '#/components/examples/PlacemarkPublicationReview1'
-                - $ref: '#/components/examples/PlacemarkPublicationReview2'
-        PlacemarkPublicationReport:
-            description: An array of placemark publication reviews.
+                - $ref: '#/components/examples/PlacemarkSubmissionReview1'
+                - $ref: '#/components/examples/PlacemarkSubmissionReview2'
+        PlacemarkSubmissionReport:
+            description: An array of placemark submission reviews.
             type: object
             required:
                 - id
@@ -463,15 +463,15 @@ components:
                 placemark:
                     $ref: '#/components/schemas/UUID'
                 state:
-                    $ref: '#/components/schemas/PlacemarkPublicationState'
+                    $ref: '#/components/schemas/PlacemarkSubmissionState'
                 reviews:
-                    $ref: '#/components/schemas/ArrayOfPlacemarkPublicationReviews'
+                    $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
                 createdAt:
                     $ref: '#/components/schemas/DateTime'
                 updatedAt:
                     $ref: '#/components/schemas/DateTime'
             example:
-                $ref: '#/components/examples/PlacemarkPublicationReport1'
+                $ref: '#/components/examples/PlacemarkSubmissionReport1'
         # === Atoms ===
         # Placemark Data
         PlacemarkName:
@@ -492,7 +492,7 @@ components:
             type: string
             minLength: 1
         PlacemarkState:
-            description: A placemark publication state.
+            description: A placemark submission state.
             type: string
             enum: [draft, local, submitted, published, rejected]
         # Placemark Types
@@ -747,20 +747,20 @@ components:
             description: A review comment. Possibly empty.
             type: string
             example: Great spot, very diverse! I like to go there for long training sessions.
-        PublicationReviewOpinion:
-            description: A user's opinion in a publication review. `accepted` and `rejected` are reserved to moderators.
+        SubmissionReviewOpinion:
+            description: A user's opinion in a submission review. `accepted` and `rejected` are reserved to moderators.
             type: string
             enum: [positive, needs-changes, negative, accepted, rejected]
             example: accepted
-        ArrayOfPublicationReviewOpinions:
-            description: An array of placemark publication review opinions.
+        ArrayOfSubmissionReviewOpinions:
+            description: An array of placemark submission review opinions.
             type: array
             items:
-                $ref: '#/components/schemas/PublicationReviewOpinion'
+                $ref: '#/components/schemas/SubmissionReviewOpinion'
             uniqueItems: true
             example: [positive, needs-changes, negative, accepted, rejected]
-        PlacemarkPublicationState:
-            description: The state of a placemark publication.
+        PlacemarkSubmissionState:
+            description: The state of a placemark submission.
             type: string
             enum: [submitted, accepted, rejected, moderated]
             example: submitted
@@ -939,14 +939,14 @@ components:
                 id: security_cam
                 title: Caméra de sécurité
                 locale: fr-FR
-        # Placemark Publication Reviews
-        CreatePlacemarkPublicationReview1:
-            summary: Example placemark publication review creation
+        # Placemark Submission Reviews
+        CreatePlacemarkSubmissionReview1:
+            summary: Example placemark submission review creation
             value:
                 opinion: positive
                 comment: Everything looks good.
-        PlacemarkPublicationReview1:
-            summary: Example placemark publication review
+        PlacemarkSubmissionReview1:
+            summary: Example placemark submission review
             value:
                 id: 5881cf6b-1d3a-48d2-a84c-9a625adbea20
                 placemark: f6236b3a-65f1-4157-84f7-f22d6cff8a0a
@@ -954,8 +954,8 @@ components:
                 opinion: positive
                 comment: ''
                 createdAt: 2020-09-23T07:46:57.524Z
-        PlacemarkPublicationReview2:
-            summary: Example placemark publication review
+        PlacemarkSubmissionReview2:
+            summary: Example placemark submission review
             value:
                 id: b1e642f9-f0cd-4169-bd3f-2441f37b2b88
                 placemark: 2f5bdf5a-8695-4ace-8def-41ba9f632a97
@@ -965,14 +965,14 @@ components:
                 issues:
                     - $ref: '#/components/examples/PlacemarkLocationIssue'
                 createdAt: 2020-10-05T09:23:21.836Z
-        PlacemarkPublicationReport1:
-            summary: Example placemark publication report
+        PlacemarkSubmissionReport1:
+            summary: Example placemark submission report
             value:
                 id: 24ffb61e-ad56-4244-bbd5-673944e74116
                 placemark: 6af987db-b1f9-4f9d-ab2e-c330b4ec78bd
                 reviews:
-                    - $ref: '#/components/examples/PlacemarkPublicationReview1'
-                    - $ref: '#/components/examples/PlacemarkPublicationReview2'
+                    - $ref: '#/components/examples/PlacemarkSubmissionReview1'
+                    - $ref: '#/components/examples/PlacemarkSubmissionReview2'
                 createdAt: 2020-09-23T07:46:57.524Z
                 updatedAt: 2020-10-05T09:23:21.836Z
         # Placemark Issues
@@ -1018,8 +1018,8 @@ components:
             value: The placemark benefit 'lörem/ispUm' is not valid. Query `GET /benefits` for an exhaustive list of available benefits.
         InvalidHazard:
             value: The placemark hazard 'lörem/ispUm' is not valid. Query `GET /hazards` for an exhaustive list of available hazards.
-        InvalidPublicationReviewOpinion:
-            value: The publication review opinion 'lörem/ispUm' is not valid. Query `GET /publication-review-opinions` for an exhaustive list of available publication review opinions.
+        InvalidSubmissionReviewOpinion:
+            value: The submission review opinion 'lörem/ispUm' is not valid. Query `GET /submission-review-opinions` for an exhaustive list of available submission review opinions.
 tags:
   - name: localized
     description: Endpoints with localizable responses.

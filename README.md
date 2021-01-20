@@ -43,8 +43,8 @@ The "Users API" handles actions related to user management.
 
 [![Fully qualifed domain name](https://img.shields.io/badge/base-api.monkiprojects.com-informational)](https://api.monkiprojects.com)
 [![Latest version](https://img.shields.io/badge/latest-1.0.0-informational)](https://api.monkiprojects.com/v1)  
-![Ready?](https://img.shields.io/badge/ready%3F-YES-success)
-[![Specification](https://img.shields.io/badge/specification-Almost_Ready-important)](./placemarks-api-v1.yml)
+![Ready?](https://img.shields.io/badge/ready%3F-NO-critical)
+[![Specification](https://img.shields.io/badge/specification-WIP-important)](./placemarks-api-v1.yml)
 ![Development](https://img.shields.io/badge/development-Testing-important)
 ![Client](https://img.shields.io/badge/client-TODO-critical)
 ![Documentation](https://img.shields.io/badge/documentation-TODO-critical)

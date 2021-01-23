@@ -5,6 +5,8 @@ info:
 servers:
     - url: https://api.monkiprojects.com/v1
       description: Monki Projects API v1 (prod)
+    - url: https://pre-prod.api.monkiprojects.com/v1
+      description: Monki Projects API v1 (pre-prod)
 paths:
     '/placemarks':
         post:
@@ -21,8 +23,8 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreatePlacemark'
             responses:
-                202:
-                    description: Accepted
+                201:
+                    description: Successfully Created
                     content:
                         application/json:
                             schema:
@@ -30,25 +32,29 @@ paths:
                 400:
                     description: Bad Request
                     content:
-                        text/plain:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
                             examples:
-                                InvalidCoordinates:
-                                    $ref: '#/components/examples/InvalidCoordinates'
-                                InvalidType:
-                                    $ref: '#/components/examples/InvalidType'
-                                InvalidFeature:
-                                    $ref: '#/components/examples/InvalidFeature'
-                                InvalidTechnique:
-                                    $ref: '#/components/examples/InvalidTechnique'
-                                InvalidBenefit:
-                                    $ref: '#/components/examples/InvalidBenefit'
-                                InvalidHazard:
-                                    $ref: '#/components/examples/InvalidHazard'
+                                'Invalid coordinates':
+                                    $ref: '#/components/examples/InvalidCoordinatesError'
+                                'Invalid type':
+                                    $ref: '#/components/examples/InvalidTypeError'
+                                'Placemark type not found':
+                                    $ref: '#/components/examples/PlacemarkTypeNotFoundError'
+                                'Invalid feature':
+                                    $ref: '#/components/examples/InvalidFeatureError'
+                                'Invalid technique':
+                                    $ref: '#/components/examples/InvalidTechniqueError'
+                                'Invalid benefit':
+                                    $ref: '#/components/examples/InvalidBenefitError'
+                                'Invalid hazard':
+                                    $ref: '#/components/examples/InvalidHazardError'
                 401:
                     $ref: '#/components/responses/UnauthorizedError'
         get:
             summary: List Placemarks
-            description: Lists all published placemarks.
+            description: Lists all published placemarks by default. If a `state` query parameter is set, this endpoint will list all placemarks in the specified state.
             operationId: listPlacemarks
             tags:
                 - localized
@@ -57,11 +63,20 @@ paths:
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/PlacemarkFullDetails'
+                                $ref: '#/components/schemas/ArrayOfPlacemarks'
+                400:
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                'Invalid state query param':
+                                    $ref: '#/components/examples/InvalidStateQueryParamError'
     '/placemarks/{placemarkId}':
         get:
             summary: Get Placemark
@@ -74,18 +89,87 @@ paths:
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarks'
                 404:
-                    $ref: '#/components/responses/PlacemarkNotFound'
+                    $ref: '#/components/responses/PlacemarkNotFoundError'
+        delete:
+            summary: Delete Placemark
+            description: Deletes a placemark.
+            operationId: deletePlacemark
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+            responses:
+                204:
+                    description: Successfully Deleted
+                403:
+                    description: Forbidden
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                'Not your placemark':
+                                    $ref: '#/components/examples/CannotDeleteSomeoneElsesPlacemarkError'
+                404:
+                    $ref: '#/components/responses/PlacemarkNotFoundError'
+    '/placemarks/{placemarkId}/submit':
+        get:
+            summary: Submit Placemark
+            description: Submits a placemark.
+            operationId: submitPlacemark
+            tags:
+                - placemark-submission
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+            responses:
+                200:
+                    description: Successfully Submitted
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlacemarkSubmissionReport'
+                403:
+                    description: Forbidden
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                'Not your placemark':
+                                    $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
+                                'Already submitted':
+                                    $ref: '#/components/examples/CannotSubmitPlacemarkTwiceError'
+                404:
+                    $ref: '#/components/responses/PlacemarkNotFoundError'
+    '/placemarks/{placemarkId}/submission':
+        get:
+            summary: Get Placemark Submission Report
+            description: Get a placemark's submission report.
+            operationId: getPlacemarkSubmissionReport
+            tags:
+                - placemark-submission
+            parameters:
+                - $ref: '#/components/parameters/PlacemarkId'
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PlacemarkSubmissionReport'
+                404:
+                    $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
     '/placemarks/{placemarkId}/submission/reviews':
         post:
             summary: Add Placemark Submission Review
             description: Adds a submission review to a placemark.
             operationId: addPlacemarkSubmissionReview
+            tags:
+                - placemark-submission
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
             requestBody:
@@ -95,7 +179,7 @@ paths:
                         $ref: '#/components/schemas/CreatePlacemarkSubmissionReview'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
@@ -103,129 +187,98 @@ paths:
                 400:
                     description: Bad Request
                     content:
-                        text/plain:
-                            examples:
-                                InvalidOpinion:
-                                    $ref: '#/components/examples/InvalidSubmissionReviewOpinion'
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
                 401:
                     $ref: '#/components/responses/UnauthorizedError'
                 403:
-                    $ref: '#/components/responses/ForbiddenModeratedFlag'
+                    $ref: '#/components/responses/ForbiddenModeratedFlagError'
                 404:
-                    $ref: '#/components/responses/PlacemarkNotFound'
+                    $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
         get:
             summary: List Placemark Submission Reviews
             description: Lists a placemark's submission reviews.
             operationId: listPlacemarkSubmissionReviews
+            tags:
+                - placemark-submission
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+                401:
+                    $ref: '#/components/responses/UnauthorizedError'
                 404:
-                    $ref: '#/components/responses/PlacemarkNotFound'
-    '/placemarks/{placemarkId}/submission/report':
-        get:
-            summary: Get Placemark Submission Report
-            description: Get a placemark's submission report.
-            operationId: getPlacemarkSubmissionReport
-            parameters:
-                - $ref: '#/components/parameters/PlacemarkId'
-            responses:
-                200:
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/PlacemarkSubmissionReport'
-                404:
-                    $ref: '#/components/responses/PlacemarkNotFound'
-    '/features':
+                    $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
+    '/placemarks/features':
         get:
             summary: List Placemark Features
             description: Lists placemark features.
             operationId: listPlacemarkFeatures
             tags:
-                - listing
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
-    '/techniques':
+    '/placemarks/techniques':
         get:
-            summary: List Parkour Techniques
-            description: Lists parkour techniques.
-            operationId: listParkourTechniques
+            summary: List Placemark Techniques
+            description: Lists techniques available for placemarks.
+            operationId: listPlacemarkTechniques
             tags:
-                - listing
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ArrayOfParkourTechniques'
-    '/benefits':
+                                $ref: '#/components/schemas/ArrayOfPlacemarkTechniques'
+    '/placemarks/benefits':
         get:
             summary: List Placemark Benefits
             description: Lists placemark benefits.
             operationId: listPlacemarkBenefits
             tags:
-                - listing
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
-    '/hazards':
+    '/placemarks/hazards':
         get:
             summary: List Placemark Hazards
             description: Lists placemark hazards.
             operationId: listPlacemarkHazards
             tags:
-                - listing
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
             responses:
                 200:
-                    description: OK
+                    description: Success
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
-    '/submission-review-opinions':
-        get:
-            summary: List Submission Review Opinions
-            description: Lists submission review opinions.
-            operationId: listSubmissionReviewOpinions
-            tags:
-                - listing
-            responses:
-                200:
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ArrayOfSubmissionReviewOpinions'
 components:
     parameters:
         PlacemarkId:
@@ -273,7 +326,7 @@ components:
                 features:
                     $ref: '#/components/schemas/ArrayOfPlacemarkFeatureIds'
                 goodForTraining:
-                    $ref: '#/components/schemas/ArrayOfParkourTechniqueIds'
+                    $ref: '#/components/schemas/ArrayOfPlacemarkTechniqueIds'
                 benefits:
                     $ref: '#/components/schemas/ArrayOfPlacemarkBenefitIds'
                 hazards:
@@ -330,7 +383,7 @@ components:
                 features:
                     $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
                 goodForTraining:
-                    $ref: '#/components/schemas/ArrayOfParkourTechniques'
+                    $ref: '#/components/schemas/ArrayOfPlacemarkTechniques'
                 benefits:
                     $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
                 hazards:
@@ -494,7 +547,7 @@ components:
         PlacemarkState:
             description: A placemark submission state.
             type: string
-            enum: [draft, local, submitted, published, rejected]
+            enum: [private, submitted, published, rejected]
         # Placemark Types
         PlacemarkType:
             description: A placemark `type`.
@@ -579,8 +632,8 @@ components:
             uniqueItems: true
             example: [grass, small_wall, stairs]
         # Parkour Techniques
-        ParkourTechnique:
-            description: A parkour technique.
+        PlacemarkTechnique:
+            description: A technique one can practice on placemarks.
             type: object
             required:
                 - id
@@ -588,31 +641,31 @@ components:
                 - locale
             properties:
                 id:
-                    $ref: '#/components/schemas/ParkourTechniqueId'
+                    $ref: '#/components/schemas/PlacemarkTechniqueId'
                 title:
                     $ref: '#/components/schemas/LocalizedTitle'
                 locale:
                     $ref: '#/components/schemas/Locale'
             example:
                 $ref: '#/components/examples/Technique1'
-        ArrayOfParkourTechniques:
-            description: An array of parkour techniques.
+        ArrayOfPlacemarkTechniques:
+            description: An array of techniques one can practice on placemarks.
             type: array
             items:
-                $ref: '#/components/schemas/ParkourTechnique'
+                $ref: '#/components/schemas/PlacemarkTechnique'
             uniqueItems: true
             example:
                 - $ref: '#/components/examples/Technique1'
                 - $ref: '#/components/examples/Technique2'
-        ParkourTechniqueId:
-            description: A parkour technique `ID`.
+        PlacemarkTechniqueId:
+            description: A technique `ID`.
             type: string
             pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
-        ArrayOfParkourTechniqueIds:
-            description: An array of parkour technique `ID`s.
+        ArrayOfPlacemarkTechniqueIds:
+            description: An array of technique `ID`s.
             type: array
             items:
-                $ref: '#/components/schemas/ParkourTechniqueId'
+                $ref: '#/components/schemas/PlacemarkTechniqueId'
             uniqueItems: true
             example: [double_kong, precision_jump]
         # Placemark Benefits
@@ -752,13 +805,6 @@ components:
             type: string
             enum: [positive, needs-changes, negative, accepted, rejected]
             example: accepted
-        ArrayOfSubmissionReviewOpinions:
-            description: An array of placemark submission review opinions.
-            type: array
-            items:
-                $ref: '#/components/schemas/SubmissionReviewOpinion'
-            uniqueItems: true
-            example: [positive, needs-changes, negative, accepted, rejected]
         PlacemarkSubmissionState:
             description: The state of a placemark submission.
             type: string
@@ -819,32 +865,58 @@ components:
             description: A flag saying something has been moderated.
             type: boolean
             example: true
+        Error:
+            description: An Error.
+            type: object
+            required:
+                - error
+                - reason
+            properties:
+                error:
+                    type: boolean
+                    example: true
+                reason:
+                    type: string
     responses:
-        # Placemarks
-        PlacemarkNotFound:
-            description: Not Found
+        # === Errors ===
+        # Not Found
+        PlacemarkNotFoundError:
+            description: Placemark not found
             content:
-                text/plain:
+                application/json:
                     schema:
-                        type: string
-                    example: Placemark not found.
-        # Errors
-        UnauthorizedError:
-            description: Authentication information is missing or is invalid.
-            headers:
-                WWW_Authenticate:
-                    schema:
-                        type: string
-            content:
-                text/plain:
+                        $ref: '#/components/schemas/Error'
                     example:
-                        value: You need to create an account in order to send such a request.
-        ForbiddenModeratedFlag:
+                        error: true
+                        reason: Placemark not found.
+        NoPlacemarkSubmissionFoundError:
+            description: No placemark submission found
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        error: true
+                        reason: No placemark submission found.
+        # Unauthorized
+        UnauthorizedError:
+            description: Unauthorized
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        $ref: '#/components/examples/UnauthorizedError'
+        # Forbidden
+        ForbiddenModeratedFlagError:
             description: Cannot use `moderated` flag.
             content:
-                text/plain:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
                     example:
-                        value: You need to be a moderator in order to use the `moderated` flag.
+                        error: true
+                        reason: You need to be a moderator in order to use the `moderated` flag.
     examples:
         # Placemarks
         Spot1:
@@ -902,13 +974,13 @@ components:
                 locale: fr-FR
         # Parkour Techniques
         Technique1:
-            summary: Example parkour technique
+            summary: Example technique
             value:
                 id: double_kong
                 title: Double saut de chat
                 locale: fr-FR
         Technique2:
-            summary: Example parkour technique
+            summary: Example technique
             value:
                 id: precision_jump
                 title: Saut de précision
@@ -1005,27 +1077,69 @@ components:
                 comment: I know this place, there's no spot here!
                 state: submitted
                 createdAt: 2020-07-20T21:16:56.239Z
+        # === Errors ===
         # Bad Requests
-        InvalidCoordinates:
-            value: The provided coordinates are invalid.
-        InvalidType:
-            value: The provided placemark type is invalid.
-        InvalidFeature:
-            value: The placemark feature 'lörem/ispUm' is not valid. Query `GET /features` for an exhaustive list of available features.
-        InvalidTechnique:
-            value: The parkour technique 'lörem/ispUm' is not valid. Query `GET /techniques` for an exhaustive list of available techniques.
-        InvalidBenefit:
-            value: The placemark benefit 'lörem/ispUm' is not valid. Query `GET /benefits` for an exhaustive list of available benefits.
-        InvalidHazard:
-            value: The placemark hazard 'lörem/ispUm' is not valid. Query `GET /hazards` for an exhaustive list of available hazards.
-        InvalidSubmissionReviewOpinion:
-            value: The submission review opinion 'lörem/ispUm' is not valid. Query `GET /submission-review-opinions` for an exhaustive list of available submission review opinions.
+        InvalidCoordinatesError:
+            value:
+                error: true
+                reason: The provided coordinates are invalid.
+        InvalidTypeError:
+            value:
+                error: true
+                reason: The provided placemark type is invalid.
+        PlacemarkTypeNotFoundError:
+            description: We could not find the placemark type you provided.
+            value:
+                error: true
+                reason: Placemark type not found
+        InvalidFeatureError:
+            value:
+                error: true
+                reason: The placemark feature 'lörem/ispUm' is not valid. Query `GET /placemarks/features` for an exhaustive list of available features.
+        InvalidTechniqueError:
+            value:
+                error: true
+                reason: The technique 'lörem/ispUm' is not valid. Query `GET /placemarks/techniques` for an exhaustive list of available techniques.
+        InvalidBenefitError:
+            value:
+                error: true
+                reason: The placemark benefit 'lörem/ispUm' is not valid. Query `GET /placemarks/benefits` for an exhaustive list of available benefits.
+        InvalidHazardError:
+            value:
+                error: true
+                reason: The placemark hazard 'lörem/ispUm' is not valid. Query `GET /placemarks/hazards` for an exhaustive list of available hazards.
+        InvalidStateQueryParamError:
+            value:
+                error: true
+                reason: Cannot initialize State from invalid String value lorem_ipsum for key state
+        # Unauthorized
+        UnauthorizedError:
+            description: Authentication information is missing or is invalid.
+            value:
+                error: true
+                reason: Unauthorized
+        # Forbidden
+        CannotDeleteSomeoneElsesPlacemarkError:
+            description: You cannot delete someone else's placemark.
+            value:
+                error: true
+                reason: You cannot delete someone else's placemark!
+        CannotSubmitSomeoneElsesPlacemarkError:
+            description: You cannot submit someone else's placemark.
+            value:
+                error: true
+                reason: You cannot submit someone else's placemark!
+        CannotSubmitPlacemarkTwiceError:
+            description: You cannot submit a placemark twice.
+            value:
+                error: true
+                reason: You cannot submit a placemark twice!
 tags:
   - name: localized
     description: Endpoints with localizable responses.
 #    externalDocs:
-#      url: https://docs.api.monkiprojects.com/localized
-  - name: listing
-    description: Helper endpoints used to list available data.
+#      url: https://docs.api.monkiprojects.com#localized
+  - name: placemark-submission
+    description: Endpoints related to placemark submissions.
 #    externalDocs:
-#      url: http://docs.my-api.com/store-orders.htm
+#      url: https://docs.api.monkiprojects.com#placemark-submission

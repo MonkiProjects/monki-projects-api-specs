@@ -19,7 +19,7 @@ for all Monki Projects' [APIs](https://en.wikipedia.org/wiki/API).
 
 "Monki Projects API" is the main API grouping together all of Monki Projects' APIs.
 
-| Version | Base URL | Specification file | Client | Documentation |
+| Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
 | 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | ⨯ | ⨯ | ⨯ |
 
@@ -35,9 +35,9 @@ for all Monki Projects' [APIs](https://en.wikipedia.org/wiki/API).
 
 The "Users API" handles actions related to user management.
 
-| Version | Base URL | Specification file | Client | Documentation |
+| Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
-| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [users-api-v1.yml](./users-api-v1.yml) | ⨯ | ⨯ |
+| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [users-api-v1.yml](./users-api-v1.yml) | Swift: [monki-map-placemarks-api-client-swift](https://github.com/MonkiProjects/monki-map-placemarks-api-client-swift) | ⨯ |
 
 ### Placemarks API
 
@@ -51,7 +51,7 @@ The "Users API" handles actions related to user management.
 
 The "Placemarks API" handles actions related to placemark and map management.
 
-| Version | Base URL | Specification file | Client | Documentation |
+| Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
 | 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [placemarks-api-v1.yml](./placemarks-api-v1.yml) | ⨯ | ⨯ |
 

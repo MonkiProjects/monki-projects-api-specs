@@ -287,7 +287,7 @@ components:
             description: A placemark `ID`.
             required: true
             schema:
-                $ref: '#/components/schemas/UUID'
+                $ref: '#/components/schemas/ID'
         PlacemarkState:
             in: query
             name: state
@@ -357,7 +357,7 @@ components:
                 - updatedAt
             properties:
                 id:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 name:
                     $ref: '#/components/schemas/PlacemarkName'
                 latitude:
@@ -413,7 +413,7 @@ components:
                 - updatedAt
             properties:
                 id:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 name:
                     $ref: '#/components/schemas/PlacemarkName'
                 latitude:
@@ -474,11 +474,11 @@ components:
                 - createdAt
             properties:
                 id:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 placemark:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 reviewer:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 opinion:
                     $ref: '#/components/schemas/SubmissionReviewOpinion'
                 comment:
@@ -512,9 +512,9 @@ components:
                 - updatedAt
             properties:
                 id:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 placemark:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 state:
                     $ref: '#/components/schemas/PlacemarkSubmissionState'
                 reviews:
@@ -756,11 +756,11 @@ components:
                 - createdAt
             properties:
                 id:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 placemark:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 issuer:
-                    $ref: '#/components/schemas/UUID'
+                    $ref: '#/components/schemas/ID'
                 reason:
                     $ref: '#/components/schemas/PlacemarkIssueReason'
                 comment:
@@ -836,7 +836,7 @@ components:
             type: string
             minLength: 1
         # Other
-        UUID:
+        ID:
             description: A `UUID` (or `GUID`).
             type: string
             format: uuid

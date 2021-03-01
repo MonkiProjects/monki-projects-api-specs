@@ -3,8 +3,10 @@ info:
     version: 1.0.0
     title: Monki Projects Users API
 servers:
-    - url: https://users.api.monkiprojects.com/v1
-      description: Monki Projects Users API v1 (prod)
+    - url: https://api.monkiprojects.com/v1
+      description: Monki Projects API v1 (prod)
+    - url: https://pre-prod.api.monkiprojects.com/v1
+      description: Monki Projects API v1 (pre-prod)
 paths:
     '/users':
         post:
@@ -15,14 +17,27 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateUser'
+                            $ref: '#/components/schemas/User.Create'
             responses:
                 201:
-                    description: A user token
+                    description: Created
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UserToken'
+                                $ref: '#/components/schemas/User.Private'
+                400:
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                InvalidEmail:
+                                    value:
+                                        error: true
+                                        reason: Your email address is invalid.
+                401:
+                    $ref: '#/components/responses/UnauthorizedError'
                 409:
                     description: Conflict with other user
                     content:
@@ -33,11 +48,11 @@ paths:
                                 UsernameNotAvailable:
                                     value:
                                         error: true
-                                        message: This username is not available.
-                                InvalidEmail:
+                                        reason: Email or username already taken
+                                EmailNotAvailable:
                                     value:
                                         error: true
-                                        message: Your email address is invalid.
+                                        reason: Email or username already taken
         get:
             summary: List Users
             description: Returns the list of all users.
@@ -49,48 +64,76 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ArrayOfUsers'
-    '/users/{username}':
+    '/users/{userId}':
         get:
-            summary: User Details
-            description: Returns details about a particular user
+            summary: Get User Details
+            description: Returns details about a particular user.
             operationId: getUser
             parameters:
-              - name: username
-                description: A user's `username` or `id`
-                in: path
-                schema:
-                    type: string
-                required: true
+                - $ref: '#/components/parameters/UserId'
             responses:
                 200:
                     description: Success
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User.Public.Full'
-                400:
-                    description: Bad Request
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                            example: 
-                                error: true
-                                message: 'Could not find a username in path (format: `GET /users/:username`).'
+                                $ref: '#/components/schemas/User.Public'
                 404:
                     description: Not Found
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Error'
-                            example: 
+                            example:
                                 error: true
-                                message: User not found.
+                                reason: User not found.
+                422:
+                    description: Bad user ID
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                error: true
+                                reason: Unprocessable Entity
+        delete:
+            summary: Delete User
+            description: Deletes a user.
+            operationId: deleteUser
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/UserId'
+            responses:
+                200:
+                    description: Success
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                            example: ''
+                401:
+                    $ref: '#/components/responses/UnauthorizedError'
+                422:
+                    description: User ID malformatted
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                error: true
+                                reason: Unprocessable Entity
     '/login':
         post:
             security:
-              - BasicAuth: []
+                - BasicAuth: []
             responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User.Token'
                 401:
                     $ref: '#/components/responses/UnauthorizedError'
 components:
@@ -102,71 +145,89 @@ components:
             type: http
             scheme: bearer
             #bearerFormat: JWT # Optional, arbitrary value for documentation purposes
+    parameters:
+        UserId:
+            in: path
+            name: userId
+            description: A user ID.
+            required: true
+            schema:
+                $ref: '#/components/schemas/ID'
     schemas:
-        User.Public.Small:
-            type: object
-            properties:
-                id: #UUID
-                    type: string
-                username:
-                    type: string
-                displayName:
-                    type: string
-                url:
-                    type: string
-                htmlUrl:
-                    type: string
-                avatarUrl:
-                    description: Used by websites as `<img>`'s `src` field
-                    type: string
-                    nullable: true
-                avatar: #ImageOrAssetSource?
-                    type: string
-                    nullable: true
-                country:
-                    type: string
-                    nullable: true
-                type: #UserType
-                    type: string
-                updatedAt:
-                    description: A date used to update data client side
-                    type: string
-                    format: date-time
-        User.Public.Full:
+        User.Public:
             description: Public details about a user
             type: object
             required:
                 - id
-                - name
+                - username
+                - display_name
+                - avatar_url
+                - type
+                - updated_at
             properties:
                 id:
                     type: string
-                name:
+                    format: uuid
+                username:
                     type: string
-        User.Private.Full:
+                display_name:
+                    type: string
+                avatar_url:
+                    description: Used by websites as `<img>`'s `src` field
+                    type: string
+                country:
+                    type: string
+                type: #UserType
+                    type: string
+                updated_at:
+                    description: A date used to update data on client side
+                    type: string
+                    format: date-time
+        User.Private:
             description: Private details about a user
             type: object
             required:
                 - id
-                - name
+                - username
+                - display_name
+                - avatar_url
+                - type
+                - updated_at
             properties:
                 id:
                     type: string
-                name:
+                    format: uuid
+                username:
                     type: string
-        CreateUser:
+                display_name:
+                    type: string
+                avatar_url:
+                    description: Used by websites as `<img>`'s `src` field
+                    type: string
+                country:
+                    type: string
+                type: #UserType
+                    type: string
+                updated_at:
+                    description: A date used to update data on client side
+                    type: string
+                    format: date-time
+        User.Create:
             type: object
             required:
                 - username
-                - displayName
+                - display_name
                 - email
                 - password
-                - confirmPassword
+                - confirm_password
             properties:
                 username:
                     description: User name
                     type: string
-                displayName:
+                    minLength: 3
+                    maxLength: 32
+                    pattern: '^[a-z0-9._]{3,32}$'
+                display_name:
                     description: User display name
                     type: string
                 email:
@@ -176,16 +237,18 @@ components:
                 password:
                     description: Password
                     type: string
-                confirmPassword:
+                    minLength: 8
+                confirm_password:
                     description: Password confirmation
                     type: string
+                    minLength: 8
             example:
                 username: vapor
-                displayName: Vapor
+                display_name: Vapor
                 email: test@vapor.codes
                 password: password
-                confirmPassword: password
-        UserToken:
+                confirm_password: password
+        User.Token:
             type: object
             required:
                 - token
@@ -194,22 +257,28 @@ components:
                 token:
                     type: string
                 user:
-                    $ref: '#/components/schemas/User.Private.Full'
+                    $ref: '#/components/schemas/User.Private'
         ArrayOfUsers:
             description: An array of users
             type: array
             items:
-                $ref: '#/components/schemas/User.Public.Small'
+                $ref: '#/components/schemas/User.Public'
         Error:
             type: object
             required:
                 - error
-                - message
+                - reason
             properties:
                 error:
                     type: boolean
-                message:
+                reason:
                     type: string
+        # Other
+        ID:
+            description: A `UUID` (or `GUID`).
+            type: string
+            format: uuid
+            example: ad959e79-55c3-4445-8c51-a74b6d52691a
     responses:
         UnauthorizedError:
             description: Authentication information is missing or is invalid.
@@ -217,3 +286,10 @@ components:
                 WWW_Authenticate:
                     schema:
                         type: string
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        error: true
+                        reason: Unauthorized

@@ -10,18 +10,18 @@ for all Monki Projects' [APIs](https://en.wikipedia.org/wiki/API).
 ### Monki Projects API
 
 [![Fully qualifed domain name](https://img.shields.io/badge/base-api.monkiprojects.com-informational)](https://api.monkiprojects.com)
-![Latest version](https://img.shields.io/badge/latest-x.x.x-inactive)  
+![Latest version](https://img.shields.io/badge/latest-1.0.0-informational)  
 ![Ready?](https://img.shields.io/badge/ready%3F-NO-critical)
-![Specification](https://img.shields.io/badge/specification-TODO-critical)
-![Development](https://img.shields.io/badge/development-TODO-critical)
-![Clients](https://img.shields.io/badge/clients-TODO-critical)
+![Specification](https://img.shields.io/badge/specification-AUTO-success)
+![Development](https://img.shields.io/badge/development-Up_To_Date-success)
+![Clients](https://img.shields.io/badge/clients-WIP-important)
 ![Documentation](https://img.shields.io/badge/documentation-TODO-critical)
 
 "Monki Projects API" is the main API grouping together all of Monki Projects' APIs.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
-| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | ⨯ | ⨯ | ⨯ |
+| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [monki-projects-api-v1.yaml](./monki-projects-api-v1.yaml) | ⨯ | ⨯ |
 
 ### Users API
 
@@ -60,3 +60,9 @@ The "Placemarks API" handles actions related to placemark and map management.
 ### HTTPS
 
 For security reasons, all Monki Projects' APIs force [HTTPS](https://en.wikipedia.org/wiki/HTTPS)
+
+## Contributing
+
+### Merge OpenAPI specification files
+
+To merge OpenAPI specification files, just run `./merge.sh` in a terminal.

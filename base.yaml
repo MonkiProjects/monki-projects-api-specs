@@ -1,0 +1,9 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Monki Projects API
+servers:
+  - url: 'https://api.monkiprojects.com/v1'
+    description: Monki Projects API v1 (prod)
+  - url: 'https://pre-prod.api.monkiprojects.com/v1'
+    description: Monki Projects API v1 (pre-prod)

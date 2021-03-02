@@ -14,6 +14,7 @@ paths:
             description: Creates a placemark.
             operationId: createPlacemark
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
@@ -57,6 +58,7 @@ paths:
             description: Lists all published placemarks by default. If a `state` query parameter is set, this endpoint will list all placemarks in the specified state.
             operationId: listPlacemarks
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/PlacemarkState'
@@ -83,6 +85,7 @@ paths:
             description: Gets a placemark's details.
             operationId: getPlacemark
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
@@ -122,6 +125,7 @@ paths:
             description: Submits a placemark.
             operationId: submitPlacemark
             tags:
+                - placemarks
                 - placemark-submission
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
@@ -151,6 +155,7 @@ paths:
             description: Get a placemark's submission report.
             operationId: getPlacemarkSubmissionReport
             tags:
+                - placemarks
                 - placemark-submission
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
@@ -169,6 +174,7 @@ paths:
             description: Adds a submission review to a placemark.
             operationId: addPlacemarkSubmissionReview
             tags:
+                - placemarks
                 - placemark-submission
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
@@ -201,6 +207,7 @@ paths:
             description: Lists a placemark's submission reviews.
             operationId: listPlacemarkSubmissionReviews
             tags:
+                - placemarks
                 - placemark-submission
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
@@ -221,6 +228,7 @@ paths:
             description: Lists placemark features.
             operationId: listPlacemarkFeatures
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
@@ -237,6 +245,7 @@ paths:
             description: Lists techniques available for placemarks.
             operationId: listPlacemarkTechniques
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
@@ -253,6 +262,7 @@ paths:
             description: Lists placemark benefits.
             operationId: listPlacemarkBenefits
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
@@ -269,6 +279,7 @@ paths:
             description: Lists placemark hazards.
             operationId: listPlacemarkHazards
             tags:
+                - placemarks
                 - localized
             parameters:
                 - $ref: '#/components/parameters/Locale'
@@ -1135,6 +1146,8 @@ components:
                 error: true
                 reason: You cannot submit a placemark twice!
 tags:
+  - name: placemarks
+    description: Endpoints related to placemarks.
   - name: localized
     description: Endpoints with localizable responses.
 #    externalDocs:

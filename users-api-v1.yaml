@@ -13,6 +13,8 @@ paths:
             summary: Create User
             description: Creates a user.
             operationId: createUser
+            tags:
+                - users
             requestBody:
                 content:
                     application/json:
@@ -57,6 +59,8 @@ paths:
             summary: List Users
             description: Returns the list of all users.
             operationId: listUsers
+            tags:
+                - users
             responses:
                 200:
                     description: Success
@@ -69,6 +73,8 @@ paths:
             summary: Get User Details
             description: Returns details about a particular user.
             operationId: getUser
+            tags:
+                - users
             parameters:
                 - $ref: '#/components/parameters/UserId'
             responses:
@@ -100,6 +106,8 @@ paths:
             summary: Delete User
             description: Deletes a user.
             operationId: deleteUser
+            tags:
+                - users
             security:
                 - BearerAuth: []
             parameters:
@@ -293,3 +301,6 @@ components:
                     example:
                         error: true
                         reason: Unauthorized
+tags:
+  - name: users
+    description: Endpoints related to users.

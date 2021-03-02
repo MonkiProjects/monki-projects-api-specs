@@ -17,7 +17,7 @@ for all Monki Projects' [APIs](https://en.wikipedia.org/wiki/API).
 ![Clients](https://img.shields.io/badge/clients-WIP-important)
 ![Documentation](https://img.shields.io/badge/documentation-TODO-critical)
 
-"Monki Projects API" is the main API grouping together all of Monki Projects' APIs.
+*Monki Projects API* is the main API grouping together all of Monki Projects' APIs.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
@@ -33,7 +33,7 @@ for all Monki Projects' [APIs](https://en.wikipedia.org/wiki/API).
 ![Clients](https://img.shields.io/badge/clients-Up_To_Date-success)
 ![Documentation](https://img.shields.io/badge/documentation-TODO-critical)
 
-The "Users API" handles actions related to user management.
+The *Users API* handles actions related to user management.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
@@ -49,7 +49,7 @@ The "Users API" handles actions related to user management.
 ![Clients](https://img.shields.io/badge/clients-Up_To_Date-success)
 ![Documentation](https://img.shields.io/badge/documentation-TODO-critical)
 
-The "Placemarks API" handles actions related to placemark and map management.
+The *Placemarks API* handles actions related to placemark and map management.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |

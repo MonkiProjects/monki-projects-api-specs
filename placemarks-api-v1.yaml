@@ -103,6 +103,8 @@ paths:
             summary: Delete Placemark
             description: Deletes a placemark.
             operationId: deletePlacemark
+            tags:
+                - placemarks
             parameters:
                 - $ref: '#/components/parameters/PlacemarkId'
             responses:

@@ -133,6 +133,9 @@ paths:
                                 reason: Unprocessable Entity
     '/login':
         post:
+            tags:
+                - users
+                - auth
             security:
                 - BasicAuth: []
             responses:
@@ -304,3 +307,5 @@ components:
 tags:
   - name: users
     description: Endpoints related to users.
+  - name: auth
+    description: Endpoints related to authentication.

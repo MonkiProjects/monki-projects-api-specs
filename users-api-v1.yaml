@@ -138,6 +138,7 @@ paths:
                 reason: Unprocessable Entity
   /login:
     post:
+      operationId: logIn
       tags:
         - users
         - auth

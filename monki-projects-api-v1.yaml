@@ -94,7 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User.Public'
+                $ref: '#/components/schemas/User.Public.Full'
         '404':
           description: Not Found
           content:
@@ -124,13 +124,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
       responses:
-        '200':
+        '204':
           description: Success
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: ''
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '422':
@@ -447,64 +442,133 @@ paths:
                 $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
 components:
   schemas:
-    User.Public:
-      description: Public details about a user
+    User.Username:
+      description: A username (`@`).
+      type: string
+      minLength: 3
+      maxLength: 32
+      pattern: '^[a-z0-9._]{3,32}$'
+      example: lorem_ipsum
+    User.DisplayName:
+      description: A user display name.
+      type: string
+      example: Lorem Ipsum
+    User.Country:
+      description: >-
+        The country of a user. Will generally show as a flag next to the user's
+        display name.
+      type: string
+      example: FR
+    User.Kind:
+      description: The kind of a user. Either a regular user or a bot.
+      type: string
+      enum:
+        - user
+        - bot
+      default: user
+    User.Bio:
+      description: A user's bio (profile description).
+      type: string
+    User.Location:
+      description: >-
+        A user's location. It's not formatted nor checked as an existing place,
+        so it could be anything.
+      type: string
+    User.Experience:
+      type: object
+    User.SocialUsernames:
+      type: object
+    User.Public.Small:
+      description: Public informations about a user (only required ones).
       type: object
       required:
         - id
         - username
         - display_name
-        - avatar_url
-        - type
+        - kind
         - updated_at
       properties:
         id:
-          type: string
-          format: uuid
+          $ref: '#/components/schemas/ID'
         username:
-          type: string
+          $ref: '#/components/schemas/User.Username'
         display_name:
-          type: string
-        avatar_url:
-          description: Used by websites as `<img>`'s `src` field
-          type: string
+          $ref: '#/components/schemas/User.DisplayName'
         country:
-          type: string
-        type:
-          type: string
+          $ref: '#/components/schemas/User.Country'
+        kind:
+          $ref: '#/components/schemas/User.Kind'
         updated_at:
-          description: A date used to update data on client side
-          type: string
-          format: date-time
+          $ref: '#/components/schemas/UpdateTime'
+    User.Details:
+      description: Details about a user.
+      type: object
+      required:
+        - experience
+        - social_usernames
+        - created_at
+      properties:
+        bio:
+          $ref: '#/components/schemas/User.Bio'
+        location:
+          $ref: '#/components/schemas/User.Location'
+        experience:
+          $ref: '#/components/schemas/User.Experience'
+        social_usernames:
+          $ref: '#/components/schemas/User.SocialUsernames'
+    User.Public.Full:
+      description: Public informations about a user (including all details).
+      type: object
+      required:
+        - id
+        - username
+        - display_name
+        - kind
+        - updated_at
+        - details
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        username:
+          $ref: '#/components/schemas/User.Username'
+        display_name:
+          $ref: '#/components/schemas/User.DisplayName'
+        country:
+          $ref: '#/components/schemas/User.Country'
+        kind:
+          $ref: '#/components/schemas/User.Kind'
+        updated_at:
+          $ref: '#/components/schemas/UpdateTime'
+        details:
+          $ref: '#/components/schemas/User.Details'
     User.Private:
-      description: Private details about a user
+      description: Private details about a user.
       type: object
       required:
         - id
         - username
         - display_name
-        - avatar_url
-        - type
+        - kind
         - updated_at
+        - details
+        - email
       properties:
         id:
-          type: string
-          format: uuid
+          $ref: '#/components/schemas/ID'
         username:
-          type: string
+          $ref: '#/components/schemas/User.Username'
         display_name:
-          type: string
-        avatar_url:
-          description: Used by websites as `<img>`'s `src` field
-          type: string
+          $ref: '#/components/schemas/User.DisplayName'
         country:
-          type: string
-        type:
-          type: string
+          $ref: '#/components/schemas/User.Country'
+        kind:
+          $ref: '#/components/schemas/User.Kind'
         updated_at:
-          description: A date used to update data on client side
-          type: string
-          format: date-time
+          $ref: '#/components/schemas/UpdateTime'
+        details:
+          $ref: '#/components/schemas/User.Details'
+        email:
+          $ref: '#/components/schemas/Email'
     User.Create:
       type: object
       required:
@@ -515,26 +579,15 @@ components:
         - confirm_password
       properties:
         username:
-          description: User name
-          type: string
-          minLength: 3
-          maxLength: 32
-          pattern: '^[a-z0-9._]{3,32}$'
+          $ref: '#/components/schemas/User.Username'
         display_name:
-          description: User display name
-          type: string
+          $ref: '#/components/schemas/User.DisplayName'
         email:
-          description: Email
-          type: string
-          format: email
+          $ref: '#/components/schemas/Email'
         password:
-          description: Password
-          type: string
-          minLength: 8
+          $ref: '#/components/schemas/Password'
         confirm_password:
-          description: Password confirmation
-          type: string
-          minLength: 8
+          $ref: '#/components/schemas/Password'
       example:
         username: vapor
         display_name: Vapor
@@ -548,15 +601,36 @@ components:
         - user
       properties:
         token:
-          type: string
+          $ref: '#/components/schemas/BearerToken'
         user:
           $ref: '#/components/schemas/User.Private'
     ArrayOfUsers:
-      description: An array of users
+      description: An array of users (without unnecessary details).
       type: array
       items:
-        $ref: '#/components/schemas/User.Public'
+        $ref: '#/components/schemas/User.Public.Small'
+    ID:
+      description: A `UUID` (or `GUID`).
+      type: string
+      format: uuid
+      example: ad959e79-55c3-4445-8c51-a74b6d52691a
+    UpdateTime:
+      description: A time used to update data on client side
+      type: string
+      format: date-time
+    Email:
+      description: An email address.
+      type: string
+      format: email
+    Password:
+      description: A password.
+      type: string
+      minLength: 8
+    BearerToken:
+      description: A Bearer token.
+      type: string
     Error:
+      description: An error.
       type: object
       required:
         - error
@@ -566,11 +640,6 @@ components:
           type: boolean
         reason:
           type: string
-    ID:
-      description: A `UUID` (or `GUID`).
-      type: string
-      format: uuid
-      example: ad959e79-55c3-4445-8c51-a74b6d52691a
     CreatePlacemark:
       description: An object with data required to create a new placemark.
       type: object

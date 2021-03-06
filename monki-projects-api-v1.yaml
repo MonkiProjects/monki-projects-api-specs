@@ -162,6 +162,8 @@ paths:
       tags:
         - placemarks
         - localized
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/Locale'
       requestBody:
@@ -253,6 +255,8 @@ paths:
       operationId: deletePlacemark
       tags:
         - placemarks
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -277,6 +281,8 @@ paths:
       tags:
         - placemarks
         - placemark-submission
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -326,6 +332,8 @@ paths:
       tags:
         - placemarks
         - placemark-submission
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       requestBody:

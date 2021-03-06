@@ -25,6 +25,8 @@ paths:
       description: Creates a placemark.
       operationId: createPlacemark
       tags: [placemarks, localized]
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/Locale'
       requestBody:
@@ -111,6 +113,8 @@ paths:
       description: Deletes a placemark.
       operationId: deletePlacemark
       tags: [placemarks]
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -133,6 +137,8 @@ paths:
       description: Submits a placemark.
       operationId: submitPlacemark
       tags: [placemarks, placemark-submission]
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -178,6 +184,8 @@ paths:
       description: Adds a submission review to a placemark.
       operationId: addPlacemarkSubmissionReview
       tags: [placemarks, placemark-submission]
+      security:
+        - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       requestBody:
@@ -931,3 +939,7 @@ components:
       value:
         error: true
         reason: You cannot submit a placemark twice!
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

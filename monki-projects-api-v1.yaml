@@ -597,10 +597,10 @@ components:
     User.Token:
       type: object
       required:
-        - token
+        - value
         - user
       properties:
-        token:
+        value:
           $ref: '#/components/schemas/BearerToken'
         user:
           $ref: '#/components/schemas/User.Private'

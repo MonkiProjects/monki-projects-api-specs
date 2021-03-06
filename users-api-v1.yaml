@@ -285,9 +285,9 @@ components:
         confirm_password: password
     User.Token:
       type: object
-      required: [token, user]
+      required: [value, user]
       properties:
-        token:
+        value:
           $ref: '#/components/schemas/BearerToken'
         user:
           $ref: '#/components/schemas/User.Private'

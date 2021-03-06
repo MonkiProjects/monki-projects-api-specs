@@ -3,40 +3,42 @@ info:
   version: 1.0.0
   title: Monki Map Placemarks API
 servers:
-  - url: 'https://api.monkiprojects.com/v1'
-    description: Monki Projects API v1 (prod)
-  - url: 'https://pre-prod.api.monkiprojects.com/v1'
-    description: Monki Projects API v1 (pre-prod)
+  - url: 'https://{environment}.monkiprojects.com/v1'
+    description: Monki Projects API v1
+    variables:
+      environment:
+        default: api    # Production server
+        enum:
+          - api         # Production server
+          - pre-prod    # Development server
 tags:
   - name: placemarks
     description: Endpoints related to placemarks.
-  - name: localized
-    description: Endpoints with localizable responses.
   - name: placemark-submission
     description: Endpoints related to placemark submissions.
+  - name: localized
+    description: Endpoints with localizable responses.
 paths:
   /placemarks:
     post:
       summary: Create Placemark
       description: Creates a placemark.
       operationId: createPlacemark
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/Locale'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePlacemark'
+              $ref: '#/components/schemas/Placemark.Create'
       responses:
         '201':
           description: Successfully Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlacemarkFullDetails'
+                $ref: '#/components/schemas/Placemark.Public.Full'
         '400':
           description: Bad Request
           content:
@@ -49,7 +51,7 @@ paths:
                 Invalid type:
                   $ref: '#/components/examples/InvalidTypeError'
                 Placemark type not found:
-                  $ref: '#/components/examples/PlacemarkTypeNotFoundError'
+                  $ref: '#/components/examples/Placemark.KindNotFoundError'
                 Invalid feature:
                   $ref: '#/components/examples/InvalidFeatureError'
                 Invalid technique:
@@ -66,11 +68,9 @@ paths:
         Lists all published placemarks by default. If a `state` query parameter
         is set, this endpoint will list all placemarks in the specified state.
       operationId: listPlacemarks
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
-        - $ref: '#/components/parameters/PlacemarkState'
+        - $ref: '#/components/parameters/Placemark.State'
         - $ref: '#/components/parameters/Locale'
       responses:
         '200':
@@ -93,9 +93,7 @@ paths:
       summary: Get Placemark
       description: Gets a placemark's details.
       operationId: getPlacemark
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
         - $ref: '#/components/parameters/Locale'
@@ -112,8 +110,7 @@ paths:
       summary: Delete Placemark
       description: Deletes a placemark.
       operationId: deletePlacemark
-      tags:
-        - placemarks
+      tags: [placemarks]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -135,9 +132,7 @@ paths:
       summary: Submit Placemark
       description: Submits a placemark.
       operationId: submitPlacemark
-      tags:
-        - placemarks
-        - placemark-submission
+      tags: [placemarks, placemark-submission]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -146,7 +141,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlacemarkSubmissionReport'
+                $ref: '#/components/schemas/Placemark.Submission.Report'
         '403':
           description: Forbidden
           content:
@@ -165,9 +160,7 @@ paths:
       summary: Get Placemark Submission Report
       description: Get a placemark's submission report.
       operationId: getPlacemarkSubmissionReport
-      tags:
-        - placemarks
-        - placemark-submission
+      tags: [placemarks, placemark-submission]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -176,7 +169,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlacemarkSubmissionReport'
+                $ref: '#/components/schemas/Placemark.Submission.Report'
         '404':
           $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
   '/placemarks/{placemarkId}/submission/reviews':
@@ -184,23 +177,21 @@ paths:
       summary: Add Placemark Submission Review
       description: Adds a submission review to a placemark.
       operationId: addPlacemarkSubmissionReview
-      tags:
-        - placemarks
-        - placemark-submission
+      tags: [placemarks, placemark-submission]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePlacemarkSubmissionReview'
+              $ref: '#/components/schemas/Placemark.Submission.Review.Create'
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlacemarkSubmissionReview'
+                $ref: '#/components/schemas/Placemark.Submission.Review'
         '400':
           description: Bad Request
           content:
@@ -217,9 +208,7 @@ paths:
       summary: List Placemark Submission Reviews
       description: Lists a placemark's submission reviews.
       operationId: listPlacemarkSubmissionReviews
-      tags:
-        - placemarks
-        - placemark-submission
+      tags: [placemarks, placemark-submission]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
@@ -238,9 +227,7 @@ paths:
       summary: List Placemark Features
       description: Lists placemark features.
       operationId: listPlacemarkFeatures
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/Locale'
       responses:
@@ -249,15 +236,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
   /placemarks/techniques:
     get:
       summary: List Placemark Techniques
       description: Lists techniques available for placemarks.
       operationId: listPlacemarkTechniques
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/Locale'
       responses:
@@ -266,15 +251,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkTechniques'
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
   /placemarks/benefits:
     get:
       summary: List Placemark Benefits
       description: Lists placemark benefits.
       operationId: listPlacemarkBenefits
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/Locale'
       responses:
@@ -283,15 +266,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
   /placemarks/hazards:
     get:
       summary: List Placemark Hazards
       description: Lists placemark hazards.
       operationId: listPlacemarkHazards
-      tags:
-        - placemarks
-        - localized
+      tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/Locale'
       responses:
@@ -300,471 +281,52 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
 components:
   schemas:
-    CreatePlacemark:
-      description: An object with data required to create a new placemark.
-      type: object
-      required:
-        - name
-        - latitude
-        - longitude
-        - type
-      properties:
-        name:
-          $ref: '#/components/schemas/PlacemarkName'
-        latitude:
-          $ref: '#/components/schemas/Latitude'
-        longitude:
-          $ref: '#/components/schemas/Longitude'
-        type:
-          $ref: '#/components/schemas/PlacemarkTypeId'
-        caption:
-          $ref: '#/components/schemas/PlacemarkCaption'
-        images:
-          $ref: '#/components/schemas/ArrayOfImages'
-        features:
-          $ref: '#/components/schemas/ArrayOfPlacemarkFeatureIds'
-        goodForTraining:
-          $ref: '#/components/schemas/ArrayOfPlacemarkTechniqueIds'
-        benefits:
-          $ref: '#/components/schemas/ArrayOfPlacemarkBenefitIds'
-        hazards:
-          $ref: '#/components/schemas/ArrayOfPlacemarkHazardIds'
-    PlacemarkFullDetails:
-      description: 'A placemark, with all its details.'
-      type: object
-      required:
-        - id
-        - name
-        - latitude
-        - longitude
-        - type
-        - category
-        - state
-        - caption
-        - satelliteImage
-        - images
-        - city
-        - country
-        - features
-        - goodForTraining
-        - benefits
-        - hazards
-        - url
-        - htmlUrl
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        name:
-          $ref: '#/components/schemas/PlacemarkName'
-        latitude:
-          $ref: '#/components/schemas/Latitude'
-        longitude:
-          $ref: '#/components/schemas/Longitude'
-        type:
-          $ref: '#/components/schemas/PlacemarkType'
-        category:
-          $ref: '#/components/schemas/PlacemarkCategory'
-        state:
-          $ref: '#/components/schemas/PlacemarkState'
-        caption:
-          $ref: '#/components/schemas/PlacemarkCaption'
-        satelliteImage:
-          $ref: '#/components/schemas/Image'
-        images:
-          $ref: '#/components/schemas/ArrayOfImages'
-        city:
-          $ref: '#/components/schemas/PlacemarkCity'
-        country:
-          $ref: '#/components/schemas/PlacemarkCountry'
-        features:
-          $ref: '#/components/schemas/ArrayOfPlacemarkFeatures'
-        goodForTraining:
-          $ref: '#/components/schemas/ArrayOfPlacemarkTechniques'
-        benefits:
-          $ref: '#/components/schemas/ArrayOfPlacemarkBenefits'
-        hazards:
-          $ref: '#/components/schemas/ArrayOfPlacemarkHazards'
-        url:
-          $ref: '#/components/schemas/URL'
-        htmlUrl:
-          $ref: '#/components/schemas/URL'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-        updatedAt:
-          $ref: '#/components/schemas/DateTime'
-    Placemark:
-      description: 'A placemark, with minimum data for rendering on a map.'
-      type: object
-      required:
-        - id
-        - name
-        - latitude
-        - longitude
-        - type
-        - category
-        - state
-        - url
-        - htmlUrl
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        name:
-          $ref: '#/components/schemas/PlacemarkName'
-        latitude:
-          $ref: '#/components/schemas/Latitude'
-        longitude:
-          $ref: '#/components/schemas/Longitude'
-        type:
-          $ref: '#/components/schemas/PlacemarkType'
-        category:
-          $ref: '#/components/schemas/PlacemarkCategory'
-        state:
-          $ref: '#/components/schemas/PlacemarkState'
-        url:
-          $ref: '#/components/schemas/URL'
-        htmlUrl:
-          $ref: '#/components/schemas/URL'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-        updatedAt:
-          $ref: '#/components/schemas/DateTime'
-      example:
-        $ref: '#/components/examples/Spot1'
-    ArrayOfPlacemarks:
-      description: An array of placemarks.
-      type: array
-      items:
-        $ref: '#/components/schemas/Placemark'
-      uniqueItems: true
-      example:
-        - $ref: '#/components/examples/Spot1'
-        - $ref: '#/components/examples/Spot2'
-    CreatePlacemarkSubmissionReview:
-      description: >-
-        An object with data required to create a new placemark submission
-        review.
-      type: object
-      required:
-        - opinion
-        - comment
-      properties:
-        opinion:
-          $ref: '#/components/schemas/SubmissionReviewOpinion'
-        comment:
-          $ref: '#/components/schemas/ReviewComment'
-        issues:
-          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
-        moderated:
-          $ref: '#/components/schemas/ModeratedFlag'
-      example:
-        $ref: '#/components/examples/CreatePlacemarkSubmissionReview1'
-    PlacemarkSubmissionReview:
-      description: A placemark submission review.
-      type: object
-      required:
-        - id
-        - placemark
-        - reviewer
-        - opinion
-        - comment
-        - createdAt
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        placemark:
-          $ref: '#/components/schemas/ID'
-        reviewer:
-          $ref: '#/components/schemas/ID'
-        opinion:
-          $ref: '#/components/schemas/SubmissionReviewOpinion'
-        comment:
-          $ref: '#/components/schemas/ReviewComment'
-        issues:
-          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
-        moderated:
-          $ref: '#/components/schemas/ModeratedFlag'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-      example:
-        $ref: '#/components/examples/PlacemarkSubmissionReview1'
-    ArrayOfPlacemarkSubmissionReviews:
-      description: An array of placemark submission reviews.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkSubmissionReview'
-      uniqueItems: true
-      example:
-        - $ref: '#/components/examples/PlacemarkSubmissionReview1'
-        - $ref: '#/components/examples/PlacemarkSubmissionReview2'
-    PlacemarkSubmissionReport:
-      description: An array of placemark submission reviews.
-      type: object
-      required:
-        - id
-        - placemark
-        - state
-        - reviews
-        - createdAt
-        - updatedAt
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        placemark:
-          $ref: '#/components/schemas/ID'
-        state:
-          $ref: '#/components/schemas/PlacemarkSubmissionState'
-        reviews:
-          $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-        updatedAt:
-          $ref: '#/components/schemas/DateTime'
-      example:
-        $ref: '#/components/examples/PlacemarkSubmissionReport1'
-    PlacemarkName:
+    # ===== Atoms =====
+    # === Placemarks ===
+    Placemark.Category.ID:
+      description: A placemark category `ID`.
+      type: string
+      enum: [unknown, spot, facility, misc]
+    Placemark.Kind.ID:
+      description: A placemark kind `ID`.
+      type: string
+      pattern: '^(?:[a-z0-9]+_)*[a-z0-9]+$'
+    Placemark.State:
+      description: The state in which a placemark is.
+      type: string
+      enum: [unknown, draft, local, private, submitted, published, rejected]
+    Placemark.Name:
       description: A placemark `name`.
       type: string
       minLength: 3
       maxLength: 48
-    PlacemarkCaption:
+    Placemark.Caption:
       description: A placemark `caption`. Possibly empty.
       type: string
       nullable: true
-    PlacemarkCity:
+    Placemark.City:
       description: The city in which a placemark is.
       type: string
       minLength: 1
-    PlacemarkCountry:
+    Placemark.Country:
       description: The country in which a placemark is.
       type: string
       minLength: 1
-    PlacemarkState:
-      description: A placemark submission state.
-      type: string
-      enum:
-        - private
-        - submitted
-        - published
-        - rejected
-    PlacemarkType:
-      description: A placemark `type`.
-      type: object
-      required:
-        - id
-        - title
-        - locale
-      properties:
-        id:
-          $ref: '#/components/schemas/PlacemarkTypeId'
-        title:
-          $ref: '#/components/schemas/LocalizedTitle'
-        locale:
-          $ref: '#/components/schemas/Locale'
-      example:
-        id: training_spot
-        title: Lieu d'entraînement
-        locale: fr-FR
-    PlacemarkTypeId:
-      description: A placemark type `ID`.
-      type: string
-      pattern: '^(?:[a-z0-9]+_)*[a-z0-9]+$'
-    PlacemarkCategory:
-      description: A placemark `category`.
-      type: object
-      required:
-        - id
-        - title
-        - locale
-      properties:
-        id:
-          $ref: '#/components/schemas/PlacemarkCategoryId'
-        title:
-          $ref: '#/components/schemas/LocalizedTitle'
-        locale:
-          $ref: '#/components/schemas/Locale'
-      example:
-        id: facility
-        title: Salle
-        locale: fr-FR
-    PlacemarkCategoryId:
-      description: A placemark category `ID`.
-      type: string
-      enum:
-        - spot
-        - facility
-        - misc
-    PlacemarkFeature:
-      description: A placemark feature.
-      type: object
-      required:
-        - id
-        - title
-        - locale
-      properties:
-        id:
-          $ref: '#/components/schemas/PlacemarkFeatureId'
-        title:
-          $ref: '#/components/schemas/LocalizedTitle'
-        locale:
-          $ref: '#/components/schemas/Locale'
-      example:
-        $ref: '#/components/examples/Feature1'
-    ArrayOfPlacemarkFeatures:
-      description: An array of placemark features.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkFeature'
-      uniqueItems: true
-      example:
-        - $ref: '#/components/examples/Feature1'
-        - $ref: '#/components/examples/Feature2'
-    PlacemarkFeatureId:
-      description: A placemark feature `ID`.
+    Placemark.Property.ID:
+      description: A placemark property `ID`.
       type: string
       pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
-    ArrayOfPlacemarkFeatureIds:
-      description: An array of placemark feature `ID`s.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkFeatureId'
-      uniqueItems: true
-      example:
-        - grass
-        - small_wall
-        - stairs
-    PlacemarkTechnique:
-      description: A technique one can practice on placemarks.
-      type: object
-      required:
-        - id
-        - title
-        - locale
-      properties:
-        id:
-          $ref: '#/components/schemas/PlacemarkTechniqueId'
-        title:
-          $ref: '#/components/schemas/LocalizedTitle'
-        locale:
-          $ref: '#/components/schemas/Locale'
-      example:
-        $ref: '#/components/examples/Technique1'
-    ArrayOfPlacemarkTechniques:
-      description: An array of techniques one can practice on placemarks.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkTechnique'
-      uniqueItems: true
-      example:
-        - $ref: '#/components/examples/Technique1'
-        - $ref: '#/components/examples/Technique2'
-    PlacemarkTechniqueId:
-      description: A technique `ID`.
+    Placemark.Property.Kind:
+      description: A placemark property `ID`.
       type: string
-      pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
-    ArrayOfPlacemarkTechniqueIds:
-      description: An array of technique `ID`s.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkTechniqueId'
-      uniqueItems: true
-      example:
-        - double_kong
-        - precision_jump
-    PlacemarkBenefit:
-      description: A placemark benefit.
-      type: object
-      required:
-        - id
-        - title
-        - locale
-      properties:
-        id:
-          $ref: '#/components/schemas/PlacemarkBenefitId'
-        title:
-          $ref: '#/components/schemas/LocalizedTitle'
-        locale:
-          $ref: '#/components/schemas/Locale'
-      example:
-        $ref: '#/components/examples/Benefit1'
-    ArrayOfPlacemarkBenefits:
-      description: An array of placemark benefits.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkBenefit'
-      uniqueItems: true
-      example:
-        - $ref: '#/components/examples/Benefit1'
-        - $ref: '#/components/examples/Benefit2'
-    PlacemarkBenefitId:
-      description: A placemark benefit `ID`.
-      type: string
-      pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
-    ArrayOfPlacemarkBenefitIds:
-      description: An array of placemark benefit `ID`s.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkBenefitId'
-      uniqueItems: true
-      example:
-        - covered_area
-        - drinking_fountain
-    PlacemarkHazard:
-      description: A placemark hazard.
-      type: object
-      required:
-        - id
-        - title
-        - locale
-      properties:
-        id:
-          $ref: '#/components/schemas/PlacemarkHazardId'
-        title:
-          $ref: '#/components/schemas/LocalizedTitle'
-        locale:
-          $ref: '#/components/schemas/Locale'
-      example:
-        $ref: '#/components/examples/Hazard1'
-    ArrayOfPlacemarkHazards:
-      description: An array of placemark hazards.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkHazard'
-      uniqueItems: true
-      example:
-        - $ref: '#/components/examples/Hazard1'
-        - $ref: '#/components/examples/Hazard2'
-    PlacemarkHazardId:
-      description: A placemark hazard `ID`.
-      type: string
-      pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
-    ArrayOfPlacemarkHazardIds:
-      description: An array of placemark hazard `ID`s.
-      type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkHazardId'
-      uniqueItems: true
-      example:
-        - security
-        - security_cam
-        - slippery_surface
-    PlacemarkIssue:
+      enum: [feature, technique, benefit, hazard]
+    Placemark.Issue:
       description: A placemark issue.
       type: object
-      required:
-        - id
-        - placemark
-        - issuer
-        - reason
-        - comment
-        - state
-        - createdAt
+      required: [id, placemark, issuer, reason, comment, state, created_at]
       properties:
         id:
           $ref: '#/components/schemas/ID'
@@ -773,79 +335,298 @@ components:
         issuer:
           $ref: '#/components/schemas/ID'
         reason:
-          $ref: '#/components/schemas/PlacemarkIssueReason'
+          $ref: '#/components/schemas/Placemark.Issue.Reason'
         comment:
-          $ref: '#/components/schemas/PlacemarkIssueComment'
+          $ref: '#/components/schemas/Placemark.Issue.Comment'
         state:
-          $ref: '#/components/schemas/PlacemarkIssueState'
-        createdAt:
+          $ref: '#/components/schemas/Placemark.Issue.State'
+        created_at:
           $ref: '#/components/schemas/DateTime'
       example:
         $ref: '#/components/examples/PlacemarkIssue1'
-    PlacemarkIssueComment:
+    Placemark.Issue.Comment:
       description: A comment in a placemark issue.
       type: string
       minLength: 4
       example: There is no tree on this spot!
-    PlacemarkIssueReason:
+    Placemark.Issue.Reason:
       description: 'The reason of a placemark issue. For unhandled cases, use `other`.'
       type: string
-      enum:
-        - name
-        - location
-        - type
-        - caption
-        - satelliteImage
-        - images
-        - address
-        - features
-        - goodForTraining
-        - benefits
-        - hazards
-        - other
-      example: type
-    PlacemarkIssueState:
+      enum: [name, location, type, caption, satellite_image, images, address, properties, other]
+    Placemark.Issue.State:
       description: The state of a placemark issue.
       type: string
-      enum:
-        - submitted
-        - addressed
-        - denied
-      example: addressed
+      enum: [submitted, addressed, denied]
+    # === Placemark Submissions ===
+    Placemark.Submission.State:
+      description: The state of a placemark submission.
+      type: string
+      enum: [waiting_for_reviews, needs_changes, waiting_for_changes, accepted, rejected, moderated]
+    Placemark.Submission.Review.Opinion:
+      description: A user's opinion in a submission review.
+      type: string
+      enum: [positive, needs_changes, negative]
+
+    # ===== Molecules =====
+    Placemark.Category.Localized:
+      description: A localized placemark `category`.
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          $ref: '#/components/schemas/Placemark.Category.ID'
+        title:
+          $ref: '#/components/schemas/LocalizedTitle'
+      example:
+        id: facility
+        title: Salle
+    Placemark.Kind.Localized:
+      description: A localized placemark `kind`.
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        title:
+          $ref: '#/components/schemas/LocalizedTitle'
+      example:
+        id: training_spot
+        title: Lieu d'entraînement
+    Placemark.Property.Localized:
+      description: A localized placemark property.
+      type: object
+      required: [id, title, kind]
+      properties:
+        id:
+          $ref: '#/components/schemas/Placemark.Property.ID'
+        title:
+          $ref: '#/components/schemas/LocalizedTitle'
+        kind:
+          $ref: '#/components/schemas/Placemark.Property.Kind'
+      example:
+        $ref: '#/components/examples/Feature1'
+    Placemark.PropertiesDictionary:
+      # FIXME: Describe Dictionary
+      type: object
+
+    # ===== Organisms =====
+    Placemark.Create:
+      description: An object with data required to create a new placemark.
+      type: object
+      required: [name, latitude, longitude, kind, properties]
+      properties:
+        name:
+          $ref: '#/components/schemas/Placemark.Name'
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        kind:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        caption:
+          $ref: '#/components/schemas/Placemark.Caption'
+        images:
+          $ref: '#/components/schemas/ArrayOfImageURLs'
+        properties:
+          $ref: '#/components/schemas/Placemark.PropertiesDictionary'
+    Placemark.Public.Small:
+      description: 'A placemark, with minimum data for rendering on a map.'
+      type: object
+      required: [id, name, latitude, longitude, kind, category, state, created_at, updated_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          $ref: '#/components/schemas/Placemark.Name'
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        kind:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        category:
+          $ref: '#/components/schemas/Placemark.Category.ID'
+        state:
+          $ref: '#/components/schemas/Placemark.State'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        updated_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/Spot1'
+    Placemark.Public.Full:
+      description: A placemark, with all its details.
+      type: object
+      required: [id, name, latitude, longitude, kind, category, state, caption, satellite_image, images, city, country, properties, created_at, updated_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          $ref: '#/components/schemas/Placemark.Name'
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        kind:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        category:
+          $ref: '#/components/schemas/Placemark.Category.ID'
+        state:
+          $ref: '#/components/schemas/Placemark.State'
+        caption:
+          $ref: '#/components/schemas/Placemark.Caption'
+        satellite_image:
+          $ref: '#/components/schemas/ImageURL'
+        images:
+          $ref: '#/components/schemas/ArrayOfImageURLs'
+        city:
+          $ref: '#/components/schemas/Placemark.City'
+        country:
+          $ref: '#/components/schemas/Placemark.Country'
+        properties:
+          $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        updated_at:
+          $ref: '#/components/schemas/DateTime'
+    Placemark.Submission.Review.Create:
+      description: An object with data required to create a new placemark submission review.
+      type: object
+      required: [opinion, comment]
+      properties:
+        opinion:
+          $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
+        comment:
+          $ref: '#/components/schemas/Review.Comment'
+        issues:
+          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
+        moderated:
+          $ref: '#/components/schemas/ModeratedFlag'
+      example:
+        $ref: '#/components/examples/CreatePlacemarkSubmissionReview1'
+    Placemark.Submission.Review:
+      description: A placemark submission review.
+      type: object
+      required: [id, placemark, reviewer, opinion, comment, created_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        placemark:
+          $ref: '#/components/schemas/ID'
+        reviewer:
+          $ref: '#/components/schemas/ID'
+        opinion:
+          $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
+        comment:
+          $ref: '#/components/schemas/Review.Comment'
+        issues:
+          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
+        moderated:
+          $ref: '#/components/schemas/ModeratedFlag'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/PlacemarkSubmissionReview1'
+    Placemark.Submission.Report:
+      description: A report about a placemark submission.
+      type: object
+      required: [id, placemark, state, reviews, created_at, updated_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        placemark:
+          $ref: '#/components/schemas/ID'
+        state:
+          $ref: '#/components/schemas/Placemark.Submission.State'
+        reviews:
+          $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        updated_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/PlacemarkSubmissionReport1'
+
+    # ===== Arrays =====
+    ArrayOfPlacemarks:
+      description: An array of placemarks.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Public.Small'
+      example:
+        - $ref: '#/components/examples/Spot1'
+        - $ref: '#/components/examples/Spot2'
+    ArrayOfPlacemarkPropertyIDs:
+      description: An array of placemark property `ID`s.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Property.ID'
+      example:
+        - grass
+        - small_wall
+        - stairs
+    ArrayOfPlacemarkProperties:
+      description: An array of placemark properties.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Property.Localized'
+      example:
+        - $ref: '#/components/examples/Feature1'
+        - $ref: '#/components/examples/Feature2'
     ArrayOfPlacemarkIssues:
       description: An array of placemark issues.
       type: array
-      items:
-        $ref: '#/components/schemas/PlacemarkIssue'
       uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Issue'
       example:
         - $ref: '#/components/examples/PlacemarkIssue1'
         - $ref: '#/components/examples/PlacemarkIssue2'
-    ReviewComment:
-      description: A review comment. Possibly empty.
+    ArrayOfPlacemarkSubmissionReviews:
+      description: An array of placemark submission reviews.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Submission.Review'
+      example:
+        - $ref: '#/components/examples/PlacemarkSubmissionReview1'
+        - $ref: '#/components/examples/PlacemarkSubmissionReview2'
+    ArrayOfImageURLs:
+      description: An array of image `URL`s.
+      type: array
+      uniqueItems: true
+      maxItems: 48
+      items:
+        $ref: '#/components/schemas/ImageURL'
+
+    # ===== Misc =====
+    ID:
+      description: A `UUID` (or `GUID`).
       type: string
-      example: 'Great spot, very diverse! I like to go there for long training sessions.'
-    SubmissionReviewOpinion:
-      description: >-
-        A user's opinion in a submission review. `accepted` and `rejected` are
-        reserved to moderators.
+      format: uuid
+      example: ad959e79-55c3-4445-8c51-a74b6d52691a
+    URL:
+      description: An `URL`.
       type: string
-      enum:
-        - positive
-        - needs-changes
-        - negative
-        - accepted
-        - rejected
-      example: accepted
-    PlacemarkSubmissionState:
-      description: The state of a placemark submission.
+      format: uri
+    ImageURL:
+      description: An image `URL`.
       type: string
-      enum:
-        - submitted
-        - accepted
-        - rejected
-        - moderated
-      example: submitted
+      format: uri
+    Locale:
+      description: A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).
+      type: string
+      format: locale
+      minLength: 2
+      default: en
+      example: fr-FR
+    LocalizedTitle:
+      description: A localized `title`.
+      type: string
+      minLength: 1
     Latitude:
       description: The latitude component of a coordinate.
       type: number
@@ -858,56 +639,23 @@ components:
       format: double
       minimum: -180
       maximum: 180
-    Locale:
-      description: >-
-        A locale, as described in [Language and Locale
-        IDs](https://tinyurl.com/apple-language-and-locale-ids).
+    Review.Comment:
+      description: A review comment. Possibly empty.
       type: string
-      format: locale
-      minLength: 2
-      default: en
-      example: fr-FR
-    LocalizedTitle:
-      description: A localized `title`.
-      type: string
-      minLength: 1
-    ID:
-      description: A `UUID` (or `GUID`).
-      type: string
-      format: uuid
-      example: ad959e79-55c3-4445-8c51-a74b6d52691a
-    DateTime:
-      description: >-
-        A `Date` with time, as described in [RFC 3339, section
-        5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
-      type: string
-      format: date-time
-      example: '2017-07-21T17:32:28.000Z'
-    URL:
-      description: An `URL`.
-      type: string
-      format: uri
-    Image:
-      description: An image `URL`.
-      type: string
-      format: uri
-    ArrayOfImages:
-      description: An array of image `URL`s.
-      type: array
-      items:
-        $ref: '#/components/schemas/Image'
-      maxItems: 48
-      uniqueItems: true
+      example: 'Great spot, very diverse! I like to go there for long training sessions.'
     ModeratedFlag:
       description: A flag saying something has been moderated.
       type: boolean
       example: true
+    DateTime:
+      description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+      type: string
+      format: date-time
+      example: '2017-07-21T17:32:28.000Z'
     Error:
       description: An Error.
       type: object
-      required:
-        - error
-        - reason
+      required: [error, reason]
       properties:
         error:
           type: boolean
@@ -958,12 +706,12 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/ID'
-    PlacemarkState:
+    Placemark.State:
       in: query
       name: state
       description: A state to filter placemarks.
       schema:
-        $ref: '#/components/schemas/PlacemarkState'
+        $ref: '#/components/schemas/Placemark.State'
     Locale:
       in: query
       name: locale
@@ -978,7 +726,7 @@ components:
         name: Espace de street workout Vincent Gâche
         latitude: 47.207423
         longitude: -1.547817
-        type:
+        kind:
           id: calisthenics_park
           title: Parc de street workout
           locale: fr-FR
@@ -987,12 +735,8 @@ components:
           title: Spot
           locale: fr-FR
         state: published
-        url: >-
-          https://api.monkiprojects.com/v1/placemarks/4f9058b3-3f8f-4b10-b3c0-e28c654012e4
-        htmlUrl: >-
-          https://monkiprojects.com/placemarks/4f9058b3-3f8f-4b10-b3c0-e28c654012e4
-        createdAt: '2020-12-02T01:43:52.285Z'
-        updatedAt: '2020-12-22T22:26:11.618Z'
+        created_at: '2020-12-02T01:43:52.285Z'
+        updated_at: '2020-12-22T22:26:11.618Z'
     Spot2:
       summary: Example spot
       value:
@@ -1000,7 +744,7 @@ components:
         name: Porte des deux moulins
         latitude: 46.155295
         longitude: -1.159034
-        type:
+        kind:
           id: training_spot
           title: Lieu d'entraînement
           locale: fr-FR
@@ -1009,12 +753,8 @@ components:
           title: Spot
           locale: fr-FR
         state: published
-        url: >-
-          https://api.monkiprojects.com/v1/placemarks/31256d06-7786-4555-8592-ec20e9c9cdfb
-        htmlUrl: >-
-          https://monkiprojects.com/placemarks/31256d06-7786-4555-8592-ec20e9c9cdfb
-        createdAt: '2020-04-15T15:28:41.729Z'
-        updatedAt: '2020-04-15T15:28:41.729Z'
+        created_at: '2020-04-15T15:28:41.729Z'
+        updated_at: '2020-04-15T15:28:41.729Z'
     Feature1:
       summary: Example placemark feature
       value:
@@ -1076,7 +816,7 @@ components:
         reviewer: e8636f06-5a1c-45a2-b1e9-5a693c98c9c8
         opinion: positive
         comment: ''
-        createdAt: '2020-09-23T07:46:57.524Z'
+        created_at: '2020-09-23T07:46:57.524Z'
     PlacemarkSubmissionReview2:
       summary: Example placemark submission review
       value:
@@ -1087,7 +827,7 @@ components:
         comment: 'I know this place, there''s no spot here! This should not be accepted.'
         issues:
           - $ref: '#/components/examples/PlacemarkLocationIssue'
-        createdAt: '2020-10-05T09:23:21.836Z'
+        created_at: '2020-10-05T09:23:21.836Z'
     PlacemarkSubmissionReport1:
       summary: Example placemark submission report
       value:
@@ -1096,8 +836,8 @@ components:
         reviews:
           - $ref: '#/components/examples/PlacemarkSubmissionReview1'
           - $ref: '#/components/examples/PlacemarkSubmissionReview2'
-        createdAt: '2020-09-23T07:46:57.524Z'
-        updatedAt: '2020-10-05T09:23:21.836Z'
+        created_at: '2020-09-23T07:46:57.524Z'
+        updated_at: '2020-10-05T09:23:21.836Z'
     PlacemarkIssue1:
       summary: Example placemark issue
       value:
@@ -1107,7 +847,7 @@ components:
         reason: type
         comment: 'This is not a training spot, it is a parkour facility!'
         state: addressed
-        createdAt: '2020-08-15T17:01:33.818Z'
+        created_at: '2020-08-15T17:01:33.818Z'
     PlacemarkIssue2:
       summary: Example placemark issue
       value:
@@ -1117,7 +857,7 @@ components:
         reason: name
         comment: Everyone refers to this spot as "The maze".
         state: submitted
-        createdAt: '2020-12-23T22:52:34.051Z'
+        created_at: '2020-12-23T22:52:34.051Z'
     PlacemarkLocationIssue:
       summary: Issue about a placemark's location
       value:
@@ -1126,7 +866,7 @@ components:
         reason: location
         comment: 'I know this place, there''s no spot here!'
         state: submitted
-        createdAt: '2020-07-20T21:16:56.239Z'
+        created_at: '2020-07-20T21:16:56.239Z'
     InvalidCoordinatesError:
       value:
         error: true
@@ -1135,7 +875,7 @@ components:
       value:
         error: true
         reason: The provided placemark type is invalid.
-    PlacemarkTypeNotFoundError:
+    Placemark.KindNotFoundError:
       description: We could not find the placemark type you provided.
       value:
         error: true

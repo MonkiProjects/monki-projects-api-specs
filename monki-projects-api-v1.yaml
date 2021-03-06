@@ -274,7 +274,7 @@ paths:
         '404':
           $ref: '#/components/responses/PlacemarkNotFoundError'
   '/placemarks/{placemarkId}/submit':
-    get:
+    post:
       summary: Submit Placemark
       description: Submits a placemark.
       operationId: submitPlacemark

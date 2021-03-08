@@ -3,7 +3,7 @@
 # ID of a DOM element inside which SwaggerUI will put its user interface
 dom_id: '#swagger-ui'
 # URL pointing to API definition
-url: './monki-projects-api-v1.yaml'
+url: './specs/monki-projects-api-v1.yaml'
 
 # Display
 

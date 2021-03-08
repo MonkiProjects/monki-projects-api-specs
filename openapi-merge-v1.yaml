@@ -1,7 +1,7 @@
 inputs:
   - inputFile: ./base.yaml
-  - inputFile: ./users-api-v1.yaml
+  - inputFile: ./specs/users-api-v1.yaml
     disputePrefix: Users
-  - inputFile: ./placemarks-api-v1.yaml
+  - inputFile: ./specs/placemarks-api-v1.yaml
     disputePrefix: Placemarks
-output: ./monki-projects-api-v1.yaml
+output: ./specs/monki-projects-api-v1.yaml

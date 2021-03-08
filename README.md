@@ -55,6 +55,14 @@ The "Placemarks API" handles actions related to placemark and map management.
 | ------: | :------- | :----------------- | :----- | :------------ |
 | 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [placemarks-api-v1.yml](./placemarks-api-v1.yml) | Swift: [mp-placemarks-api-client-swift](https://github.com/MonkiProjects/mp-placemarks-api-client-swift) | ⨯ |
 
+## Useful diagrams
+
+> Diagrams are automatically generated using [Kroki](https://kroki.io/).
+
+### Placemark submission
+
+![Placemark submission diagram](./assets/diagrams/placemark-submission.svg)
+
 ## Technical aspects
 
 ### HTTPS

@@ -1,0 +1,945 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Monki Map Placemarks API
+servers:
+  - url: 'https://{environment}.monkiprojects.com/v1'
+    description: Monki Projects API v1
+    variables:
+      environment:
+        default: api    # Production server
+        enum:
+          - api         # Production server
+          - pre-prod    # Development server
+tags:
+  - name: placemarks
+    description: Endpoints related to placemarks.
+  - name: placemark-submission
+    description: Endpoints related to placemark submissions.
+  - name: localized
+    description: Endpoints with localizable responses.
+paths:
+  /placemarks:
+    post:
+      summary: Create Placemark
+      description: Creates a placemark.
+      operationId: createPlacemark
+      tags: [placemarks, localized]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Placemark.Create'
+      responses:
+        '201':
+          description: Successfully Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placemark.Public.Full'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Invalid coordinates:
+                  $ref: '#/components/examples/InvalidCoordinatesError'
+                Invalid type:
+                  $ref: '#/components/examples/InvalidTypeError'
+                Placemark type not found:
+                  $ref: '#/components/examples/Placemark.KindNotFoundError'
+                Invalid feature:
+                  $ref: '#/components/examples/InvalidFeatureError'
+                Invalid technique:
+                  $ref: '#/components/examples/InvalidTechniqueError'
+                Invalid benefit:
+                  $ref: '#/components/examples/InvalidBenefitError'
+                Invalid hazard:
+                  $ref: '#/components/examples/InvalidHazardError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      summary: List Placemarks
+      description: >-
+        Lists all published placemarks by default. If a `state` query parameter
+        is set, this endpoint will list all placemarks in the specified state.
+      operationId: listPlacemarks
+      tags: [placemarks, localized]
+      parameters:
+        - $ref: '#/components/parameters/Placemark.State'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarks'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Invalid state query param:
+                  $ref: '#/components/examples/InvalidStateQueryParamError'
+  '/placemarks/{placemarkId}':
+    get:
+      summary: Get Placemark
+      description: Gets a placemark's details.
+      operationId: getPlacemark
+      tags: [placemarks, localized]
+      parameters:
+        - $ref: '#/components/parameters/PlacemarkId'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarks'
+        '404':
+          $ref: '#/components/responses/PlacemarkNotFoundError'
+    delete:
+      summary: Delete Placemark
+      description: Deletes a placemark.
+      operationId: deletePlacemark
+      tags: [placemarks]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PlacemarkId'
+      responses:
+        '204':
+          description: Successfully Deleted
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Not your placemark:
+                  $ref: '#/components/examples/CannotDeleteSomeoneElsesPlacemarkError'
+        '404':
+          $ref: '#/components/responses/PlacemarkNotFoundError'
+  '/placemarks/{placemarkId}/submit':
+    post:
+      summary: Submit Placemark
+      description: Submits a placemark.
+      operationId: submitPlacemark
+      tags: [placemarks, placemark-submission]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PlacemarkId'
+      responses:
+        '200':
+          description: Successfully Submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placemark.Submission.Report'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Not your placemark:
+                  $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
+                Already submitted:
+                  $ref: '#/components/examples/CannotSubmitPlacemarkTwiceError'
+        '404':
+          $ref: '#/components/responses/PlacemarkNotFoundError'
+  '/placemarks/{placemarkId}/submission':
+    get:
+      summary: Get Placemark Submission Report
+      description: Get a placemark's submission report.
+      operationId: getPlacemarkSubmissionReport
+      tags: [placemarks, placemark-submission]
+      parameters:
+        - $ref: '#/components/parameters/PlacemarkId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placemark.Submission.Report'
+        '404':
+          $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
+  '/placemarks/{placemarkId}/submission/reviews':
+    post:
+      summary: Add Placemark Submission Review
+      description: Adds a submission review to a placemark.
+      operationId: addPlacemarkSubmissionReview
+      tags: [placemarks, placemark-submission]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PlacemarkId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Placemark.Submission.Review.Create'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placemark.Submission.Review'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenModeratedFlagError'
+        '404':
+          $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
+    get:
+      summary: List Placemark Submission Reviews
+      description: Lists a placemark's submission reviews.
+      operationId: listPlacemarkSubmissionReviews
+      tags: [placemarks, placemark-submission]
+      parameters:
+        - $ref: '#/components/parameters/PlacemarkId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
+  /placemarks/features:
+    get:
+      summary: List Placemark Features
+      description: Lists placemark features.
+      operationId: listPlacemarkFeatures
+      tags: [placemarks, localized]
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+  /placemarks/techniques:
+    get:
+      summary: List Placemark Techniques
+      description: Lists techniques available for placemarks.
+      operationId: listPlacemarkTechniques
+      tags: [placemarks, localized]
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+  /placemarks/benefits:
+    get:
+      summary: List Placemark Benefits
+      description: Lists placemark benefits.
+      operationId: listPlacemarkBenefits
+      tags: [placemarks, localized]
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+  /placemarks/hazards:
+    get:
+      summary: List Placemark Hazards
+      description: Lists placemark hazards.
+      operationId: listPlacemarkHazards
+      tags: [placemarks, localized]
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+components:
+  schemas:
+    # ===== Atoms =====
+    # === Placemarks ===
+    Placemark.Category.ID:
+      description: A placemark category `ID`.
+      type: string
+      enum: [unknown, spot, facility, misc]
+    Placemark.Kind.ID:
+      description: A placemark kind `ID`.
+      type: string
+      pattern: '^(?:[a-z0-9]+_)*[a-z0-9]+$'
+    Placemark.State:
+      description: The state in which a placemark is.
+      type: string
+      enum: [unknown, draft, local, private, submitted, published, rejected]
+    Placemark.Name:
+      description: A placemark `name`.
+      type: string
+      minLength: 3
+      maxLength: 48
+    Placemark.Caption:
+      description: A placemark `caption`. Possibly empty.
+      type: string
+      nullable: true
+    Placemark.City:
+      description: The city in which a placemark is.
+      type: string
+      minLength: 1
+    Placemark.Country:
+      description: The country in which a placemark is.
+      type: string
+      minLength: 1
+    Placemark.Property.ID:
+      description: A placemark property `ID`.
+      type: string
+      pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
+    Placemark.Property.Kind:
+      description: A placemark property `ID`.
+      type: string
+      enum: [feature, technique, benefit, hazard]
+    Placemark.Issue:
+      description: A placemark issue.
+      type: object
+      required: [id, placemark, issuer, reason, comment, state, created_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        placemark:
+          $ref: '#/components/schemas/ID'
+        issuer:
+          $ref: '#/components/schemas/ID'
+        reason:
+          $ref: '#/components/schemas/Placemark.Issue.Reason'
+        comment:
+          $ref: '#/components/schemas/Placemark.Issue.Comment'
+        state:
+          $ref: '#/components/schemas/Placemark.Issue.State'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/PlacemarkIssue1'
+    Placemark.Issue.Comment:
+      description: A comment in a placemark issue.
+      type: string
+      minLength: 4
+      example: There is no tree on this spot!
+    Placemark.Issue.Reason:
+      description: 'The reason of a placemark issue. For unhandled cases, use `other`.'
+      type: string
+      enum: [name, location, type, caption, satellite_image, images, address, properties, other]
+    Placemark.Issue.State:
+      description: The state of a placemark issue.
+      type: string
+      enum: [submitted, addressed, denied]
+    # === Placemark Submissions ===
+    Placemark.Submission.State:
+      description: The state of a placemark submission.
+      type: string
+      enum: [waiting_for_reviews, needs_changes, waiting_for_changes, accepted, rejected, moderated]
+    Placemark.Submission.Review.Opinion:
+      description: A user's opinion in a submission review.
+      type: string
+      enum: [positive, needs_changes, negative]
+
+    # ===== Molecules =====
+    Placemark.Category.Localized:
+      description: A localized placemark `category`.
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          $ref: '#/components/schemas/Placemark.Category.ID'
+        title:
+          $ref: '#/components/schemas/LocalizedTitle'
+      example:
+        id: facility
+        title: Salle
+    Placemark.Kind.Localized:
+      description: A localized placemark `kind`.
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        title:
+          $ref: '#/components/schemas/LocalizedTitle'
+      example:
+        id: training_spot
+        title: Lieu d'entraînement
+    Placemark.Property.Localized:
+      description: A localized placemark property.
+      type: object
+      required: [id, title, kind]
+      properties:
+        id:
+          $ref: '#/components/schemas/Placemark.Property.ID'
+        title:
+          $ref: '#/components/schemas/LocalizedTitle'
+        kind:
+          $ref: '#/components/schemas/Placemark.Property.Kind'
+      example:
+        $ref: '#/components/examples/Feature1'
+    Placemark.PropertiesDictionary:
+      # FIXME: Describe Dictionary
+      type: object
+
+    # ===== Organisms =====
+    Placemark.Create:
+      description: An object with data required to create a new placemark.
+      type: object
+      required: [name, latitude, longitude, kind, properties]
+      properties:
+        name:
+          $ref: '#/components/schemas/Placemark.Name'
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        kind:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        caption:
+          $ref: '#/components/schemas/Placemark.Caption'
+        images:
+          $ref: '#/components/schemas/ArrayOfImageURLs'
+        properties:
+          $ref: '#/components/schemas/Placemark.PropertiesDictionary'
+    Placemark.Public.Small:
+      description: 'A placemark, with minimum data for rendering on a map.'
+      type: object
+      required: [id, name, latitude, longitude, kind, category, state, created_at, updated_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          $ref: '#/components/schemas/Placemark.Name'
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        kind:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        category:
+          $ref: '#/components/schemas/Placemark.Category.ID'
+        state:
+          $ref: '#/components/schemas/Placemark.State'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        updated_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/Spot1'
+    Placemark.Public.Full:
+      description: A placemark, with all its details.
+      type: object
+      required: [id, name, latitude, longitude, kind, category, state, caption, satellite_image, images, city, country, properties, created_at, updated_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          $ref: '#/components/schemas/Placemark.Name'
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        kind:
+          $ref: '#/components/schemas/Placemark.Kind.ID'
+        category:
+          $ref: '#/components/schemas/Placemark.Category.ID'
+        state:
+          $ref: '#/components/schemas/Placemark.State'
+        caption:
+          $ref: '#/components/schemas/Placemark.Caption'
+        satellite_image:
+          $ref: '#/components/schemas/ImageURL'
+        images:
+          $ref: '#/components/schemas/ArrayOfImageURLs'
+        city:
+          $ref: '#/components/schemas/Placemark.City'
+        country:
+          $ref: '#/components/schemas/Placemark.Country'
+        properties:
+          $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        updated_at:
+          $ref: '#/components/schemas/DateTime'
+    Placemark.Submission.Review.Create:
+      description: An object with data required to create a new placemark submission review.
+      type: object
+      required: [opinion, comment]
+      properties:
+        opinion:
+          $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
+        comment:
+          $ref: '#/components/schemas/Review.Comment'
+        issues:
+          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
+        moderated:
+          $ref: '#/components/schemas/ModeratedFlag'
+      example:
+        $ref: '#/components/examples/CreatePlacemarkSubmissionReview1'
+    Placemark.Submission.Review:
+      description: A placemark submission review.
+      type: object
+      required: [id, placemark, reviewer, opinion, comment, created_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        placemark:
+          $ref: '#/components/schemas/ID'
+        reviewer:
+          $ref: '#/components/schemas/ID'
+        opinion:
+          $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
+        comment:
+          $ref: '#/components/schemas/Review.Comment'
+        issues:
+          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
+        moderated:
+          $ref: '#/components/schemas/ModeratedFlag'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/PlacemarkSubmissionReview1'
+    Placemark.Submission.Report:
+      description: A report about a placemark submission.
+      type: object
+      required: [id, placemark, state, reviews, created_at, updated_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        placemark:
+          $ref: '#/components/schemas/ID'
+        state:
+          $ref: '#/components/schemas/Placemark.Submission.State'
+        reviews:
+          $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        updated_at:
+          $ref: '#/components/schemas/DateTime'
+      example:
+        $ref: '#/components/examples/PlacemarkSubmissionReport1'
+
+    # ===== Arrays =====
+    ArrayOfPlacemarks:
+      description: An array of placemarks.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Public.Small'
+      example:
+        - $ref: '#/components/examples/Spot1'
+        - $ref: '#/components/examples/Spot2'
+    ArrayOfPlacemarkPropertyIDs:
+      description: An array of placemark property `ID`s.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Property.ID'
+      example:
+        - grass
+        - small_wall
+        - stairs
+    ArrayOfPlacemarkProperties:
+      description: An array of placemark properties.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Property.Localized'
+      example:
+        - $ref: '#/components/examples/Feature1'
+        - $ref: '#/components/examples/Feature2'
+    ArrayOfPlacemarkIssues:
+      description: An array of placemark issues.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Issue'
+      example:
+        - $ref: '#/components/examples/PlacemarkIssue1'
+        - $ref: '#/components/examples/PlacemarkIssue2'
+    ArrayOfPlacemarkSubmissionReviews:
+      description: An array of placemark submission reviews.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/Placemark.Submission.Review'
+      example:
+        - $ref: '#/components/examples/PlacemarkSubmissionReview1'
+        - $ref: '#/components/examples/PlacemarkSubmissionReview2'
+    ArrayOfImageURLs:
+      description: An array of image `URL`s.
+      type: array
+      uniqueItems: true
+      maxItems: 48
+      items:
+        $ref: '#/components/schemas/ImageURL'
+
+    # ===== Misc =====
+    ID:
+      description: A `UUID` (or `GUID`).
+      type: string
+      format: uuid
+      example: ad959e79-55c3-4445-8c51-a74b6d52691a
+    URL:
+      description: An `URL`.
+      type: string
+      format: uri
+    ImageURL:
+      description: An image `URL`.
+      type: string
+      format: uri
+    Locale:
+      description: A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).
+      type: string
+      format: locale
+      minLength: 2
+      default: en
+      example: fr-FR
+    LocalizedTitle:
+      description: A localized `title`.
+      type: string
+      minLength: 1
+    Latitude:
+      description: The latitude component of a coordinate.
+      type: number
+      format: double
+      minimum: -90
+      maximum: 90
+    Longitude:
+      description: The longitude component of a coordinate.
+      type: number
+      format: double
+      minimum: -180
+      maximum: 180
+    Review.Comment:
+      description: A review comment. Possibly empty.
+      type: string
+      example: 'Great spot, very diverse! I like to go there for long training sessions.'
+    ModeratedFlag:
+      description: A flag saying something has been moderated.
+      type: boolean
+      example: true
+    DateTime:
+      description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+      type: string
+      format: date-time
+      example: '2017-07-21T17:32:28.000Z'
+    Error:
+      description: An Error.
+      type: object
+      required: [error, reason]
+      properties:
+        error:
+          type: boolean
+          example: true
+        reason:
+          type: string
+  responses:
+    PlacemarkNotFoundError:
+      description: Placemark not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            reason: Placemark not found.
+    NoPlacemarkSubmissionFoundError:
+      description: No placemark submission found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            reason: No placemark submission found.
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            $ref: '#/components/examples/UnauthorizedError'
+    ForbiddenModeratedFlagError:
+      description: Cannot use `moderated` flag.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            reason: You need to be a moderator in order to use the `moderated` flag.
+  parameters:
+    PlacemarkId:
+      in: path
+      name: placemarkId
+      description: A placemark `ID`.
+      required: true
+      schema:
+        $ref: '#/components/schemas/ID'
+    Placemark.State:
+      in: query
+      name: state
+      description: A state to filter placemarks.
+      schema:
+        $ref: '#/components/schemas/Placemark.State'
+    Locale:
+      in: query
+      name: locale
+      description: The desired locale for response localization.
+      schema:
+        $ref: '#/components/schemas/Locale'
+  examples:
+    Spot1:
+      summary: Example spot
+      value:
+        id: 4f9058b3-3f8f-4b10-b3c0-e28c654012e4
+        name: Espace de street workout Vincent Gâche
+        latitude: 47.207423
+        longitude: -1.547817
+        kind:
+          id: calisthenics_park
+          title: Parc de street workout
+          locale: fr-FR
+        category:
+          id: spot
+          title: Spot
+          locale: fr-FR
+        state: published
+        created_at: '2020-12-02T01:43:52.285Z'
+        updated_at: '2020-12-22T22:26:11.618Z'
+    Spot2:
+      summary: Example spot
+      value:
+        id: 31256d06-7786-4555-8592-ec20e9c9cdfb
+        name: Porte des deux moulins
+        latitude: 46.155295
+        longitude: -1.159034
+        kind:
+          id: training_spot
+          title: Lieu d'entraînement
+          locale: fr-FR
+        category:
+          id: spot
+          title: Spot
+          locale: fr-FR
+        state: published
+        created_at: '2020-04-15T15:28:41.729Z'
+        updated_at: '2020-04-15T15:28:41.729Z'
+    Feature1:
+      summary: Example placemark feature
+      value:
+        id: grass
+        title: Herbe
+        locale: fr-FR
+    Feature2:
+      summary: Example placemark feature
+      value:
+        id: small_wall
+        title: Petit mur
+        locale: fr-FR
+    Technique1:
+      summary: Example technique
+      value:
+        id: double_kong
+        title: Double saut de chat
+        locale: fr-FR
+    Technique2:
+      summary: Example technique
+      value:
+        id: precision_jump
+        title: Saut de précision
+        locale: fr-FR
+    Benefit1:
+      summary: Example placemark benefit
+      value:
+        id: covered_area
+        title: Espace couvert
+        locale: fr-FR
+    Benefit2:
+      summary: Example placemark benefit
+      value:
+        id: drinking_fountain
+        title: Fontaine à eau
+        locale: fr-FR
+    Hazard1:
+      summary: Example placemark hazard
+      value:
+        id: security
+        title: Sécurité
+        locale: fr-FR
+    Hazard2:
+      summary: Example placemark hazard
+      value:
+        id: security_cam
+        title: Caméra de sécurité
+        locale: fr-FR
+    CreatePlacemarkSubmissionReview1:
+      summary: Example placemark submission review creation
+      value:
+        opinion: positive
+        comment: Everything looks good.
+    PlacemarkSubmissionReview1:
+      summary: Example placemark submission review
+      value:
+        id: 5881cf6b-1d3a-48d2-a84c-9a625adbea20
+        placemark: f6236b3a-65f1-4157-84f7-f22d6cff8a0a
+        reviewer: e8636f06-5a1c-45a2-b1e9-5a693c98c9c8
+        opinion: positive
+        comment: ''
+        created_at: '2020-09-23T07:46:57.524Z'
+    PlacemarkSubmissionReview2:
+      summary: Example placemark submission review
+      value:
+        id: b1e642f9-f0cd-4169-bd3f-2441f37b2b88
+        placemark: 2f5bdf5a-8695-4ace-8def-41ba9f632a97
+        reviewer: 0350cf76-44ab-480c-8e62-77b47b386827
+        opinion: negative
+        comment: 'I know this place, there''s no spot here! This should not be accepted.'
+        issues:
+          - $ref: '#/components/examples/PlacemarkLocationIssue'
+        created_at: '2020-10-05T09:23:21.836Z'
+    PlacemarkSubmissionReport1:
+      summary: Example placemark submission report
+      value:
+        id: 24ffb61e-ad56-4244-bbd5-673944e74116
+        placemark: 6af987db-b1f9-4f9d-ab2e-c330b4ec78bd
+        reviews:
+          - $ref: '#/components/examples/PlacemarkSubmissionReview1'
+          - $ref: '#/components/examples/PlacemarkSubmissionReview2'
+        created_at: '2020-09-23T07:46:57.524Z'
+        updated_at: '2020-10-05T09:23:21.836Z'
+    PlacemarkIssue1:
+      summary: Example placemark issue
+      value:
+        id: 6037a4cd-0089-4212-a363-98b24d44d1e0
+        placemark: faf3c5c7-9d7e-4146-a810-ec3311efe2e9
+        issuer: 71b4c5ee-2d39-4262-9785-9352a8723418
+        reason: type
+        comment: 'This is not a training spot, it is a parkour facility!'
+        state: addressed
+        created_at: '2020-08-15T17:01:33.818Z'
+    PlacemarkIssue2:
+      summary: Example placemark issue
+      value:
+        id: 0d3b0767-611f-4be7-aa93-7f0c7383e0ea
+        placemark: a3723353-5e90-4db6-a6af-52ba29407c20
+        issuer: 185a29c1-2745-4493-8846-f2c1d776b227
+        reason: name
+        comment: Everyone refers to this spot as "The maze".
+        state: submitted
+        created_at: '2020-12-23T22:52:34.051Z'
+    PlacemarkLocationIssue:
+      summary: Issue about a placemark's location
+      value:
+        id: eb45729e-e407-4bec-b966-20f752040491
+        placemark: 2f5bdf5a-8695-4ace-8def-41ba9f632a97
+        reason: location
+        comment: 'I know this place, there''s no spot here!'
+        state: submitted
+        created_at: '2020-07-20T21:16:56.239Z'
+    InvalidCoordinatesError:
+      value:
+        error: true
+        reason: The provided coordinates are invalid.
+    InvalidTypeError:
+      value:
+        error: true
+        reason: The provided placemark type is invalid.
+    Placemark.KindNotFoundError:
+      description: We could not find the placemark type you provided.
+      value:
+        error: true
+        reason: Placemark type not found
+    InvalidFeatureError:
+      value:
+        error: true
+        reason: >-
+          The placemark feature 'lörem/ispUm' is not valid. Query `GET
+          /placemarks/features` for an exhaustive list of available features.
+    InvalidTechniqueError:
+      value:
+        error: true
+        reason: >-
+          The technique 'lörem/ispUm' is not valid. Query `GET
+          /placemarks/techniques` for an exhaustive list of available
+          techniques.
+    InvalidBenefitError:
+      value:
+        error: true
+        reason: >-
+          The placemark benefit 'lörem/ispUm' is not valid. Query `GET
+          /placemarks/benefits` for an exhaustive list of available benefits.
+    InvalidHazardError:
+      value:
+        error: true
+        reason: >-
+          The placemark hazard 'lörem/ispUm' is not valid. Query `GET
+          /placemarks/hazards` for an exhaustive list of available hazards.
+    InvalidStateQueryParamError:
+      value:
+        error: true
+        reason: >-
+          Cannot initialize State from invalid String value lorem_ipsum for key
+          state
+    UnauthorizedError:
+      description: Authentication information is missing or is invalid.
+      value:
+        error: true
+        reason: Unauthorized
+    CannotDeleteSomeoneElsesPlacemarkError:
+      description: You cannot delete someone else's placemark.
+      value:
+        error: true
+        reason: You cannot delete someone else's placemark!
+    CannotSubmitSomeoneElsesPlacemarkError:
+      description: You cannot submit someone else's placemark.
+      value:
+        error: true
+        reason: You cannot submit someone else's placemark!
+    CannotSubmitPlacemarkTwiceError:
+      description: You cannot submit a placemark twice.
+      value:
+        error: true
+        reason: You cannot submit a placemark twice!
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

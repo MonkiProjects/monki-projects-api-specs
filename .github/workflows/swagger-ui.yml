@@ -18,7 +18,7 @@ jobs:
           output: swagger-ui
           spec-file: monki-projects-api-v1.yaml
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@4
         with:
           branch: gh-pages
           folder: swagger-ui

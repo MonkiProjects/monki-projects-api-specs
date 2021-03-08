@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Generate Swagger UI
-        uses: Legion2/swagger-ui-action@v1.0.2
+        uses: Legion2/swagger-ui-action@main
         with:
           output: swagger-ui
           swagger-config-file: swagger-config.yaml

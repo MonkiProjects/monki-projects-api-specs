@@ -16,7 +16,7 @@ jobs:
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui
-          swagger-config-file: swagger-config.yaml
+          swagger-config-url: ./swagger-config.yaml
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.0
         with:

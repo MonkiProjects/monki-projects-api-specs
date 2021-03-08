@@ -4,7 +4,7 @@
 
 1. Create/update specification files
 2. Run `./generate.sh`
-3. Udpate README.md 
+3. Udpate [README.md](README.md) to reflect your changes
 
 ## Create/update diagrams
 

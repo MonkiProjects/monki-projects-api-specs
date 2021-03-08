@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Generate Swagger UI
-        uses: RemiBardon/swagger-ui-action@patch-1
+        uses: RemiBardon/swagger-ui-action@05e71d3e18f38a24325f598f5e7d046dfddccc73
         with:
           output: swagger-ui
           swagger-config-file: ./swagger-config.yaml

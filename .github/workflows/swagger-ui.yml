@@ -22,3 +22,4 @@ jobs:
         with:
           branch: gh-pages
           folder: swagger-ui
+          token: ${{ tokens.SWAGGER_UI_ACCESS_TOKEN }}

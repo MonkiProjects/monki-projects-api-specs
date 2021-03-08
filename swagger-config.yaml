@@ -1,0 +1,28 @@
+# Core
+
+# ID of a DOM element inside which SwaggerUI will put its user interface
+dom_id: '#swagger-ui'
+# URL to fetch external configuration document from
+configUrl: './monki-projects-api-v1.yaml'
+
+# Display
+
+# Enable deep linking (URL path) for tags and operations
+deepLinking: true
+# Display `operationId` in operations list
+displayOperationId: true
+# Fold models by default
+defaultModelsExpandDepth: 0
+# Display request duration for "Try it out" requests
+displayRequestDuration: true
+# Expand only tags by default (show operations list)
+docExpansion: list
+# Display vendor extension (`x-`) fields and values
+showExtensions: true
+# Display extensions (`pattern`, `maxLength`…) fields and values
+showCommonExtensions: true
+# Activate syntax highlighting of payloads and `cURL` command
+syntaxHighlight.activate: true
+syntaxHighlight.theme: arta
+# Enable "Try it out" section by default
+tryItOutEnabled: true

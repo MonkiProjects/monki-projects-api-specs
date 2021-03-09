@@ -15,13 +15,13 @@ for all Monki Projects' [APIs](https://en.wikipedia.org/wiki/API).
 [![Specification](https://img.shields.io/badge/specification-AUTO-success)](./specs/monki-projects-api-v1.yaml)
 ![Development](https://img.shields.io/badge/development-Up_To_Date-success)
 ![Clients](https://img.shields.io/badge/clients-AUTO-success)
-[![Swagger UI deploy status badge](https://github.com/MonkiProjects/mp-api-specs/actions/workflows/swagger-ui.yml/badge.svg)](https://github.com/MonkiProjects/mp-api-specs/actions/workflows/swagger-ui.yml)
+[![Swagger UI deploy status badge](https://github.com/MonkiProjects/monki-projects-api-specs/actions/workflows/swagger-ui.yml/badge.svg)](https://github.com/MonkiProjects/monki-projects-api-specs/actions/workflows/swagger-ui.yml)
 
 *Monki Projects API* is the main API grouping together all of Monki Projects' APIs.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
-| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [specs/monki-projects-api-v1.yaml](./specs/monki-projects-api-v1.yaml) | Swift: [monki-projects-api-client-swift](https://github.com/MonkiProjects/monki-projects-api-client-swift) | [docs.monkiprojects.com/mp-api-specs](https://docs.monkiprojects.com/mp-api-specs/) |
+| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [specs/monki-projects-api-v1.yaml](./specs/monki-projects-api-v1.yaml) | Swift: [monki-projects-api-client-swift](https://github.com/MonkiProjects/monki-projects-api-client-swift) | [docs.monkiprojects.com/monki-projects-api-specs](https://docs.monkiprojects.com/monki-projects-api-specs/) |
 
 ### Users API
 
@@ -37,7 +37,7 @@ The *Users API* handles actions related to user management.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
-| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [specs/users-api-v1.yaml](./specs/users-api-v1.yaml) | Swift: [monki-projects-api-client-swift](https://github.com/MonkiProjects/monki-projects-api-client-swift) (`UsersAPI`) | [docs.monkiprojects.com/mp-api-specs](https://docs.monkiprojects.com/mp-api-specs/) |
+| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [specs/users-api-v1.yaml](./specs/users-api-v1.yaml) | Swift: [monki-projects-api-client-swift](https://github.com/MonkiProjects/monki-projects-api-client-swift) (`UsersAPI`) | [docs.monkiprojects.com/monki-projects-api-specs](https://docs.monkiprojects.com/monki-projects-api-specs/) |
 
 ### Placemarks API
 
@@ -53,7 +53,7 @@ The *Placemarks API* handles actions related to placemark and map management.
 
 | Version | Base URL | Specification file | Clients | Documentation |
 | ------: | :------- | :----------------- | :----- | :------------ |
-| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [specs/placemarks-api-v1.yaml](./specs/placemarks-api-v1.yaml) | Swift: [monki-projects-api-client-swift](https://github.com/MonkiProjects/monki-projects-api-client-swift) (`PlacemarksAPI`) | [docs.monkiprojects.com/mp-api-specs](https://docs.monkiprojects.com/mp-api-specs/) |
+| 1       | [api.monkiprojects.com/v1](https://api.monkiprojects.com/v1) | [specs/placemarks-api-v1.yaml](./specs/placemarks-api-v1.yaml) | Swift: [monki-projects-api-client-swift](https://github.com/MonkiProjects/monki-projects-api-client-swift) (`PlacemarksAPI`) | [docs.monkiprojects.com/monki-projects-api-specs](https://docs.monkiprojects.com/monki-projects-api-specs/) |
 
 ## Useful diagrams
 

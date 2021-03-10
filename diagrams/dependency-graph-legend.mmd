@@ -1,0 +1,20 @@
+flowchart TB
+    subgraph package [Package]
+        target{{Target}}
+    end
+    subgraph group [Logical group]
+        theoretical(Theoretical)
+    end
+    files(Files)
+
+    classDef package fill:#FFDAA8,stroke:#C06E00
+    class package package
+
+    classDef target fill:#AED6E8,stroke:#024D6D
+    class target target
+
+    classDef misc fill:#95F179,stroke:#1D7A00
+    class files misc
+
+    classDef dashed stroke-dasharray: 8 8
+    class group,theoretical dashed

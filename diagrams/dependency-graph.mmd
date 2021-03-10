@@ -1,0 +1,60 @@
+flowchart TB
+    subgraph specs [Specs]
+        full_spec(monki-projects-api-specs)
+    end
+    subgraph models [Models]
+        subgraph models_swift [Swift]
+            mm_model(monki-map-model-swift)
+            mp_model(monki-projects-model-swift)
+        end
+    end
+    subgraph apis [APIs]
+        subgraph mp_api [monki-projects-api]
+            auth_api{{AuthAPI}}
+            users_api{{UsersAPI}}
+            placemarks_api{{PlacemarksAPI}}
+        end
+    end
+    subgraph clients [API clients]
+        client_swift(monki-projects-api-client-swift)
+    end
+    subgraph views [Views]
+        subgraph views_swift [monki-projects-views-swift]
+            mp_views{{MonkiProjectsViews}}
+            mm_views{{MonkiMapViews}}
+        end
+    end
+    subgraph apps [Apps]
+        subgraph apps_swift [Swift]
+            subgraph mm_swift [Monki Map]
+                mm_ios(monki-map-ios)
+                mm_macos(monki-map-macos)
+            end
+        end
+        other_app(Other app)
+    end
+
+    specs -. defines .-> apis & models
+    specs -. generates .-> clients
+
+    mp_model --> mp_views
+    mm_model & mp_views --> mm_views
+
+    mp_model --> mm_model & mp_api
+    mm_model --> placemarks_api
+
+    mm_views & client_swift --> mm_swift
+
+    apis -. gets called .-> clients
+
+    classDef package fill:#FFDAA8,stroke:#C06E00
+    class mp_model,mm_model,mp_api,client_swift,views_swift,mm_ios,mm_macos package
+
+    classDef target fill:#AED6E8,stroke:#024D6D
+    class auth_api,users_api,placemarks_api,mp_views,mm_views target
+
+    classDef misc fill:#95F179,stroke:#1D7A00
+    class full_spec misc
+
+    classDef dashed stroke-dasharray: 8 8
+    class specs,models,models_swift,apis,views,clients,apps,apps_swift,mm_swift,other_app dashed

@@ -84,7 +84,7 @@ process() {
 }
 
 find "$FOLDER" -name '*.plantuml' | process 'plantuml'
-find "$FOLDER" -name '*.mermaid' | process 'mermaid'
+find "$FOLDER" -name '*.mmd' | process 'mermaid'
 find "$FOLDER" -name '*.bpmn' | process 'bpmn'
 
 clean_cache() {

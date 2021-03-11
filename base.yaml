@@ -3,7 +3,19 @@ info:
   version: 1.0.0
   title: Monki Projects API
 servers:
-  - url: 'https://api.monkiprojects.com/v1'
-    description: Monki Projects API v1 (prod)
-  - url: 'https://pre-prod.api.monkiprojects.com/v1'
-    description: Monki Projects API v1 (pre-prod)
+  - url: 'https://{environment}.monkiprojects.com'
+    description: Monki Projects API v1
+    variables:
+      environment:
+        default: api    # Production server
+        enum:
+          - api         # Production server
+          - pre-prod    # Development server
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer

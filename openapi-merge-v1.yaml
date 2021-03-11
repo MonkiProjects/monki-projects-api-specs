@@ -2,6 +2,14 @@ inputs:
   - inputFile: ./base.yaml
   - inputFile: ./specs/users-api-v1.yaml
     disputePrefix: Users
+    pathModification:
+      prepend: /users/v1
+  - inputFile: ./specs/auth-api-v1.yaml
+    disputePrefix: Auth
+    pathModification:
+      prepend: /auth/v1
   - inputFile: ./specs/placemarks-api-v1.yaml
     disputePrefix: Placemarks
+    pathModification:
+      prepend: /placemarks/v1
 output: ./specs/monki-projects-api-v1.yaml

@@ -3,10 +3,14 @@ info:
   version: 1.0.0
   title: Monki Projects API
 servers:
-  - url: 'https://api.monkiprojects.com/v1'
-    description: Monki Projects API v1 (prod)
-  - url: 'https://pre-prod.api.monkiprojects.com/v1'
-    description: Monki Projects API v1 (pre-prod)
+  - url: 'https://{environment}.monkiprojects.com'
+    description: Monki Projects API v1
+    variables:
+      environment:
+        default: api
+        enum:
+          - api
+          - pre-prod
 tags:
   - name: users
     description: Endpoints related to users.
@@ -19,7 +23,7 @@ tags:
   - name: localized
     description: Endpoints with localizable responses.
 paths:
-  /users:
+  /users/v1/:
     post:
       summary: Create User
       description: Creates a user.
@@ -79,7 +83,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOfUsers'
-  '/users/{userId}':
+  '/users/v1/{userId}':
     get:
       summary: Get User Details
       description: Returns details about a particular user.
@@ -137,11 +141,11 @@ paths:
               example:
                 error: true
                 reason: Unprocessable Entity
-  /auth/login:
+  /auth/v1/login:
     post:
+      summary: Log In
       operationId: logIn
       tags:
-        - users
         - auth
       security:
         - BasicAuth: []
@@ -154,7 +158,7 @@ paths:
                 $ref: '#/components/schemas/User.Token'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /placemarks:
+  /placemarks/v1/:
     post:
       summary: Create Placemark
       description: Creates a placemark.
@@ -199,7 +203,7 @@ paths:
           $ref: '#/components/responses/Unauthorized_BearerAuth'
         '403':
           $ref: '#/components/responses/ListPlacemarks_Forbidden'
-  '/placemarks/{placemarkId}':
+  '/placemarks/v1/{placemarkId}':
     get:
       summary: Get Placemark
       description: Gets a placemark's details.
@@ -234,7 +238,7 @@ paths:
           $ref: '#/components/responses/DeletePlacemark_Forbidden'
         '404':
           $ref: '#/components/responses/DeletePlacemark_NotFound'
-  '/placemarks/{placemarkId}/submit':
+  '/placemarks/v1/{placemarkId}/submit':
     post:
       summary: Submit Placemark
       description: Submits a placemark.
@@ -255,7 +259,7 @@ paths:
           $ref: '#/components/responses/SubmitPlacemark_Forbidden'
         '404':
           $ref: '#/components/responses/SubmitPlacemark_NotFound'
-  '/placemarks/{placemarkId}/submission':
+  '/placemarks/v1/{placemarkId}/submission':
     get:
       summary: Get Placemark Submission Report
       description: Get a placemark's submission report.
@@ -273,7 +277,7 @@ paths:
         '412':
           $ref: >-
             #/components/responses/GetPlacemarkSubmissionReport_PreconditionFailed
-  '/placemarks/{placemarkId}/submission/reviews':
+  '/placemarks/v1/{placemarkId}/submission/reviews':
     post:
       summary: Add Placemark Submission Review
       description: Adds a submission review to a placemark.
@@ -323,7 +327,7 @@ paths:
         '412':
           $ref: >-
             #/components/responses/ListPlacemarkSubmissionReviews_PreconditionFailed
-  /placemarks/properties:
+  /placemarks/v1/properties:
     get:
       summary: List Available Placemark Properties
       description: Lists available placemark properties by kind.
@@ -340,6 +344,13 @@ paths:
         '400':
           $ref: '#/components/responses/ListPlacemarkProperties_BadRequest'
 components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     User.Username:
       description: A username (`@`).
@@ -493,16 +504,6 @@ components:
         email: test@vapor.codes
         password: password
         confirm_password: password
-    User.Token:
-      type: object
-      required:
-        - value
-        - user
-      properties:
-        value:
-          $ref: '#/components/schemas/BearerToken'
-        user:
-          $ref: '#/components/schemas/User.Private'
     ArrayOfUsers:
       description: An array of users (without unnecessary details).
       type: array
@@ -525,9 +526,6 @@ components:
       description: A password.
       type: string
       minLength: 8
-    BearerToken:
-      description: A Bearer token.
-      type: string
     Error:
       description: An error.
       type: object
@@ -539,6 +537,19 @@ components:
           type: boolean
         reason:
           type: string
+    BearerToken:
+      description: A Bearer token.
+      type: string
+    User.Token:
+      type: object
+      required:
+        - value
+        - user
+      properties:
+        value:
+          $ref: '#/components/schemas/BearerToken'
+        user:
+          $ref: ./users-api-v1.yaml#/components/schemas/User.Private
     Placemark.Category.ID:
       description: A placemark category `ID`.
       type: string
@@ -1275,13 +1286,6 @@ components:
       description: The desired locale for response localization.
       schema:
         $ref: '#/components/schemas/Locale'
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
-    BearerAuth:
-      type: http
-      scheme: bearer
   examples:
     NewPlacemark:
       summary: Newly created placemark

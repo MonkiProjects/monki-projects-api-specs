@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
   version: 1.0.0
-  title: Monki Map Placemarks API
+  title: Monki Projects' Placemarks API
 servers:
-  - url: 'https://{environment}.monkiprojects.com/v1'
-    description: Monki Projects API v1
+  - url: 'https://{environment}.monkiprojects.com/placemarks/v1'
+    description: Monki Projects' Placemarks API v1
     variables:
       environment:
         default: api    # Production server
@@ -19,7 +19,7 @@ tags:
   - name: localized
     description: Endpoints with localizable responses.
 paths:
-  '/placemarks':
+  '/':
     post:
       summary: Create Placemark
       description: Creates a placemark.
@@ -60,7 +60,7 @@ paths:
           $ref: '#/components/responses/Unauthorized_BearerAuth'
         '403':
           $ref: '#/components/responses/ListPlacemarks_Forbidden'
-  '/placemarks/{placemarkId}':
+  '/{placemarkId}':
     get:
       summary: Get Placemark
       description: Gets a placemark's details.
@@ -92,7 +92,7 @@ paths:
           $ref: '#/components/responses/DeletePlacemark_Forbidden'
         '404':
           $ref: '#/components/responses/DeletePlacemark_NotFound'
-  '/placemarks/{placemarkId}/submit':
+  '/{placemarkId}/submit':
     post:
       summary: Submit Placemark
       description: Submits a placemark.
@@ -111,7 +111,7 @@ paths:
           $ref: '#/components/responses/SubmitPlacemark_Forbidden'
         '404':
           $ref: '#/components/responses/SubmitPlacemark_NotFound'
-  '/placemarks/{placemarkId}/submission':
+  '/{placemarkId}/submission':
     get:
       summary: Get Placemark Submission Report
       description: Get a placemark's submission report.
@@ -126,7 +126,7 @@ paths:
           $ref: '#/components/responses/GetPlacemarkSubmissionReport_NotFound'
         '412':
           $ref: '#/components/responses/GetPlacemarkSubmissionReport_PreconditionFailed'
-  '/placemarks/{placemarkId}/submission/reviews':
+  '/{placemarkId}/submission/reviews':
     post:
       summary: Add Placemark Submission Review
       description: Adds a submission review to a placemark.
@@ -170,7 +170,7 @@ paths:
           $ref: '#/components/responses/ListPlacemarkSubmissionReviews_NotFound'
         '412':
           $ref: '#/components/responses/ListPlacemarkSubmissionReviews_PreconditionFailed'
-  '/placemarks/properties':
+  '/properties':
     get:
       summary: List Available Placemark Properties
       description: Lists available placemark properties by kind.

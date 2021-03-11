@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
   version: 1.0.0
-  title: Monki Projects Users API
+  title: Monki Projects' Users API
 servers:
-  - url: 'https://{environment}.monkiprojects.com/v1'
-    description: Monki Projects API v1
+  - url: 'https://{environment}.monkiprojects.com/users/v1'
+    description: Monki Projects' Users API v1
     variables:
       environment:
         default: api    # Production server
@@ -14,10 +14,8 @@ servers:
 tags:
   - name: users
     description: Endpoints related to users.
-  - name: auth
-    description: Endpoints related to authentication.
 paths:
-  '/users':
+  '/':
     post:
       summary: Create User
       description: Creates a user.
@@ -77,7 +75,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOfUsers'
-  '/users/{userId}':
+  '/{userId}':
     get:
       summary: Get User Details
       description: Returns details about a particular user.
@@ -135,23 +133,6 @@ paths:
               example:
                 error: true
                 reason: Unprocessable Entity
-  '/auth/login':
-    post:
-      operationId: logIn
-      tags:
-        - users
-        - auth
-      security:
-        - BasicAuth: []
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User.Token'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
 components:
   schemas:
     # ===== Atoms =====
@@ -283,15 +264,7 @@ components:
         email: test@vapor.codes
         password: password
         confirm_password: password
-    User.Token:
-      type: object
-      required: [value, user]
-      properties:
-        value:
-          $ref: '#/components/schemas/BearerToken'
-        user:
-          $ref: '#/components/schemas/User.Private'
-    
+
     # ===== Arrays =====
     ArrayOfUsers:
       description: An array of users (without unnecessary details).
@@ -317,9 +290,6 @@ components:
       description: A password.
       type: string
       minLength: 8
-    BearerToken:
-      description: A Bearer token.
-      type: string
     Error:
       description: An error.
       type: object
@@ -352,9 +322,6 @@ components:
       schema:
         $ref: '#/components/schemas/ID'
   securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
     BearerAuth:
       type: http
       scheme: bearer

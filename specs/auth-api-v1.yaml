@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Monki Projects' Auth API
+servers:
+  - url: 'https://{environment}.monkiprojects.com/auth/v1'
+    description: Monki Projects' Auth API v1
+    variables:
+      environment:
+        default: api    # Production server
+        enum:
+          - api         # Production server
+          - pre-prod    # Development server
+tags:
+  - name: auth
+    description: Endpoints related to authentication.
+paths:
+  '/login':
+    post:
+      summary: Log In
+      operationId: logIn
+      tags: [auth]
+      security:
+        - BasicAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Token'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    # ===== Auth =====
+    BearerToken:
+      description: A Bearer token.
+      type: string
+    User.Token:
+      type: object
+      required: [value, user]
+      properties:
+        value:
+          $ref: '#/components/schemas/BearerToken'
+        user:
+          $ref: './users-api-v1.yaml#/components/schemas/User.Private'
+
+    # ===== Misc =====
+    Error:
+      description: An error.
+      type: object
+      required: [error, reason]
+      properties:
+        error:
+          type: boolean
+        reason:
+          type: string
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or is invalid.
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: true
+            reason: Unauthorized

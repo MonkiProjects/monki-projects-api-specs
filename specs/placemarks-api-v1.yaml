@@ -19,7 +19,7 @@ tags:
   - name: localized
     description: Endpoints with localizable responses.
 paths:
-  /placemarks:
+  '/placemarks':
     post:
       summary: Create Placemark
       description: Creates a placemark.
@@ -36,34 +36,11 @@ paths:
               $ref: '#/components/schemas/Placemark.Create'
       responses:
         '201':
-          description: Successfully Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Placemark.Public.Full'
+          $ref: '#/components/responses/CreatePlacemark_Success'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Invalid coordinates:
-                  $ref: '#/components/examples/InvalidCoordinatesError'
-                Invalid type:
-                  $ref: '#/components/examples/InvalidTypeError'
-                Placemark type not found:
-                  $ref: '#/components/examples/Placemark.KindNotFoundError'
-                Invalid feature:
-                  $ref: '#/components/examples/InvalidFeatureError'
-                Invalid technique:
-                  $ref: '#/components/examples/InvalidTechniqueError'
-                Invalid benefit:
-                  $ref: '#/components/examples/InvalidBenefitError'
-                Invalid hazard:
-                  $ref: '#/components/examples/InvalidHazardError'
+          $ref: '#/components/responses/CreatePlacemark_BadRequest'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/Unauthorized_BearerAuth'
     get:
       summary: List Placemarks
       description: >-
@@ -72,24 +49,17 @@ paths:
       operationId: listPlacemarks
       tags: [placemarks, localized]
       parameters:
-        - $ref: '#/components/parameters/Placemark.State'
+        - $ref: '#/components/parameters/PlacemarkState'
         - $ref: '#/components/parameters/Locale'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarks'
+          $ref: '#/components/responses/ListPlacemarks_Success'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Invalid state query param:
-                  $ref: '#/components/examples/InvalidStateQueryParamError'
+          $ref: '#/components/responses/ListPlacemarks_BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized_BearerAuth'
+        '403':
+          $ref: '#/components/responses/ListPlacemarks_Forbidden'
   '/placemarks/{placemarkId}':
     get:
       summary: Get Placemark
@@ -101,13 +71,9 @@ paths:
         - $ref: '#/components/parameters/Locale'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarks'
+          $ref: '#/components/responses/GetPlacemark_Success'
         '404':
-          $ref: '#/components/responses/PlacemarkNotFoundError'
+          $ref: '#/components/responses/GetPlacemark_NotFound'
     delete:
       summary: Delete Placemark
       description: Deletes a placemark.
@@ -120,17 +86,12 @@ paths:
       responses:
         '204':
           description: Successfully Deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized_BearerAuth'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Not your placemark:
-                  $ref: '#/components/examples/CannotDeleteSomeoneElsesPlacemarkError'
+          $ref: '#/components/responses/DeletePlacemark_Forbidden'
         '404':
-          $ref: '#/components/responses/PlacemarkNotFoundError'
+          $ref: '#/components/responses/DeletePlacemark_NotFound'
   '/placemarks/{placemarkId}/submit':
     post:
       summary: Submit Placemark
@@ -143,24 +104,13 @@ paths:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
         '200':
-          description: Successfully Submitted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Placemark.Submission.Report'
+          $ref: '#/components/responses/SubmitPlacemark_Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized_BearerAuth'
         '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                Not your placemark:
-                  $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
-                Already submitted:
-                  $ref: '#/components/examples/CannotSubmitPlacemarkTwiceError'
+          $ref: '#/components/responses/SubmitPlacemark_Forbidden'
         '404':
-          $ref: '#/components/responses/PlacemarkNotFoundError'
+          $ref: '#/components/responses/SubmitPlacemark_NotFound'
   '/placemarks/{placemarkId}/submission':
     get:
       summary: Get Placemark Submission Report
@@ -171,13 +121,11 @@ paths:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Placemark.Submission.Report'
+          $ref: '#/components/responses/GetPlacemarkSubmissionReport_Success'
         '404':
-          $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
+          $ref: '#/components/responses/GetPlacemarkSubmissionReport_NotFound'
+        '412':
+          $ref: '#/components/responses/GetPlacemarkSubmissionReport_PreconditionFailed'
   '/placemarks/{placemarkId}/submission/reviews':
     post:
       summary: Add Placemark Submission Review
@@ -195,23 +143,17 @@ paths:
               $ref: '#/components/schemas/Placemark.Submission.Review.Create'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Placemark.Submission.Review'
+          $ref: '#/components/responses/AddPlacemarkSubmissionReview_Success'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/AddPlacemarkSubmissionReview_BadRequest'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/Unauthorized_BearerAuth'
         '403':
-          $ref: '#/components/responses/ForbiddenModeratedFlagError'
+          $ref: '#/components/responses/AddPlacemarkSubmissionReview_Forbidden'
         '404':
-          $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
+          $ref: '#/components/responses/AddPlacemarkSubmissionReview_NotFound'
+        '412':
+          $ref: '#/components/responses/AddPlacemarkSubmissionReview_PreconditionFailed'
     get:
       summary: List Placemark Submission Reviews
       description: Lists a placemark's submission reviews.
@@ -221,76 +163,62 @@ paths:
         - $ref: '#/components/parameters/PlacemarkId'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+          $ref: '#/components/responses/ListPlacemarkSubmissionReviews_Success'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/Unauthorized_BearerAuth'
         '404':
-          $ref: '#/components/responses/NoPlacemarkSubmissionFoundError'
-  /placemarks/features:
+          $ref: '#/components/responses/ListPlacemarkSubmissionReviews_NotFound'
+        '412':
+          $ref: '#/components/responses/ListPlacemarkSubmissionReviews_PreconditionFailed'
+  '/placemarks/properties':
     get:
-      summary: List Placemark Features
-      description: Lists placemark features.
-      operationId: listPlacemarkFeatures
+      summary: List Available Placemark Properties
+      description: Lists available placemark properties by kind.
+      operationId: listPlacemarkProperties
       tags: [placemarks, localized]
       parameters:
+        - $ref: '#/components/parameters/PlacemarkPropertyKind'
         - $ref: '#/components/parameters/Locale'
       responses:
         '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
-  /placemarks/techniques:
-    get:
-      summary: List Placemark Techniques
-      description: Lists techniques available for placemarks.
-      operationId: listPlacemarkTechniques
-      tags: [placemarks, localized]
-      parameters:
-        - $ref: '#/components/parameters/Locale'
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
-  /placemarks/benefits:
-    get:
-      summary: List Placemark Benefits
-      description: Lists placemark benefits.
-      operationId: listPlacemarkBenefits
-      tags: [placemarks, localized]
-      parameters:
-        - $ref: '#/components/parameters/Locale'
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
-  /placemarks/hazards:
-    get:
-      summary: List Placemark Hazards
-      description: Lists placemark hazards.
-      operationId: listPlacemarkHazards
-      tags: [placemarks, localized]
-      parameters:
-        - $ref: '#/components/parameters/Locale'
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+          $ref: '#/components/responses/ListPlacemarkProperties_Success'
+        '400':
+          $ref: '#/components/responses/ListPlacemarkProperties_BadRequest'
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    # ===== Placemarks =====
+    PlacemarkId:
+      in: path
+      name: placemarkId
+      description: A placemark `ID`.
+      required: true
+      schema:
+        $ref: '#/components/schemas/ID'
+    PlacemarkState:
+      in: query
+      name: state
+      description: A state to filter placemarks. Default is 'published'.
+      schema:
+        $ref: '#/components/schemas/Placemark.State'
+    PlacemarkPropertyKind:
+      in: query
+      name: state
+      description: A kind to filter properties.
+      required: true
+      schema:
+        $ref: '#/components/schemas/Placemark.Property.Kind'
+
+    # ===== Misc =====
+    Locale:
+      in: query
+      name: locale
+      description: The desired locale for response localization.
+      schema:
+        $ref: '#/components/schemas/Locale'
   schemas:
     # ===== Atoms =====
     # === Placemarks ===
@@ -671,62 +599,276 @@ components:
         reason:
           type: string
   responses:
-    PlacemarkNotFoundError:
-      description: Placemark not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: true
-            reason: Placemark not found.
-    NoPlacemarkSubmissionFoundError:
-      description: No placemark submission found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: true
-            reason: No placemark submission found.
-    UnauthorizedError:
+    Unauthorized_BearerAuth:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-          example:
-            $ref: '#/components/examples/UnauthorizedError'
-    ForbiddenModeratedFlagError:
-      description: Cannot use `moderated` flag.
+          examples:
+            No auth provided:
+              $ref: '#/components/examples/BearerAuthNoAuthError'
+            Invalid auth type:
+              $ref: '#/components/examples/BearerAuthInvalidAuthType'
+            Invalid token:
+              $ref: '#/components/examples/BearerAuthInvalidToken'
+
+    CreatePlacemark_Success:
+      description: Successfully Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Placemark.Public.Full'
+          examples:
+            Created placemark:
+              $ref: '#/components/examples/NewPlacemark'
+    CreatePlacemark_BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-          example:
-            error: true
-            reason: You need to be a moderator in order to use the `moderated` flag.
-  parameters:
-    PlacemarkId:
-      in: path
-      name: placemarkId
-      description: A placemark `ID`.
-      required: true
-      schema:
-        $ref: '#/components/schemas/ID'
-    Placemark.State:
-      in: query
-      name: state
-      description: A state to filter placemarks.
-      schema:
-        $ref: '#/components/schemas/Placemark.State'
-    Locale:
-      in: query
-      name: locale
-      description: The desired locale for response localization.
-      schema:
-        $ref: '#/components/schemas/Locale'
+          examples:
+            Missing field:
+              $ref: '#/components/examples/CreatePlacemarkMissingFieldError'
+            Name too small:
+              $ref: '#/components/examples/PlacemarkNameTooSmallError'
+            Invalid coordinates:
+              $ref: '#/components/examples/InvalidCoordinatesError'
+            Invalid kind:
+              $ref: '#/components/examples/PlacemarkKindNotFoundError'
+            Invalid property:
+              $ref: '#/components/examples/InvalidPlacemarkPropertyError'
+
+    ListPlacemarks_Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ArrayOfPlacemarks'
+    ListPlacemarks_BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Invalid state query param:
+              $ref: '#/components/examples/InvalidPlacemarkStateError'
+    ListPlacemarks_Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Private state:
+              value: {
+                "error": true,
+                "reason": "You cannot list private placemarks without being authenticated"
+              }
+
+    GetPlacemark_Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Placemark.Public.Full'
+    GetPlacemark_NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/PlacemarkNotFoundError'
+
+    DeletePlacemark_Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Not your placemark:
+              $ref: '#/components/examples/CannotDeleteSomeoneElsesPlacemarkError'
+    DeletePlacemark_NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/PlacemarkNotFoundError'
+
+    SubmitPlacemark_Success:
+      description: Successfully Submitted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Placemark.Submission.Report'
+    SubmitPlacemark_Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Not your placemark:
+              $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
+            Already submitted:
+              $ref: '#/components/examples/CannotSubmitPlacemarkTwiceError'
+    SubmitPlacemark_NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/PlacemarkNotFoundError'
+
+    GetPlacemarkSubmissionReport_Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Placemark.Submission.Report'
+    GetPlacemarkSubmissionReport_NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/PlacemarkNotFoundError'
+    GetPlacemarkSubmissionReport_PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not submitted:
+              $ref: '#/components/examples/PlacemarkNotSubmittedError'
+
+    AddPlacemarkSubmissionReview_Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Placemark.Submission.Review'
+    AddPlacemarkSubmissionReview_BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          # TODO: Add examples
+    AddPlacemarkSubmissionReview_Forbidden:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/ForbiddenModeratedFlagError'
+    AddPlacemarkSubmissionReview_NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/PlacemarkNotFoundError'
+    AddPlacemarkSubmissionReview_PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not submitted:
+              $ref: '#/components/examples/PlacemarkNotSubmittedError'
+
+    ListPlacemarkSubmissionReviews_Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+    ListPlacemarkSubmissionReviews_NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not found:
+              $ref: '#/components/examples/PlacemarkNotFoundError'
+    ListPlacemarkSubmissionReviews_PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Placemark not submitted:
+              $ref: '#/components/examples/PlacemarkNotSubmittedError'
+
+    ListPlacemarkProperties_Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+          # TODO: Add examples
+    ListPlacemarkProperties_BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Invalid property kind:
+              $ref: '#/components/examples/InvalidPlacemarkPropertyKindError'
   examples:
+    NewPlacemark:
+      summary: Newly created placemark
+      value: {
+        "latitude": 48.8583,
+        "longitude": 2.2945,
+        "category": "spot",
+        "kind": "training_spot",
+        "creator": "D9CFF0B0-75DA-4A59-9BDB-A268299F4C97",
+        "details": {
+          "images": [],
+          "satellite_image": "https://res.cloudinary.com/monki-projects/image/upload/f_auto/satellite_images/satellite-view-placeholder.jpg",
+          "caption": "Test caption",
+          "properties": {
+            "technique": [],
+            "benefit": [],
+            "hazard": [],
+            "feature": [
+              {
+                "id": "small_wall",
+                "title": "Small Wall",
+                "kind": "feature"
+              }
+            ]
+          }
+        },
+        "created_at": "2021-03-10T09:01:04Z",
+        "state": "private",
+        "id": "FD58CE36-5504-4743-8E9F-955A6D18DAA1",
+        "updated_at": "2021-03-10T09:01:04Z",
+        "name": "Test placemark"
+      }
     Spot1:
       summary: Example spot
       value:
@@ -875,71 +1017,109 @@ components:
         comment: 'I know this place, there''s no spot here!'
         state: submitted
         created_at: '2020-07-20T21:16:56.239Z'
-    InvalidCoordinatesError:
-      value:
-        error: true
-        reason: The provided coordinates are invalid.
-    InvalidTypeError:
-      value:
-        error: true
-        reason: The provided placemark type is invalid.
-    Placemark.KindNotFoundError:
-      description: We could not find the placemark type you provided.
-      value:
-        error: true
-        reason: Placemark type not found
-    InvalidFeatureError:
-      value:
-        error: true
-        reason: >-
-          The placemark feature 'lörem/ispUm' is not valid. Query `GET
-          /placemarks/features` for an exhaustive list of available features.
-    InvalidTechniqueError:
-      value:
-        error: true
-        reason: >-
-          The technique 'lörem/ispUm' is not valid. Query `GET
-          /placemarks/techniques` for an exhaustive list of available
-          techniques.
-    InvalidBenefitError:
-      value:
-        error: true
-        reason: >-
-          The placemark benefit 'lörem/ispUm' is not valid. Query `GET
-          /placemarks/benefits` for an exhaustive list of available benefits.
-    InvalidHazardError:
-      value:
-        error: true
-        reason: >-
-          The placemark hazard 'lörem/ispUm' is not valid. Query `GET
-          /placemarks/hazards` for an exhaustive list of available hazards.
-    InvalidStateQueryParamError:
-      value:
-        error: true
-        reason: >-
-          Cannot initialize State from invalid String value lorem_ipsum for key
-          state
+
+    # ===== Errors =====
+    # === Auth ===
+    # General
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
-      value:
-        error: true
-        reason: Unauthorized
+      value: {
+        "error": true,
+        "reason": "Unauthorized"
+      }
+    # Bearer
+    BearerAuthNoAuthError:
+      value: {
+        "error": true,
+        "reason": "Invalid authorization token."
+      }
+    BearerAuthInvalidAuthType:
+      value: {
+        "error": true,
+        "reason": "Invalid authorization token."
+      }
+    BearerAuthInvalidToken:
+      value: {
+        "error": true,
+        "reason": "Invalid authorization token."
+      }
+
+    # === Placemarks ===
+    PlacemarkNotFoundError:
+      value: {
+        "error": true,
+        "reason": "Placemark not found."
+      }
+    PlacemarkNotSubmittedError:
+      value: {
+        "error": true,
+        "reason": "Placemark not submitted."
+      }
+    PlacemarkKindNotFoundError:
+      description: We could not find the placemark kind you provided.
+      value: {
+        "error": true,
+        "reason": "Placemark kind not found"
+      }
+    PlacemarkNameTooSmallError:
+      value: {
+        "error": true,
+        "reason": "name is less than minimum of 3 character(s)"
+      }
+    InvalidPlacemarkStateError:
+      value: {
+        "error": true,
+        "reason": "Cannot initialize State from invalid String value lorem_ipsum for key state"
+      }
+    InvalidPlacemarkPropertyError:
+      value: {
+        "error": true,
+        "reason": "Invalid property: { \"kind\": \"feature\", \"id\": \"random_id\" }"
+      }
+    InvalidPlacemarkPropertyKindError:
+      value: {
+        "error": true,
+        "reason": "Invalid property kind: \"lorem\""
+      }
+
+    # Create Placemark
+    CreatePlacemarkMissingFieldError:
+      value: {
+        "error": true,
+        "reason": "name is required"
+      }
+
+    # Delete Placemark
     CannotDeleteSomeoneElsesPlacemarkError:
       description: You cannot delete someone else's placemark.
-      value:
-        error: true
-        reason: You cannot delete someone else's placemark!
+      value: {
+        "error": true,
+        "reason": "You cannot delete someone else's placemark!"
+      }
+
+    # Submit Placemark
     CannotSubmitSomeoneElsesPlacemarkError:
       description: You cannot submit someone else's placemark.
-      value:
-        error: true
-        reason: You cannot submit someone else's placemark!
+      value: {
+        "error": true,
+        "reason": "You cannot submit someone else's placemark!"
+      }
     CannotSubmitPlacemarkTwiceError:
       description: You cannot submit a placemark twice.
-      value:
-        error: true
-        reason: You cannot submit a placemark twice!
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
+      value: {
+        "error": true,
+        "reason": "You cannot submit a placemark twice!"
+      }
+
+    # === Misc ===
+    InvalidCoordinatesError:
+      value: {
+        "error": true,
+        "reason": "latitude is greater than maximum of 90.0"
+      }
+    ForbiddenModeratedFlagError:
+      description: Cannot use `moderated` flag.
+      value: {
+        "error": true,
+        "reason": "You need to be a moderator in order to use the `moderated` flag."
+      }

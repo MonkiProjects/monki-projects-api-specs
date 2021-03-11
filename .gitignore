@@ -1,5 +1,14 @@
-# Ignore macOS system files
+### macOS system files ###
+# General
 .DS_Store
 
-# Ignore local files
+# Icon must end with two \r
+Icon?
+
+# Thumbnails
+._*
+
+### Local files ###
 TODO
+Icon
+

@@ -25,4 +25,4 @@ showCommonExtensions: true
 syntaxHighlight.activate: true
 syntaxHighlight.theme: arta
 # Enable "Try it out" section by default
-tryItOutEnabled: true
+tryItOutEnabled: false

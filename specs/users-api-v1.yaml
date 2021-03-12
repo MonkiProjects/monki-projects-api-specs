@@ -68,13 +68,17 @@ paths:
       operationId: listUsers
       tags:
         - users
+      parameters:
+        - $ref: 'parameters.yaml#/PaginatePage'
+        - $ref: 'parameters.yaml#/PaginatePerPage'
+        - $ref: '#/components/parameters/UsersOrder'
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfUsers'
+                $ref: '#/components/schemas/PaginatedUsers'
   '/{userId}':
     get:
       summary: Get User Details
@@ -272,6 +276,26 @@ components:
       items:
         $ref: '#/components/schemas/User.Public.Small'
 
+    # ===== Pagination =====
+    # === Paginated Arrays ===
+    PaginatedUsers:
+      description: A paginated array of users.
+      type: object
+      required: [items, metadata]
+      properties:
+        items:
+          $ref: '#/components/schemas/ArrayOfUsers'
+        metadata:
+          $ref: 'schemas.yaml#/PaginateMetadata'
+    # === Ordering ===
+    UsersOrder:
+      description: >-
+        The order of the users in an array:
+          * `last_joined`: From the latest created review to the oldest one
+          * `first_joined`: From the first created review to the latest one
+      type: string
+      enum: [last_joined, first_joined]
+
     # ===== Misc =====
     ID:
       description: A `UUID` (or `GUID`).
@@ -321,6 +345,12 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/ID'
+    UsersOrder:
+      in: query
+      name: sort_by
+      description: The results order. If not set, results won't be ordered.
+      schema:
+        $ref: '#/components/schemas/UsersOrder'
   securitySchemes:
     BearerAuth:
       type: http

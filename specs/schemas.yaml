@@ -1,0 +1,39 @@
+# ===== Pagination =====
+PaginatePage:
+  description: A pagination page number.
+  type: integer
+  minimum: 1
+  example: 3
+PaginatePerPage:
+  description: The number of paginated items per page.
+  type: integer
+  minimum: 1
+  example: 10
+PaginateTotal:
+  description: >-
+    The total count of elements in a paginated result. It represents
+    the total in all pages, and **does not** depend on the number of
+    items per page.
+  type: integer
+  minimum: 0
+  example: 42
+PaginateMetadata:
+  description: Metadata about the response's pagination.
+  type: object
+  required: [page, per, total]
+  properties:
+    page:
+      $ref: 'schemas.yaml#/PaginatePage'
+    per:
+      $ref: 'schemas.yaml#/PaginatePerPage'
+    total:
+      $ref: 'schemas.yaml#/PaginateTotal'
+
+# ===== Misc =====
+Locale:
+  description: A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).
+  type: string
+  format: locale
+  minLength: 2
+  default: en
+  example: fr-FR

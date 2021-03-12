@@ -28,7 +28,7 @@ paths:
       security:
         - BearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/Locale'
+        - $ref: 'parameters.yaml#/Locale'
       requestBody:
         content:
           application/json:
@@ -49,8 +49,11 @@ paths:
       operationId: listPlacemarks
       tags: [placemarks, localized]
       parameters:
+        - $ref: 'parameters.yaml#/PaginatePage'
+        - $ref: 'parameters.yaml#/PaginatePerPage'
         - $ref: '#/components/parameters/PlacemarkState'
-        - $ref: '#/components/parameters/Locale'
+        - $ref: '#/components/parameters/PlacemarksOrder'
+        - $ref: 'parameters.yaml#/Locale'
       responses:
         '200':
           $ref: '#/components/responses/ListPlacemarks_Success'
@@ -68,7 +71,7 @@ paths:
       tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
-        - $ref: '#/components/parameters/Locale'
+        - $ref: 'parameters.yaml#/Locale'
       responses:
         '200':
           $ref: '#/components/responses/GetPlacemark_Success'
@@ -161,6 +164,10 @@ paths:
       tags: [placemarks, placemark-submission]
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
+        - $ref: 'parameters.yaml#/PaginatePage'
+        - $ref: 'parameters.yaml#/PaginatePerPage'
+        - $ref: '#/components/parameters/PlacemarkSubmissionReviewOpinion'
+        - $ref: '#/components/parameters/PlacemarkSubmissionReviewsOrder'
       responses:
         '200':
           $ref: '#/components/responses/ListPlacemarkSubmissionReviews_Success'
@@ -178,7 +185,7 @@ paths:
       tags: [placemarks, localized]
       parameters:
         - $ref: '#/components/parameters/PlacemarkPropertyKind'
-        - $ref: '#/components/parameters/Locale'
+        - $ref: 'parameters.yaml#/Locale'
       responses:
         '200':
           $ref: '#/components/responses/ListPlacemarkProperties_Success'
@@ -211,14 +218,27 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/Placemark.Property.Kind'
-
-    # ===== Misc =====
-    Locale:
+    PlacemarksOrder:
       in: query
-      name: locale
-      description: The desired locale for response localization.
+      name: sort_by
+      description: The results order. If not set, results won't be ordered.
       schema:
-        $ref: '#/components/schemas/Locale'
+        $ref: '#/components/schemas/PlacemarksOrder'
+    # === Placemark Submissions ===
+    PlacemarkSubmissionReviewOpinion:
+      in: query
+      name: opinion
+      description: >-
+        An opinion to filter placemark submission reviews.
+        If not set, results won't be filtered.
+      schema:
+        $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
+    PlacemarkSubmissionReviewsOrder:
+      in: query
+      name: sort_by
+      description: The results order. If not set, results won't be ordered.
+      schema:
+        $ref: '#/components/schemas/PlacemarkSubmissionReviewsOrder'
   schemas:
     # ===== Atoms =====
     # === Placemarks ===
@@ -538,6 +558,46 @@ components:
       items:
         $ref: '#/components/schemas/ImageURL'
 
+    # ===== Pagination =====
+    # === Paginated Arrays ===
+    PaginatedPlacemarks:
+      description: A paginated array of placemarks.
+      type: object
+      required: [items, metadata]
+      properties:
+        items:
+          $ref: '#/components/schemas/ArrayOfPlacemarks'
+        metadata:
+          $ref: 'schemas.yaml#/PaginateMetadata'
+    PaginatedPlacemarkSubmissionReviews:
+      description: A paginated array of placemark submission reviews.
+      type: object
+      required: [items, metadata]
+      properties:
+        items:
+          $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+        metadata:
+          $ref: 'schemas.yaml#/PaginateMetadata'
+    # === Ordering ===
+    PlacemarksOrder:
+      description: >-
+        The order of the placemarks in an array:
+          * `last_created`: From the latest created placemark to the oldest one
+          * `first_created`: From the first created placemark to the latest one
+          * `last_published`: From the latest published placemark to the first one
+          * `first_published`: From the first published placemark to the last one
+        **Note:** Creation date and publication date are very different:
+        One could have created a placemark a while ago but published it just recently.
+      type: string
+      enum: [last_created, first_created, last_published, first_published]
+    PlacemarkSubmissionReviewsOrder:
+      description: >-
+        The order of the placemark submission reviews in an array:
+          * `last_created`: From the latest created review to the oldest one
+          * `first_created`: From the first created review to the latest one
+      type: string
+      enum: [last_created, first_created]
+
     # ===== Misc =====
     ID:
       description: A `UUID` (or `GUID`).
@@ -552,13 +612,6 @@ components:
       description: An image `URL`.
       type: string
       format: uri
-    Locale:
-      description: A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).
-      type: string
-      format: locale
-      minLength: 2
-      default: en
-      example: fr-FR
     LocalizedTitle:
       description: A localized `title`.
       type: string
@@ -645,7 +698,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ArrayOfPlacemarks'
+            $ref: '#/components/schemas/PaginatedPlacemarks'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:
@@ -801,7 +854,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
+            $ref: '#/components/schemas/PaginatedPlacemarkSubmissionReviews'
     ListPlacemarkSubmissionReviews_NotFound:
       description: Not Found
       content:

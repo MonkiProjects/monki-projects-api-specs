@@ -1,0 +1,24 @@
+Locale:
+  in: query
+  name: locale
+  description: The desired locale for response localization.
+  schema:
+    $ref: 'schemas.yaml#/Locale'
+PaginatePage:
+  in: query
+  name: page
+  description: >-
+    The pagination page. For example, if you paginate 1 to 42 per 10
+    and ask for the third page, you will get 31 to 40.
+  required: true
+  schema:
+    $ref: 'schemas.yaml#/PaginatePage'
+PaginatePerPage:
+  in: query
+  name: per
+  description: >-
+    The number of paginated items per page. For example, if you paginate
+    1 to 42 per 10 and ask for the third page, you will get 31 to 40.
+  required: true
+  schema:
+    $ref: 'schemas.yaml#/PaginatePerPage'

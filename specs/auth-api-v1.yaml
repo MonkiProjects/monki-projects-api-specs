@@ -7,10 +7,10 @@ servers:
     description: Monki Projects' Auth API v1
     variables:
       environment:
-        default: api    # Production server
+        default: api     # Production server
         enum:
-          - api         # Production server
-          - pre-prod    # Development server
+          - api          # Production server
+          - pre-prod.api # Development server
 tags:
   - name: auth
     description: Endpoints related to authentication.

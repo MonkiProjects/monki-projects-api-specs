@@ -7,10 +7,10 @@ servers:
     description: Monki Projects API v1
     variables:
       environment:
-        default: api    # Production server
+        default: api     # Production server
         enum:
-          - api         # Production server
-          - pre-prod    # Development server
+          - api          # Production server
+          - pre-prod.api # Development server
 components:
   securitySchemes:
     BasicAuth:

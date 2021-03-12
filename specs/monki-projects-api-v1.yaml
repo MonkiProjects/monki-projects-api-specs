@@ -10,7 +10,7 @@ servers:
         default: api
         enum:
           - api
-          - pre-prod
+          - pre-prod.api
 tags:
   - name: users
     description: Endpoints related to users.

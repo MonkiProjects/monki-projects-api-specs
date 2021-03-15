@@ -12,3 +12,10 @@ Icon?
 TODO
 Icon
 
+### Node.js ###
+
+# Dependency directories
+node_modules/
+
+# Ignore package-lock because we don't care about specific versions
+package-lock.json

@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: 'schemas.yaml#/Error'
               examples:
                 InvalidEmail:
                   value:
@@ -52,7 +52,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: 'schemas.yaml#/Error'
               examples:
                 UsernameNotAvailable:
                   value:
@@ -100,19 +100,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                error: true
-                reason: User not found.
+                $ref: 'schemas.yaml#/Error'
+              examples:
+                User not found:
+                  value:
+                    error: true
+                    reason: User not found.
         '422':
           description: Bad user ID
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                error: true
-                reason: Unprocessable Entity
+                $ref: 'schemas.yaml#/Error'
+              examples:
+                Unprocessable Entity:
+                  value:
+                    error: true
+                    reason: Unprocessable Entity
     delete:
       summary: Delete User
       description: Deletes a user.
@@ -133,10 +137,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                error: true
-                reason: Unprocessable Entity
+                $ref: 'schemas.yaml#/Error'
+              examples:
+                Unprocessable Entity:
+                  value:
+                    error: true
+                    reason: Unprocessable Entity
 components:
   schemas:
     # ===== Atoms =====
@@ -184,7 +190,7 @@ components:
       required: [id, username, display_name, kind, updated_at]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
@@ -194,7 +200,7 @@ components:
         kind:
           $ref: '#/components/schemas/User.Kind'
         updated_at:
-          $ref: '#/components/schemas/UpdateTime'
+          $ref: 'schemas.yaml#/DateTime'
     User.Details:
       description: Details about a user.
       type: object
@@ -214,7 +220,7 @@ components:
       required: [id, username, display_name, kind, updated_at, details]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
@@ -224,7 +230,7 @@ components:
         kind:
           $ref: '#/components/schemas/User.Kind'
         updated_at:
-          $ref: '#/components/schemas/UpdateTime'
+          $ref: 'schemas.yaml#/DateTime'
         details:
           $ref: '#/components/schemas/User.Details'
     User.Private:
@@ -233,7 +239,7 @@ components:
       required: [id, username, display_name, kind, updated_at, details, email]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
@@ -243,11 +249,11 @@ components:
         kind:
           $ref: '#/components/schemas/User.Kind'
         updated_at:
-          $ref: '#/components/schemas/UpdateTime'
+          $ref: 'schemas.yaml#/DateTime'
         details:
           $ref: '#/components/schemas/User.Details'
         email:
-          $ref: '#/components/schemas/Email'
+          $ref: 'schemas.yaml#/Email'
     User.Create:
       type: object
       required: [username, display_name, email, password, confirm_password]
@@ -257,11 +263,11 @@ components:
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
         email:
-          $ref: '#/components/schemas/Email'
+          $ref: 'schemas.yaml#/Email'
         password:
-          $ref: '#/components/schemas/Password'
+          $ref: 'schemas.yaml#/Password'
         confirm_password:
-          $ref: '#/components/schemas/Password'
+          $ref: 'schemas.yaml#/Password'
       example:
         username: vapor
         display_name: Vapor
@@ -295,48 +301,18 @@ components:
           * `first_joined`: From the first created review to the latest one
       type: string
       enum: [last_joined, first_joined]
-
-    # ===== Misc =====
-    ID:
-      description: A `UUID` (or `GUID`).
-      type: string
-      format: uuid
-      example: ad959e79-55c3-4445-8c51-a74b6d52691a
-    UpdateTime:
-      description: A time used to update data on client side
-      type: string
-      format: date-time
-    Email:
-      description: An email address.
-      type: string
-      format: email
-    Password:
-      description: A password.
-      type: string
-      minLength: 8
-    Error:
-      description: An error.
-      type: object
-      required: [error, reason]
-      properties:
-        error:
-          type: boolean
-        reason:
-          type: string
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
-      headers:
-        WWW_Authenticate:
-          schema:
-            type: string
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: true
-            reason: Unauthorized
+            $ref: 'schemas.yaml#/Error'
+          examples:
+            Unauthorized:
+              value:
+                error: true
+                reason: Unauthorized
   parameters:
     UserId:
       in: path
@@ -344,7 +320,7 @@ components:
       description: A user ID.
       required: true
       schema:
-        $ref: '#/components/schemas/ID'
+        $ref: 'schemas.yaml#/ID'
     UsersOrder:
       in: query
       name: sort_by

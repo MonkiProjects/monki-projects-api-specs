@@ -49,28 +49,10 @@ components:
           $ref: '#/components/schemas/BearerToken'
         user:
           $ref: './users-api-v1.yaml#/components/schemas/User.Private'
-
-    # ===== Misc =====
-    Error:
-      description: An error.
-      type: object
-      required: [error, reason]
-      properties:
-        error:
-          type: boolean
-        reason:
-          type: string
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
-      headers:
-        WWW_Authenticate:
-          schema:
-            type: string
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: true
-            reason: Unauthorized
+            $ref: 'schemas.yaml#/Error'

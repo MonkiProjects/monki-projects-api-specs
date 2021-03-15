@@ -204,7 +204,7 @@ components:
       description: A placemark `ID`.
       required: true
       schema:
-        $ref: '#/components/schemas/ID'
+        $ref: 'schemas.yaml#/ID'
     PlacemarkState:
       in: query
       name: state
@@ -285,11 +285,11 @@ components:
       required: [id, placemark, issuer, reason, comment, state, created_at]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         placemark:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         issuer:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         reason:
           $ref: '#/components/schemas/Placemark.Issue.Reason'
         comment:
@@ -297,7 +297,7 @@ components:
         state:
           $ref: '#/components/schemas/Placemark.Issue.State'
         created_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
       example:
         $ref: '#/components/examples/PlacemarkIssue1'
     Placemark.Issue.Comment:
@@ -391,7 +391,7 @@ components:
       required: [id, name, latitude, longitude, kind, category, state, created_at, updated_at]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         name:
           $ref: '#/components/schemas/Placemark.Name'
         latitude:
@@ -405,9 +405,9 @@ components:
         state:
           $ref: '#/components/schemas/Placemark.State'
         created_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
         updated_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
       example:
         $ref: '#/components/examples/Spot1'
     Placemark.Public.Full:
@@ -416,7 +416,7 @@ components:
       required: [id, name, latitude, longitude, kind, category, state, caption, satellite_image, images, city, country, properties, created_at, updated_at]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         name:
           $ref: '#/components/schemas/Placemark.Name'
         latitude:
@@ -432,7 +432,7 @@ components:
         caption:
           $ref: '#/components/schemas/Placemark.Caption'
         satellite_image:
-          $ref: '#/components/schemas/ImageURL'
+          $ref: 'schemas.yaml#/ImageURL'
         images:
           $ref: '#/components/schemas/ArrayOfImageURLs'
         city:
@@ -442,9 +442,9 @@ components:
         properties:
           $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
         created_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
         updated_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
     Placemark.Submission.Review.Create:
       description: An object with data required to create a new placemark submission review.
       type: object
@@ -466,11 +466,11 @@ components:
       required: [id, placemark, reviewer, opinion, comment, created_at]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         placemark:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         reviewer:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         opinion:
           $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
         comment:
@@ -480,7 +480,7 @@ components:
         moderated:
           $ref: '#/components/schemas/ModeratedFlag'
         created_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
       example:
         $ref: '#/components/examples/PlacemarkSubmissionReview1'
     Placemark.Submission.Report:
@@ -489,17 +489,17 @@ components:
       required: [id, placemark, state, reviews, created_at, updated_at]
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         placemark:
-          $ref: '#/components/schemas/ID'
+          $ref: 'schemas.yaml#/ID'
         state:
           $ref: '#/components/schemas/Placemark.Submission.State'
         reviews:
           $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
         created_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
         updated_at:
-          $ref: '#/components/schemas/DateTime'
+          $ref: 'schemas.yaml#/DateTime'
       example:
         $ref: '#/components/examples/PlacemarkSubmissionReport1'
 
@@ -556,7 +556,7 @@ components:
       uniqueItems: true
       maxItems: 48
       items:
-        $ref: '#/components/schemas/ImageURL'
+        $ref: 'schemas.yaml#/ImageURL'
 
     # ===== Pagination =====
     # === Paginated Arrays ===
@@ -599,19 +599,6 @@ components:
       enum: [last_created, first_created]
 
     # ===== Misc =====
-    ID:
-      description: A `UUID` (or `GUID`).
-      type: string
-      format: uuid
-      example: ad959e79-55c3-4445-8c51-a74b6d52691a
-    URL:
-      description: An `URL`.
-      type: string
-      format: uri
-    ImageURL:
-      description: An image `URL`.
-      type: string
-      format: uri
     LocalizedTitle:
       description: A localized `title`.
       type: string
@@ -636,28 +623,13 @@ components:
       description: A flag saying something has been moderated.
       type: boolean
       example: true
-    DateTime:
-      description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
-      type: string
-      format: date-time
-      example: '2017-07-21T17:32:28.000Z'
-    Error:
-      description: An Error.
-      type: object
-      required: [error, reason]
-      properties:
-        error:
-          type: boolean
-          example: true
-        reason:
-          type: string
   responses:
     Unauthorized_BearerAuth:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             No auth provided:
               $ref: '#/components/examples/BearerAuthNoAuthError'
@@ -680,7 +652,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Missing field:
               $ref: '#/components/examples/CreatePlacemarkMissingFieldError'
@@ -704,7 +676,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Invalid state query param:
               $ref: '#/components/examples/InvalidPlacemarkStateError'
@@ -713,7 +685,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Private state:
               value: {
@@ -732,7 +704,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -742,7 +714,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Not your placemark:
               $ref: '#/components/examples/CannotDeleteSomeoneElsesPlacemarkError'
@@ -751,7 +723,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -767,7 +739,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Not your placemark:
               $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
@@ -778,7 +750,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -794,7 +766,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -803,7 +775,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not submitted:
               $ref: '#/components/examples/PlacemarkNotSubmittedError'
@@ -819,14 +791,14 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           # TODO: Add examples
     AddPlacemarkSubmissionReview_Forbidden:
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/ForbiddenModeratedFlagError'
@@ -835,7 +807,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -844,7 +816,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not submitted:
               $ref: '#/components/examples/PlacemarkNotSubmittedError'
@@ -860,7 +832,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -869,7 +841,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Placemark not submitted:
               $ref: '#/components/examples/PlacemarkNotSubmittedError'
@@ -886,7 +858,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: 'schemas.yaml#/Error'
           examples:
             Invalid property kind:
               $ref: '#/components/examples/InvalidPlacemarkPropertyKindError'

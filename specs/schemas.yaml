@@ -23,13 +23,13 @@ PaginateMetadata:
   required: [page, per, total]
   properties:
     page:
-      $ref: 'schemas.yaml#/PaginatePage'
+      $ref: '#/PaginatePage'
     per:
-      $ref: 'schemas.yaml#/PaginatePerPage'
+      $ref: '#/PaginatePerPage'
     total:
-      $ref: 'schemas.yaml#/PaginateTotal'
+      $ref: '#/PaginateTotal'
 
-# ===== Misc =====
+# ===== Localization =====
 Locale:
   description: A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).
   type: string
@@ -37,3 +37,45 @@ Locale:
   minLength: 2
   default: en
   example: fr-FR
+
+# ===== Account =====
+Email:
+  description: An email address.
+  type: string
+  format: email
+Password:
+  description: A password.
+  type: string
+  minLength: 8
+
+# ===== Errors =====
+Error:
+  description: An error thrown by an API.
+  type: object
+  required: [error, reason]
+  properties:
+    error:
+      type: boolean
+      example: true
+    reason:
+      type: string
+
+# ===== Misc =====
+ID:
+  description: A `UUID` (or `GUID`).
+  type: string
+  format: uuid
+  example: ad959e79-55c3-4445-8c51-a74b6d52691a
+URL:
+  description: An `URL`.
+  type: string
+  format: uri
+ImageURL:
+  description: An image `URL`.
+  type: string
+  format: uri
+DateTime:
+  description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+  type: string
+  format: date-time
+  example: '2017-07-21T17:32:28.000Z'

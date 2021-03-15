@@ -3,15 +3,7 @@
 # ID of a DOM element inside which SwaggerUI will put its user interface
 dom_id: '#swagger-ui'
 # URL pointing to API definition
-urls:
-  - name: Monki Projects API
-    url: 'https://raw.githubusercontent.com/MonkiProjects/monki-projects-api-specs/main/specs/monki-projects-api-v1.yaml'
-  - name: Users API
-    url: 'https://raw.githubusercontent.com/MonkiProjects/monki-projects-api-specs/main/specs/users-api-v1.yaml'
-  - name: Auth API
-    url: 'https://raw.githubusercontent.com/MonkiProjects/monki-projects-api-specs/main/specs/auth-api-v1.yaml'
-  - name: Placemarks API
-    url: 'https://raw.githubusercontent.com/MonkiProjects/monki-projects-api-specs/main/specs/placemarks-api-v1.yaml'
+url: 'https://raw.githubusercontent.com/MonkiProjects/monki-projects-api-specs/main/specs/monki-projects-api-v1.yaml'
 
 # Display
 

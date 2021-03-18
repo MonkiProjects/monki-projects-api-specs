@@ -86,7 +86,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedUsers'
+                $ref: '#/components/schemas/UsersPage'
   '/users/v1/{userId}':
     get:
       summary: Get User Details
@@ -526,7 +526,7 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/User.Public.Small'
-    PaginatedUsers:
+    UsersPage:
       description: A paginated array of users.
       type: object
       required:
@@ -951,7 +951,7 @@ components:
       maxItems: 48
       items:
         $ref: schemas.yaml#/ImageURL
-    PaginatedPlacemarks:
+    PlacemarksPage:
       description: A paginated array of placemarks.
       type: object
       required:
@@ -962,7 +962,7 @@ components:
           $ref: '#/components/schemas/ArrayOfPlacemarks'
         metadata:
           $ref: schemas.yaml#/PaginateMetadata
-    PaginatedPlacemarkSubmissionReviews:
+    PlacemarkSubmissionReviewsPage:
       description: A paginated array of placemark submission reviews.
       type: object
       required:
@@ -1084,7 +1084,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PaginatedPlacemarks'
+            $ref: '#/components/schemas/PlacemarksPage'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:
@@ -1232,7 +1232,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PaginatedPlacemarkSubmissionReviews'
+            $ref: '#/components/schemas/PlacemarkSubmissionReviewsPage'
     ListPlacemarkSubmissionReviews_NotFound:
       description: Not Found
       content:

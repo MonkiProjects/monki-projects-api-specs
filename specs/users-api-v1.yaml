@@ -78,7 +78,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedUsers'
+                $ref: '#/components/schemas/UsersPage'
   '/{userId}':
     get:
       summary: Get User Details
@@ -284,7 +284,7 @@ components:
 
     # ===== Pagination =====
     # === Paginated Arrays ===
-    PaginatedUsers:
+    UsersPage:
       description: A paginated array of users.
       type: object
       required: [items, metadata]

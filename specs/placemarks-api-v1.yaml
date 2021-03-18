@@ -560,7 +560,7 @@ components:
 
     # ===== Pagination =====
     # === Paginated Arrays ===
-    PaginatedPlacemarks:
+    PlacemarksPage:
       description: A paginated array of placemarks.
       type: object
       required: [items, metadata]
@@ -569,7 +569,7 @@ components:
           $ref: '#/components/schemas/ArrayOfPlacemarks'
         metadata:
           $ref: 'schemas.yaml#/PaginateMetadata'
-    PaginatedPlacemarkSubmissionReviews:
+    PlacemarkSubmissionReviewsPage:
       description: A paginated array of placemark submission reviews.
       type: object
       required: [items, metadata]
@@ -670,7 +670,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PaginatedPlacemarks'
+            $ref: '#/components/schemas/PlacemarksPage'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:
@@ -826,7 +826,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PaginatedPlacemarkSubmissionReviews'
+            $ref: '#/components/schemas/PlacemarkSubmissionReviewsPage'
     ListPlacemarkSubmissionReviews_NotFound:
       description: Not Found
       content:

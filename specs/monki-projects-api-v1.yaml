@@ -165,7 +165,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User.Token'
+                $ref: '#/components/schemas/BearerToken'
         '401':
           $ref: '#/components/responses/AuthUnauthorizedError'
   /placemarks/v1/:
@@ -549,16 +549,6 @@ components:
     BearerToken:
       description: A Bearer token.
       type: string
-    User.Token:
-      type: object
-      required:
-        - value
-        - user
-      properties:
-        value:
-          $ref: '#/components/schemas/BearerToken'
-        user:
-          $ref: ./users-api-v1.yaml#/components/schemas/User.Private
     Placemark.Category.ID:
       description: A placemark category `ID`.
       type: string

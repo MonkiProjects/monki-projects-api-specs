@@ -1295,7 +1295,7 @@ components:
         $ref: '#/components/schemas/Placemark.State'
     PlacemarkPropertyKind:
       in: query
-      name: state
+      name: kind
       description: A kind to filter properties.
       required: true
       schema:

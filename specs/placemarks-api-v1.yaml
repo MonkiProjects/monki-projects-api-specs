@@ -643,10 +643,11 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Placemark.Public.Full'
-          examples:
-            Created placemark:
-              $ref: '#/components/examples/NewPlacemark'
+            $ref: 'geojson.yaml#/GeoJSONFeature'
+          # TODO: Update example
+          # examples:
+          #   Created placemark:
+          #     $ref: '#/components/examples/NewPlacemark'
     CreatePlacemark_BadRequest:
       description: Bad Request
       content:
@@ -670,7 +671,14 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PlacemarksPage'
+            allOf:
+              - $ref: 'schemas.yaml#/Page'
+              - type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: 'geojson.yaml#/GeoJSONFeature'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:
@@ -698,7 +706,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Placemark.Public.Full'
+            $ref: 'geojson.yaml#/GeoJSONFeature'
     GetPlacemark_NotFound:
       description: Not Found
       content:

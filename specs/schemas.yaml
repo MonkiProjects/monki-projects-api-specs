@@ -28,6 +28,15 @@ PaginateMetadata:
       $ref: '#/PaginatePerPage'
     total:
       $ref: '#/PaginateTotal'
+Page:
+  description: A paginated array.
+  type: object
+  required: [items, metadata]
+  properties:
+    items:
+      type: array
+    metadata:
+      $ref: 'schemas.yaml#/PaginateMetadata'
 
 # ===== Localization =====
 Locale:

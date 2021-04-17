@@ -1,0 +1,187 @@
+# Adaptation of <https://gist.github.com/zit0un/3ac0575eb0f3aabdc645c3faad47ab4a>
+
+GeoJSONObject:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3'
+  type: object
+  required: [type]
+  discriminator:
+    propertyName: type
+  properties:
+    'type':
+      type: string
+      enum: [
+        Feature, FeatureCollection, Point, MultiPoint, LineString, MultiLineString,
+        Polygon, MultiPolygon, GeometryCollection
+      ]
+    'bbox':
+      type: array
+      minItems: 4
+      items:
+        type: number
+GeoJSONGeometry:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3'
+  allOf:
+  - $ref: '#/GeoJSONObject'
+  - type: object
+    required: [type]
+    discriminator:
+      propertyName: type
+    properties:
+      'type':
+        type: string
+        enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+GeoJSONGeometryElement:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3'
+  allOf:
+  - $ref: '#/GeoJSONGeometry'
+  - type: object
+    required: [type]
+    discriminator:
+      propertyName: type
+    properties:
+      'type':
+        type: string
+        enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+GeoJSONPosition:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.1'
+  type: array
+  minItems: 2
+  maxItems: 3
+  items:
+    type: number
+GeoJSONPoint:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.2'
+  allOf:
+    - $ref: '#/GeoJSONGeometryElement'
+    - type: object
+      required: [coordinates]
+      properties:
+        'coordinates':
+          $ref: '#/GeoJSONPosition'
+GeoJSONMultiPoint:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.3'
+  allOf:
+    - $ref: '#/GeoJSONGeometryElement'
+    - type: object
+      required: [coordinates]
+      properties:
+        'coordinates':
+          type: array
+          items:
+            $ref: '#/GeoJSONPosition'
+GeoJSONLineStringCoordinates:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
+  type: array
+  items:
+    $ref: '#/GeoJSONPosition'
+  minItems: 2
+GeoJSONLineString:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
+  allOf:
+    - $ref: '#/GeoJSONGeometryElement'
+    - type: object
+      required: [coordinates]
+      properties:
+        'coordinates':
+          $ref: '#/GeoJSONLineStringCoordinates'
+GeoJSONMultiLineString:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.5'
+  allOf:
+    - $ref: '#/GeoJSONGeometryElement'
+    - type: object
+      required: [coordinates]
+      properties:
+        'coordinates':
+          type: array
+          items:
+            $ref: '#/GeoJSONLineStringCoordinates'
+GeoJSONLinearRing:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
+  type: array
+  minItems: 4
+  items:
+    $ref: '#/GeoJSONPosition'
+GeoJSONPolygon:
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
+  allOf:
+    - $ref: '#/GeoJSONGeometryElement'
+    - type: object
+      required: [coordinates]
+      properties:
+        'coordinates':
+          type: array
+          items:
+            $ref: '#/GeoJSONLinearRing'
+GeoJSONMultiPolygon:
+  description: GeoJSON geometry
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.7'
+  allOf:
+    - $ref: '#/GeoJSONGeometryElement'
+    - type: object
+      required: [coordinates]
+      properties:
+        'coordinates':
+          type: array
+          items:
+            type: array
+            items:
+              $ref: '#/GeoJSONLinearRing'
+GeoJSONGeometryCollection:
+  type: object
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.1.8'
+  allOf:
+    - $ref: '#/GeoJSONGeometry'
+    - type: object
+      required: [geometries]
+      properties:
+        'geometries':
+          type: array
+          items:
+            $ref: '#/GeoJSONGeometryElement'
+          minItems: 0
+GeoJSONFeature:
+  description: GeoJSON 'Feature' object
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.2'
+  allOf:
+  - $ref: '#/GeoJSONObject'
+  - type: object
+    required: [geometry, properties]
+    properties:
+      'geometry':
+        allOf:
+        - nullable: true
+        - $ref: '#/GeoJSONGeometry'
+      'properties':
+        type: object
+        nullable: true
+      'id':
+        oneOf:
+        - type: number
+        - type: string
+GeoJSONFeatureCollection:
+  description: GeoJSON 'FeatureCollection' object
+  externalDocs:
+    url: 'https://tools.ietf.org/html/rfc7946#section-3.3'
+  allOf:
+  - $ref: '#/GeoJSONObject'
+  - type: object
+    required: [features]
+    properties:
+      'features':
+        type: array
+        items:
+          $ref: '#/GeoJSONFeature'

@@ -2,10 +2,11 @@
 
 # This script uses
 # - [openapi-merge-cli](https://www.npmjs.com/package/openapi-merge-cli)
-# - [swagger-cli](https://github.com/APIDevTools/swagger-cli)
+# - [Redocly OpenAPI CLI](https://redoc.ly/docs/cli/)
 
 # Merge files together
 npx openapi-merge-cli --config ./openapi-merge-v1.yaml
 
 # Dereference merged file
-npx swagger-cli bundle -t yaml -o ./specs/monki-projects-api-v1-deref.yaml ./specs/monki-projects-api-v1.yaml
+npx @redocly/openapi-cli@latest bundle -o ./specs/monki-projects-api-v1-bundle.yaml ./specs/monki-projects-api-v1.yaml
+npx @redocly/openapi-cli@latest bundle -o ./specs/monki-projects-api-v1-deref.json -d 'true' ./specs/monki-projects-api-v1-bundle.yaml

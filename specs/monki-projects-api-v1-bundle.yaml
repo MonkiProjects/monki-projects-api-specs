@@ -47,7 +47,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+                $ref: '#/components/schemas/Error'
               examples:
                 InvalidEmail:
                   value:
@@ -60,7 +60,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+                $ref: '#/components/schemas/Error'
               examples:
                 UsernameNotAvailable:
                   value:
@@ -77,24 +77,8 @@ paths:
       tags:
         - users
       parameters:
-        - in: query
-          name: page
-          description: 'The pagination page. For example, if you paginate 1 to 42 per 10 and ask for the third page, you will get 31 to 40.'
-          required: true
-          schema:
-            description: A pagination page number.
-            type: integer
-            minimum: 1
-            example: 3
-        - in: query
-          name: per
-          description: 'The number of paginated items per page. For example, if you paginate 1 to 42 per 10 and ask for the third page, you will get 31 to 40.'
-          required: true
-          schema:
-            description: The number of paginated items per page.
-            type: integer
-            minimum: 1
-            example: 10
+        - $ref: '#/components/parameters/PaginatePage'
+        - $ref: '#/components/parameters/PaginatePerPage'
         - $ref: '#/components/parameters/UsersOrder'
       responses:
         '200':
@@ -124,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+                $ref: '#/components/schemas/Error'
               examples:
                 User not found:
                   value:
@@ -135,7 +119,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+                $ref: '#/components/schemas/Error'
               examples:
                 Unprocessable Entity:
                   value:
@@ -161,7 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+                $ref: '#/components/schemas/Error'
               examples:
                 Unprocessable Entity:
                   value:
@@ -195,7 +179,7 @@ paths:
       security:
         - BearerAuth: []
       parameters:
-        - $ref: '#/paths/~1placemarks~1v1~1/get/parameters/4'
+        - $ref: '#/components/parameters/Locale'
       requestBody:
         content:
           application/json:
@@ -210,26 +194,19 @@ paths:
           $ref: '#/components/responses/Unauthorized_BearerAuth'
     get:
       summary: List Placemarks
-      description: 'Lists all published placemarks by default. If a `state` query parameter is set, this endpoint will list all placemarks in the specified state.'
+      description: >-
+        Lists all published placemarks by default. If a `state` query parameter
+        is set, this endpoint will list all placemarks in the specified state.
       operationId: listPlacemarks
       tags:
         - placemarks
         - localized
       parameters:
-        - $ref: '#/paths/~1users~1v1~1/get/parameters/0'
-        - $ref: '#/paths/~1users~1v1~1/get/parameters/1'
+        - $ref: '#/components/parameters/PaginatePage'
+        - $ref: '#/components/parameters/PaginatePerPage'
         - $ref: '#/components/parameters/PlacemarkState'
         - $ref: '#/components/parameters/PlacemarksOrder'
-        - in: query
-          name: locale
-          description: The desired locale for response localization.
-          schema:
-            description: 'A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).'
-            type: string
-            format: locale
-            minLength: 2
-            default: en
-            example: fr-FR
+        - $ref: '#/components/parameters/Locale'
       responses:
         '200':
           $ref: '#/components/responses/ListPlacemarks_Success'
@@ -249,7 +226,7 @@ paths:
         - localized
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
-        - $ref: '#/paths/~1placemarks~1v1~1/get/parameters/4'
+        - $ref: '#/components/parameters/Locale'
       responses:
         '200':
           $ref: '#/components/responses/GetPlacemark_Success'
@@ -311,7 +288,8 @@ paths:
         '404':
           $ref: '#/components/responses/GetPlacemarkSubmissionReport_NotFound'
         '412':
-          $ref: '#/components/responses/GetPlacemarkSubmissionReport_PreconditionFailed'
+          $ref: >-
+            #/components/responses/GetPlacemarkSubmissionReport_PreconditionFailed
   '/placemarks/v1/{placemarkId}/submission/reviews':
     post:
       summary: Add Placemark Submission Review
@@ -341,7 +319,8 @@ paths:
         '404':
           $ref: '#/components/responses/AddPlacemarkSubmissionReview_NotFound'
         '412':
-          $ref: '#/components/responses/AddPlacemarkSubmissionReview_PreconditionFailed'
+          $ref: >-
+            #/components/responses/AddPlacemarkSubmissionReview_PreconditionFailed
     get:
       summary: List Placemark Submission Reviews
       description: Lists a placemark's submission reviews.
@@ -351,8 +330,8 @@ paths:
         - placemark-submission
       parameters:
         - $ref: '#/components/parameters/PlacemarkId'
-        - $ref: '#/paths/~1users~1v1~1/get/parameters/0'
-        - $ref: '#/paths/~1users~1v1~1/get/parameters/1'
+        - $ref: '#/components/parameters/PaginatePage'
+        - $ref: '#/components/parameters/PaginatePerPage'
         - $ref: '#/components/parameters/PlacemarkSubmissionReviewOpinion'
         - $ref: '#/components/parameters/PlacemarkSubmissionReviewsOrder'
       responses:
@@ -363,7 +342,8 @@ paths:
         '404':
           $ref: '#/components/responses/ListPlacemarkSubmissionReviews_NotFound'
         '412':
-          $ref: '#/components/responses/ListPlacemarkSubmissionReviews_PreconditionFailed'
+          $ref: >-
+            #/components/responses/ListPlacemarkSubmissionReviews_PreconditionFailed
   /placemarks/v1/properties:
     get:
       summary: List Available Placemark Properties
@@ -374,7 +354,7 @@ paths:
         - localized
       parameters:
         - $ref: '#/components/parameters/PlacemarkPropertyKind'
-        - $ref: '#/paths/~1placemarks~1v1~1/get/parameters/4'
+        - $ref: '#/components/parameters/Locale'
       responses:
         '200':
           $ref: '#/components/responses/ListPlacemarkProperties_Success'
@@ -401,7 +381,9 @@ components:
       type: string
       example: Lorem Ipsum
     User.Country:
-      description: The country of a user. Will generally show as a flag next to the user's display name.
+      description: >-
+        The country of a user. Will generally show as a flag next to the user's
+        display name.
       type: string
       example: FR
     User.Kind:
@@ -415,7 +397,9 @@ components:
       description: A user's bio (profile description).
       type: string
     User.Location:
-      description: 'A user''s location. It''s not formatted nor checked as an existing place, so it could be anything.'
+      description: >-
+        A user's location. It's not formatted nor checked as an existing place,
+        so it could be anything.
       type: string
     User.Experience:
       type: object
@@ -432,7 +416,7 @@ components:
         - updated_at
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
@@ -442,7 +426,7 @@ components:
         kind:
           $ref: '#/components/schemas/User.Kind'
         updated_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
     User.Details:
       description: Details about a user.
       type: object
@@ -471,7 +455,7 @@ components:
         - details
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
@@ -481,7 +465,7 @@ components:
         kind:
           $ref: '#/components/schemas/User.Kind'
         updated_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
         details:
           $ref: '#/components/schemas/User.Details'
     User.Private:
@@ -497,7 +481,7 @@ components:
         - email
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
@@ -507,14 +491,11 @@ components:
         kind:
           $ref: '#/components/schemas/User.Kind'
         updated_at:
-          description: 'A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).'
-          type: string
-          format: date-time
-          example: '2017-07-21T17:32:28.000Z'
+          $ref: '#/components/schemas/DateTime'
         details:
           $ref: '#/components/schemas/User.Details'
         email:
-          $ref: '#/components/schemas/User.Create/properties/email'
+          $ref: '#/components/schemas/Email'
     User.Create:
       type: object
       required:
@@ -529,15 +510,11 @@ components:
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
         email:
-          description: An email address.
-          type: string
-          format: email
+          $ref: '#/components/schemas/Email'
         password:
-          description: A password.
-          type: string
-          minLength: 8
+          $ref: '#/components/schemas/Password'
         confirm_password:
-          $ref: '#/components/schemas/User.Create/properties/password'
+          $ref: '#/components/schemas/Password'
       example:
         username: vapor
         display_name: Vapor
@@ -559,22 +536,7 @@ components:
         items:
           $ref: '#/components/schemas/ArrayOfUsers'
         metadata:
-          description: Metadata about the response's pagination.
-          type: object
-          required:
-            - page
-            - per
-            - total
-          properties:
-            page:
-              $ref: '#/paths/~1users~1v1~1/get/parameters/0/schema'
-            per:
-              $ref: '#/paths/~1users~1v1~1/get/parameters/1/schema'
-            total:
-              description: 'The total count of elements in a paginated result. It represents the total in all pages, and **does not** depend on the number of items per page.'
-              type: integer
-              minimum: 0
-              example: 42
+          $ref: '#/components/schemas/PaginateMetadata'
     UsersOrder:
       description: |-
         The order of the users in an array:
@@ -652,11 +614,11 @@ components:
         - created_at
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         placemark:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         issuer:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         reason:
           $ref: '#/components/schemas/Placemark.Issue.Reason'
         comment:
@@ -664,9 +626,17 @@ components:
         state:
           $ref: '#/components/schemas/Placemark.Issue.State'
         created_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
       example:
-        $ref: '#/components/examples/PlacemarkIssue1'
+        summary: Example placemark issue
+        value:
+          id: 6037a4cd-0089-4212-a363-98b24d44d1e0
+          placemark: faf3c5c7-9d7e-4146-a810-ec3311efe2e9
+          issuer: 71b4c5ee-2d39-4262-9785-9352a8723418
+          reason: type
+          comment: 'This is not a training spot, it is a parkour facility!'
+          state: addressed
+          created_at: '2020-08-15T17:01:33.818Z'
     Placemark.Issue.Comment:
       description: A comment in a placemark issue.
       type: string
@@ -752,7 +722,11 @@ components:
         kind:
           $ref: '#/components/schemas/Placemark.Property.Kind'
       example:
-        $ref: '#/components/examples/Feature1'
+        summary: Example placemark feature
+        value:
+          id: grass
+          title: Herbe
+          locale: fr-FR
     Placemark.PropertiesDictionary:
       type: object
     Placemark.Create:
@@ -794,7 +768,7 @@ components:
         - updated_at
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         name:
           $ref: '#/components/schemas/Placemark.Name'
         latitude:
@@ -808,11 +782,27 @@ components:
         state:
           $ref: '#/components/schemas/Placemark.State'
         created_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
         updated_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
       example:
-        $ref: '#/components/examples/Spot1'
+        summary: Example spot
+        value:
+          id: 4f9058b3-3f8f-4b10-b3c0-e28c654012e4
+          name: Espace de street workout Vincent Gâche
+          latitude: 47.207423
+          longitude: -1.547817
+          kind:
+            id: calisthenics_park
+            title: Parc de street workout
+            locale: fr-FR
+          category:
+            id: spot
+            title: Spot
+            locale: fr-FR
+          state: published
+          created_at: '2020-12-02T01:43:52.285Z'
+          updated_at: '2020-12-22T22:26:11.618Z'
     Placemark.Public.Full:
       description: 'A placemark, with all its details.'
       type: object
@@ -834,7 +824,7 @@ components:
         - updated_at
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         name:
           $ref: '#/components/schemas/Placemark.Name'
         latitude:
@@ -850,7 +840,7 @@ components:
         caption:
           $ref: '#/components/schemas/Placemark.Caption'
         satellite_image:
-          $ref: '#/components/schemas/ArrayOfImageURLs/items'
+          $ref: '#/components/schemas/ImageURL'
         images:
           $ref: '#/components/schemas/ArrayOfImageURLs'
         city:
@@ -860,11 +850,13 @@ components:
         properties:
           $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
         created_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
         updated_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
     Placemark.Submission.Review.Create:
-      description: An object with data required to create a new placemark submission review.
+      description: >-
+        An object with data required to create a new placemark submission
+        review.
       type: object
       required:
         - opinion
@@ -879,7 +871,10 @@ components:
         moderated:
           $ref: '#/components/schemas/ModeratedFlag'
       example:
-        $ref: '#/components/examples/CreatePlacemarkSubmissionReview1'
+        summary: Example placemark submission review creation
+        value:
+          opinion: positive
+          comment: Everything looks good.
     Placemark.Submission.Review:
       description: A placemark submission review.
       type: object
@@ -892,11 +887,11 @@ components:
         - created_at
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         placemark:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         reviewer:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         opinion:
           $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
         comment:
@@ -906,9 +901,16 @@ components:
         moderated:
           $ref: '#/components/schemas/ModeratedFlag'
         created_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
       example:
-        $ref: '#/components/examples/PlacemarkSubmissionReview1'
+        summary: Example placemark submission review
+        value:
+          id: 5881cf6b-1d3a-48d2-a84c-9a625adbea20
+          placemark: f6236b3a-65f1-4157-84f7-f22d6cff8a0a
+          reviewer: e8636f06-5a1c-45a2-b1e9-5a693c98c9c8
+          opinion: positive
+          comment: ''
+          created_at: '2020-09-23T07:46:57.524Z'
     Placemark.Submission.Report:
       description: A report about a placemark submission.
       type: object
@@ -921,19 +923,27 @@ components:
         - updated_at
       properties:
         id:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         placemark:
-          $ref: '#/components/parameters/UserId/schema'
+          $ref: '#/components/schemas/ID'
         state:
           $ref: '#/components/schemas/Placemark.Submission.State'
         reviews:
           $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
         created_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
         updated_at:
-          $ref: '#/components/schemas/User.Private/properties/updated_at'
+          $ref: '#/components/schemas/DateTime'
       example:
-        $ref: '#/components/examples/PlacemarkSubmissionReport1'
+        summary: Example placemark submission report
+        value:
+          id: 24ffb61e-ad56-4244-bbd5-673944e74116
+          placemark: 6af987db-b1f9-4f9d-ab2e-c330b4ec78bd
+          reviews:
+            - $ref: '#/components/examples/PlacemarkSubmissionReview1'
+            - $ref: '#/components/examples/PlacemarkSubmissionReview2'
+          created_at: '2020-09-23T07:46:57.524Z'
+          updated_at: '2020-10-05T09:23:21.836Z'
     ArrayOfPlacemarks:
       description: An array of placemarks.
       type: array
@@ -986,9 +996,7 @@ components:
       uniqueItems: true
       maxItems: 48
       items:
-        description: An image `URL`.
-        type: string
-        format: uri
+        $ref: '#/components/schemas/ImageURL'
     PlacemarksPage:
       description: A paginated array of placemarks.
       type: object
@@ -999,7 +1007,7 @@ components:
         items:
           $ref: '#/components/schemas/ArrayOfPlacemarks'
         metadata:
-          $ref: '#/components/schemas/UsersPage/properties/metadata'
+          $ref: '#/components/schemas/PaginateMetadata'
     PlacemarkSubmissionReviewsPage:
       description: A paginated array of placemark submission reviews.
       type: object
@@ -1010,15 +1018,17 @@ components:
         items:
           $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
         metadata:
-          $ref: '#/components/schemas/UsersPage/properties/metadata'
+          $ref: '#/components/schemas/PaginateMetadata'
     PlacemarksOrder:
-      description: |-
+      description: >-
         The order of the placemarks in an array:
           * `last_created`: From the latest created placemark to the oldest one
           * `first_created`: From the first created placemark to the latest one
           * `last_published`: From the latest published placemark to the first one
           * `first_published`: From the first published placemark to the last one
-        **Note:** Creation date and publication date are very different: One could have created a placemark a while ago but published it just recently.
+        **Note:** Creation date and publication date are very different: One
+        could have created a placemark a while ago but published it just
+        recently.
       type: string
       enum:
         - last_created
@@ -1058,23 +1068,170 @@ components:
       description: A flag saying something has been moderated.
       type: boolean
       example: true
+    PaginatePage:
+      description: A pagination page number.
+      type: integer
+      minimum: 1
+      example: 3
+    PaginatePerPage:
+      description: The number of paginated items per page.
+      type: integer
+      minimum: 1
+      example: 10
+    ID:
+      description: A `UUID` (or `GUID`).
+      type: string
+      format: uuid
+      example: ad959e79-55c3-4445-8c51-a74b6d52691a
+    DateTime:
+      description: >-
+        A `Date` with time, as described in [RFC 3339, section
+        5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
+      type: string
+      format: date-time
+      example: '2017-07-21T17:32:28.000Z'
+    PaginateTotal:
+      description: >-
+        The total count of elements in a paginated result. It represents the
+        total in all pages, and **does not** depend on the number of items per
+        page.
+      type: integer
+      minimum: 0
+      example: 42
+    PaginateMetadata:
+      description: Metadata about the response's pagination.
+      type: object
+      required:
+        - page
+        - per
+        - total
+      properties:
+        page:
+          $ref: '#/components/schemas/PaginatePage'
+        per:
+          $ref: '#/components/schemas/PaginatePerPage'
+        total:
+          $ref: '#/components/schemas/PaginateTotal'
+    Email:
+      description: An email address.
+      type: string
+      format: email
+    Password:
+      description: A password.
+      type: string
+      minLength: 8
+    Error:
+      description: An error thrown by an API.
+      type: object
+      required:
+        - error
+        - reason
+      properties:
+        error:
+          type: boolean
+          example: true
+        reason:
+          type: string
+    Locale:
+      description: >-
+        A locale, as described in [Language and Locale
+        IDs](https://tinyurl.com/apple-language-and-locale-ids).
+      type: string
+      format: locale
+      minLength: 2
+      default: en
+      example: fr-FR
+    Page:
+      description: A paginated array.
+      type: object
+      required:
+        - items
+        - metadata
+      properties:
+        items:
+          type: array
+        metadata:
+          $ref: '#/components/schemas/PaginateMetadata'
+    GeoJSONObject:
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3'
+      type: object
+      required:
+        - type
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+          enum:
+            - Feature
+            - FeatureCollection
+            - Point
+            - MultiPoint
+            - LineString
+            - MultiLineString
+            - Polygon
+            - MultiPolygon
+            - GeometryCollection
+        bbox:
+          type: array
+          minItems: 4
+          items:
+            type: number
+    GeoJSONGeometry:
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3'
+      allOf:
+        - $ref: '#/components/schemas/GeoJSONObject'
+        - type: object
+          required:
+            - type
+          discriminator:
+            propertyName: type
+          properties:
+            type:
+              type: string
+              enum:
+                - Point
+                - MultiPoint
+                - LineString
+                - MultiLineString
+                - Polygon
+                - MultiPolygon
+                - GeometryCollection
+    GeoJSONFeature:
+      description: GeoJSON 'Feature' object
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.2'
+      allOf:
+        - $ref: '#/components/schemas/GeoJSONObject'
+        - type: object
+          required:
+            - geometry
+            - properties
+          properties:
+            geometry:
+              allOf:
+                - nullable: true
+                - $ref: '#/components/schemas/GeoJSONGeometry'
+            properties:
+              type: object
+              nullable: true
+            id:
+              oneOf:
+                - type: number
+                - type: string
+    ImageURL:
+      description: An image `URL`.
+      type: string
+      format: uri
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
       content:
         application/json:
           schema:
-            description: An error thrown by an API.
-            type: object
-            required:
-              - error
-              - reason
-            properties:
-              error:
-                type: boolean
-                example: true
-              reason:
-                type: string
+            $ref: '#/components/schemas/Error'
           examples:
             Unauthorized:
               value:
@@ -1085,13 +1242,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
     Unauthorized_BearerAuth:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             No auth provided:
               $ref: '#/components/examples/BearerAuthNoAuthError'
@@ -1104,13 +1261,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/GetPlacemark_Success/content/application~1json/schema'
+            $ref: '#/components/schemas/GeoJSONFeature'
     CreatePlacemark_BadRequest:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Missing field:
               $ref: '#/components/examples/CreatePlacemarkMissingFieldError'
@@ -1128,28 +1285,19 @@ components:
         application/json:
           schema:
             allOf:
-              - description: A paginated array.
-                type: object
-                required:
-                  - items
-                  - metadata
-                properties:
-                  items:
-                    type: array
-                  metadata:
-                    $ref: '#/components/schemas/UsersPage/properties/metadata'
+              - $ref: '#/components/schemas/Page'
               - type: object
                 properties:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/responses/GetPlacemark_Success/content/application~1json/schema'
+                      $ref: '#/components/schemas/GeoJSONFeature'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Invalid state query param:
               $ref: '#/components/examples/InvalidPlacemarkStateError'
@@ -1158,7 +1306,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Private state:
               value:
@@ -1169,76 +1317,13 @@ components:
       content:
         application/json:
           schema:
-            description: GeoJSON 'Feature' object
-            externalDocs:
-              url: 'https://tools.ietf.org/html/rfc7946#section-3.2'
-            allOf:
-              - externalDocs:
-                  url: 'https://tools.ietf.org/html/rfc7946#section-3'
-                type: object
-                required:
-                  - type
-                discriminator:
-                  propertyName: type
-                properties:
-                  type:
-                    type: string
-                    enum:
-                      - Feature
-                      - FeatureCollection
-                      - Point
-                      - MultiPoint
-                      - LineString
-                      - MultiLineString
-                      - Polygon
-                      - MultiPolygon
-                      - GeometryCollection
-                  bbox:
-                    type: array
-                    minItems: 4
-                    items:
-                      type: number
-              - type: object
-                required:
-                  - geometry
-                  - properties
-                properties:
-                  geometry:
-                    allOf:
-                      - nullable: true
-                      - externalDocs:
-                          url: 'https://tools.ietf.org/html/rfc7946#section-3'
-                        allOf:
-                          - $ref: '#/paths/~1placemarks~1v1~1/post/responses/201/content/application~1json/schema/allOf/0'
-                          - type: object
-                            required:
-                              - type
-                            discriminator:
-                              propertyName: type
-                            properties:
-                              type:
-                                type: string
-                                enum:
-                                  - Point
-                                  - MultiPoint
-                                  - LineString
-                                  - MultiLineString
-                                  - Polygon
-                                  - MultiPolygon
-                                  - GeometryCollection
-                  properties:
-                    type: object
-                    nullable: true
-                  id:
-                    oneOf:
-                      - type: number
-                      - type: string
+            $ref: '#/components/schemas/GeoJSONFeature'
     GetPlacemark_NotFound:
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -1247,7 +1332,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Not your placemark:
               $ref: '#/components/examples/CannotDeleteSomeoneElsesPlacemarkError'
@@ -1256,7 +1341,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -1271,7 +1356,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Not your placemark:
               $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
@@ -1282,7 +1367,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -1297,7 +1382,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -1306,7 +1391,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not submitted:
               $ref: '#/components/examples/PlacemarkNotSubmittedError'
@@ -1321,13 +1406,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
     AddPlacemarkSubmissionReview_Forbidden:
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/ForbiddenModeratedFlagError'
@@ -1336,7 +1421,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -1345,7 +1430,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not submitted:
               $ref: '#/components/examples/PlacemarkNotSubmittedError'
@@ -1360,7 +1445,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
@@ -1369,7 +1454,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Placemark not submitted:
               $ref: '#/components/examples/PlacemarkNotSubmittedError'
@@ -1384,7 +1469,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/UnauthorizedError/content/application~1json/schema'
+            $ref: '#/components/schemas/Error'
           examples:
             Invalid property kind:
               $ref: '#/components/examples/InvalidPlacemarkPropertyKindError'
@@ -1395,10 +1480,7 @@ components:
       description: A user ID.
       required: true
       schema:
-        description: A `UUID` (or `GUID`).
-        type: string
-        format: uuid
-        example: ad959e79-55c3-4445-8c51-a74b6d52691a
+        $ref: '#/components/schemas/ID'
     UsersOrder:
       in: query
       name: sort_by
@@ -1411,7 +1493,7 @@ components:
       description: A placemark `ID`.
       required: true
       schema:
-        $ref: '#/components/parameters/UserId/schema'
+        $ref: '#/components/schemas/ID'
     PlacemarkState:
       in: query
       name: state
@@ -1434,7 +1516,9 @@ components:
     PlacemarkSubmissionReviewOpinion:
       in: query
       name: opinion
-      description: 'An opinion to filter placemark submission reviews. If not set, results won''t be filtered.'
+      description: >-
+        An opinion to filter placemark submission reviews. If not set, results
+        won't be filtered.
       schema:
         $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
     PlacemarkSubmissionReviewsOrder:
@@ -1443,6 +1527,30 @@ components:
       description: 'The results order. If not set, results won''t be ordered.'
       schema:
         $ref: '#/components/schemas/PlacemarkSubmissionReviewsOrder'
+    PaginatePage:
+      in: query
+      name: page
+      description: >-
+        The pagination page. For example, if you paginate 1 to 42 per 10 and ask
+        for the third page, you will get 31 to 40.
+      required: true
+      schema:
+        $ref: '#/components/schemas/PaginatePage'
+    PaginatePerPage:
+      in: query
+      name: per
+      description: >-
+        The number of paginated items per page. For example, if you paginate 1
+        to 42 per 10 and ask for the third page, you will get 31 to 40.
+      required: true
+      schema:
+        $ref: '#/components/schemas/PaginatePerPage'
+    Locale:
+      in: query
+      name: locale
+      description: The desired locale for response localization.
+      schema:
+        $ref: '#/components/schemas/Locale'
   examples:
     NewPlacemark:
       summary: Newly created placemark
@@ -1454,7 +1562,8 @@ components:
         creator: D9CFF0B0-75DA-4A59-9BDB-A268299F4C97
         details:
           images: []
-          satellite_image: 'https://res.cloudinary.com/monki-projects/image/upload/f_auto/satellite_images/satellite-view-placeholder.jpg'
+          satellite_image: >-
+            https://res.cloudinary.com/monki-projects/image/upload/f_auto/satellite_images/satellite-view-placeholder.jpg
           caption: Test caption
           properties:
             technique: []
@@ -1654,7 +1763,9 @@ components:
     InvalidPlacemarkStateError:
       value:
         error: true
-        reason: Cannot initialize State from invalid String value lorem_ipsum for key state
+        reason: >-
+          Cannot initialize State from invalid String value lorem_ipsum for key
+          state
     InvalidPlacemarkPropertyError:
       value:
         error: true

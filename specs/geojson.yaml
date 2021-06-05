@@ -1,6 +1,6 @@
 # Adaptation of <https://gist.github.com/zit0un/3ac0575eb0f3aabdc645c3faad47ab4a>
 
-BBOX:
+GeoJSONBBox:
   type: array
   minItems: 4
   items:
@@ -17,7 +17,7 @@ GeoJSONObject:
       type: string
       enum: [Feature, FeatureCollection, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONGeometry:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3'
@@ -30,7 +30,7 @@ GeoJSONGeometry:
       type: string
       enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONGeometryElement:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3'
@@ -43,7 +43,7 @@ GeoJSONGeometryElement:
       type: string
       enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONPosition:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.1'
@@ -66,7 +66,7 @@ GeoJSONPoint:
     coordinates:
       $ref: '#/GeoJSONPosition'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONMultiPoint:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.3'
@@ -83,7 +83,7 @@ GeoJSONMultiPoint:
       items:
         $ref: '#/GeoJSONPosition'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONLineStringCoordinates:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
@@ -105,7 +105,7 @@ GeoJSONLineString:
     coordinates:
       $ref: '#/GeoJSONLineStringCoordinates'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONMultiLineString:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.5'
@@ -122,7 +122,7 @@ GeoJSONMultiLineString:
       items:
         $ref: '#/GeoJSONLineStringCoordinates'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONLinearRing:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
@@ -146,7 +146,7 @@ GeoJSONPolygon:
       items:
         $ref: '#/GeoJSONLinearRing'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONMultiPolygon:
   description: GeoJSON geometry
   externalDocs:
@@ -166,7 +166,7 @@ GeoJSONMultiPolygon:
         items:
           $ref: '#/GeoJSONLinearRing'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONGeometryCollection:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.8'
@@ -184,7 +184,11 @@ GeoJSONGeometryCollection:
         $ref: '#/GeoJSONGeometryElement'
       minItems: 0
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
+GeoJSONFeatureIdentifier:
+  oneOf:
+  - type: number
+  - type: string
 GeoJSONFeature:
   description: GeoJSON 'Feature' object
   externalDocs:
@@ -205,11 +209,9 @@ GeoJSONFeature:
       type: object
       nullable: true
     id:
-      oneOf:
-      - type: number
-      - type: string
+      $ref: '#/GeoJSONFeatureIdentifier'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'
 GeoJSONFeatureCollection:
   description: GeoJSON 'FeatureCollection' object
   externalDocs:
@@ -227,4 +229,4 @@ GeoJSONFeatureCollection:
       items:
         $ref: '#/GeoJSONFeature'
     bbox:
-      $ref: '#/BBOX'
+      $ref: '#/GeoJSONBBox'

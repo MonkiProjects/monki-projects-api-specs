@@ -1145,7 +1145,7 @@ components:
       description: An image `URL`.
       type: string
       format: uri
-    BBOX:
+    GeoJSONBBox:
       type: array
       minItems: 4
       items:
@@ -1170,7 +1170,11 @@ components:
             - MultiPolygon
             - GeometryCollection
         bbox:
-          $ref: '#/components/schemas/BBOX'
+          $ref: '#/components/schemas/GeoJSONBBox'
+    GeoJSONFeatureIdentifier:
+      oneOf:
+        - type: number
+        - type: string
     GeoJSONFeature:
       description: GeoJSON 'Feature' object
       externalDocs:
@@ -1203,11 +1207,9 @@ components:
           type: object
           nullable: true
         id:
-          oneOf:
-            - type: number
-            - type: string
+          $ref: '#/components/schemas/GeoJSONFeatureIdentifier'
         bbox:
-          $ref: '#/components/schemas/BBOX'
+          $ref: '#/components/schemas/GeoJSONBBox'
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.

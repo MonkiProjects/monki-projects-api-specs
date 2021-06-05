@@ -6159,7 +6159,7 @@
         "type": "string",
         "format": "uri"
       },
-      "BBOX": {
+      "GeoJSONBBox": {
         "type": "array",
         "minItems": 4,
         "items": {
@@ -6198,6 +6198,16 @@
             }
           }
         }
+      },
+      "GeoJSONFeatureIdentifier": {
+        "oneOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
       },
       "GeoJSONFeature": {
         "description": "GeoJSON 'Feature' object",

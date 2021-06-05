@@ -1141,17 +1141,10 @@ components:
       minLength: 2
       default: en
       example: fr-FR
-    Page:
-      description: A paginated array.
-      type: object
-      required:
-        - items
-        - metadata
-      properties:
-        items:
-          type: array
-        metadata:
-          $ref: '#/components/schemas/PaginateMetadata'
+    ImageURL:
+      description: An image `URL`.
+      type: string
+      format: uri
     GeoJSONObject:
       externalDocs:
         url: 'https://tools.ietf.org/html/rfc7946#section-3'
@@ -1221,10 +1214,6 @@ components:
               oneOf:
                 - type: number
                 - type: string
-    ImageURL:
-      description: An image `URL`.
-      type: string
-      format: uri
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
@@ -1284,14 +1273,7 @@ components:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/Page'
-              - type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GeoJSONFeature'
+            $ref: '#/components/schemas/PlacemarksPage'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:

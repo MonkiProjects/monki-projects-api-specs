@@ -1200,196 +1200,161 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "description": "A paginated array.",
-                      "type": "object",
-                      "required": [
-                        "items",
-                        "metadata"
-                      ],
-                      "properties": {
-                        "items": {
-                          "type": "array"
+                  "description": "A paginated array of placemarks.",
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "metadata"
+                  ],
+                  "properties": {
+                    "items": {
+                      "description": "An array of placemarks.",
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "description": "A placemark, with minimum data for rendering on a map.",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "name",
+                          "latitude",
+                          "longitude",
+                          "kind",
+                          "category",
+                          "state",
+                          "created_at",
+                          "updated_at"
+                        ],
+                        "properties": {
+                          "id": {
+                            "description": "A `UUID` (or `GUID`).",
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "ad959e79-55c3-4445-8c51-a74b6d52691a"
+                          },
+                          "name": {
+                            "description": "A placemark `name`.",
+                            "type": "string",
+                            "minLength": 3,
+                            "maxLength": 48
+                          },
+                          "latitude": {
+                            "description": "The latitude component of a coordinate.",
+                            "type": "number",
+                            "format": "double",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          "longitude": {
+                            "description": "The longitude component of a coordinate.",
+                            "type": "number",
+                            "format": "double",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          "kind": {
+                            "description": "A placemark kind `ID`.",
+                            "type": "string",
+                            "pattern": "^(?:[a-z0-9]+_)*[a-z0-9]+$"
+                          },
+                          "category": {
+                            "description": "A placemark category `ID`.",
+                            "type": "string",
+                            "enum": [
+                              "unknown",
+                              "spot",
+                              "facility",
+                              "misc"
+                            ]
+                          },
+                          "state": {
+                            "description": "The state in which a placemark is.",
+                            "type": "string",
+                            "enum": [
+                              "unknown",
+                              "draft",
+                              "local",
+                              "private",
+                              "submitted",
+                              "published",
+                              "rejected"
+                            ]
+                          },
+                          "created_at": {
+                            "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2017-07-21T17:32:28.000Z"
+                          },
+                          "updated_at": {
+                            "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2017-07-21T17:32:28.000Z"
+                          }
                         },
-                        "metadata": {
-                          "description": "Metadata about the response's pagination.",
-                          "type": "object",
-                          "required": [
-                            "page",
-                            "per",
-                            "total"
-                          ],
-                          "properties": {
-                            "page": {
-                              "description": "A pagination page number.",
-                              "type": "integer",
-                              "minimum": 1,
-                              "example": 3
+                        "example": {
+                          "summary": "Example spot",
+                          "value": {
+                            "id": "4f9058b3-3f8f-4b10-b3c0-e28c654012e4",
+                            "name": "Espace de street workout Vincent Gâche",
+                            "latitude": 47.207423,
+                            "longitude": -1.547817,
+                            "kind": {
+                              "id": "calisthenics_park",
+                              "title": "Parc de street workout",
+                              "locale": "fr-FR"
                             },
-                            "per": {
-                              "description": "The number of paginated items per page.",
-                              "type": "integer",
-                              "minimum": 1,
-                              "example": 10
+                            "category": {
+                              "id": "spot",
+                              "title": "Spot",
+                              "locale": "fr-FR"
                             },
-                            "total": {
-                              "description": "The total count of elements in a paginated result. It represents the total in all pages, and **does not** depend on the number of items per page.",
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 42
-                            }
+                            "state": "published",
+                            "created_at": "2020-12-02T01:43:52.285Z",
+                            "updated_at": "2020-12-22T22:26:11.618Z"
                           }
                         }
-                      }
+                      },
+                      "example": [
+                        {
+                          "$ref": "#/components/examples/Spot1"
+                        },
+                        {
+                          "$ref": "#/components/examples/Spot2"
+                        }
+                      ]
                     },
-                    {
+                    "metadata": {
+                      "description": "Metadata about the response's pagination.",
                       "type": "object",
+                      "required": [
+                        "page",
+                        "per",
+                        "total"
+                      ],
                       "properties": {
-                        "items": {
-                          "type": "array",
-                          "items": {
-                            "description": "GeoJSON 'Feature' object",
-                            "externalDocs": {
-                              "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
-                            },
-                            "allOf": [
-                              {
-                                "externalDocs": {
-                                  "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                },
-                                "type": "object",
-                                "required": [
-                                  "type"
-                                ],
-                                "discriminator": {
-                                  "propertyName": "type"
-                                },
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "enum": [
-                                      "Feature",
-                                      "FeatureCollection",
-                                      "Point",
-                                      "MultiPoint",
-                                      "LineString",
-                                      "MultiLineString",
-                                      "Polygon",
-                                      "MultiPolygon",
-                                      "GeometryCollection"
-                                    ]
-                                  },
-                                  "bbox": {
-                                    "type": "array",
-                                    "minItems": 4,
-                                    "items": {
-                                      "type": "number"
-                                    }
-                                  }
-                                }
-                              },
-                              {
-                                "type": "object",
-                                "required": [
-                                  "geometry",
-                                  "properties"
-                                ],
-                                "properties": {
-                                  "geometry": {
-                                    "allOf": [
-                                      {
-                                        "nullable": true
-                                      },
-                                      {
-                                        "externalDocs": {
-                                          "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                        },
-                                        "allOf": [
-                                          {
-                                            "externalDocs": {
-                                              "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                            },
-                                            "type": "object",
-                                            "required": [
-                                              "type"
-                                            ],
-                                            "discriminator": {
-                                              "propertyName": "type"
-                                            },
-                                            "properties": {
-                                              "type": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "Feature",
-                                                  "FeatureCollection",
-                                                  "Point",
-                                                  "MultiPoint",
-                                                  "LineString",
-                                                  "MultiLineString",
-                                                  "Polygon",
-                                                  "MultiPolygon",
-                                                  "GeometryCollection"
-                                                ]
-                                              },
-                                              "bbox": {
-                                                "type": "array",
-                                                "minItems": 4,
-                                                "items": {
-                                                  "type": "number"
-                                                }
-                                              }
-                                            }
-                                          },
-                                          {
-                                            "type": "object",
-                                            "required": [
-                                              "type"
-                                            ],
-                                            "discriminator": {
-                                              "propertyName": "type"
-                                            },
-                                            "properties": {
-                                              "type": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "Point",
-                                                  "MultiPoint",
-                                                  "LineString",
-                                                  "MultiLineString",
-                                                  "Polygon",
-                                                  "MultiPolygon",
-                                                  "GeometryCollection"
-                                                ]
-                                              }
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "properties": {
-                                    "type": "object",
-                                    "nullable": true
-                                  },
-                                  "id": {
-                                    "oneOf": [
-                                      {
-                                        "type": "number"
-                                      },
-                                      {
-                                        "type": "string"
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
-                            ]
-                          }
+                        "page": {
+                          "description": "A pagination page number.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "example": 3
+                        },
+                        "per": {
+                          "description": "The number of paginated items per page.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "example": 10
+                        },
+                        "total": {
+                          "description": "The total count of elements in a paginated result. It represents the total in all pages, and **does not** depend on the number of items per page.",
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 42
                         }
                       }
                     }
-                  ]
+                  }
                 }
               }
             }
@@ -6281,47 +6246,10 @@
         "default": "en",
         "example": "fr-FR"
       },
-      "Page": {
-        "description": "A paginated array.",
-        "type": "object",
-        "required": [
-          "items",
-          "metadata"
-        ],
-        "properties": {
-          "items": {
-            "type": "array"
-          },
-          "metadata": {
-            "description": "Metadata about the response's pagination.",
-            "type": "object",
-            "required": [
-              "page",
-              "per",
-              "total"
-            ],
-            "properties": {
-              "page": {
-                "description": "A pagination page number.",
-                "type": "integer",
-                "minimum": 1,
-                "example": 3
-              },
-              "per": {
-                "description": "The number of paginated items per page.",
-                "type": "integer",
-                "minimum": 1,
-                "example": 10
-              },
-              "total": {
-                "description": "The total count of elements in a paginated result. It represents the total in all pages, and **does not** depend on the number of items per page.",
-                "type": "integer",
-                "minimum": 0,
-                "example": 42
-              }
-            }
-          }
-        }
+      "ImageURL": {
+        "description": "An image `URL`.",
+        "type": "string",
+        "format": "uri"
       },
       "GeoJSONObject": {
         "externalDocs": {
@@ -6560,11 +6488,6 @@
             }
           }
         ]
-      },
-      "ImageURL": {
-        "description": "An image `URL`.",
-        "type": "string",
-        "format": "uri"
       }
     },
     "responses": {
@@ -6875,196 +6798,161 @@
         "content": {
           "application/json": {
             "schema": {
-              "allOf": [
-                {
-                  "description": "A paginated array.",
-                  "type": "object",
-                  "required": [
-                    "items",
-                    "metadata"
-                  ],
-                  "properties": {
-                    "items": {
-                      "type": "array"
+              "description": "A paginated array of placemarks.",
+              "type": "object",
+              "required": [
+                "items",
+                "metadata"
+              ],
+              "properties": {
+                "items": {
+                  "description": "An array of placemarks.",
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "description": "A placemark, with minimum data for rendering on a map.",
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name",
+                      "latitude",
+                      "longitude",
+                      "kind",
+                      "category",
+                      "state",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "id": {
+                        "description": "A `UUID` (or `GUID`).",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "ad959e79-55c3-4445-8c51-a74b6d52691a"
+                      },
+                      "name": {
+                        "description": "A placemark `name`.",
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 48
+                      },
+                      "latitude": {
+                        "description": "The latitude component of a coordinate.",
+                        "type": "number",
+                        "format": "double",
+                        "minimum": -90,
+                        "maximum": 90
+                      },
+                      "longitude": {
+                        "description": "The longitude component of a coordinate.",
+                        "type": "number",
+                        "format": "double",
+                        "minimum": -180,
+                        "maximum": 180
+                      },
+                      "kind": {
+                        "description": "A placemark kind `ID`.",
+                        "type": "string",
+                        "pattern": "^(?:[a-z0-9]+_)*[a-z0-9]+$"
+                      },
+                      "category": {
+                        "description": "A placemark category `ID`.",
+                        "type": "string",
+                        "enum": [
+                          "unknown",
+                          "spot",
+                          "facility",
+                          "misc"
+                        ]
+                      },
+                      "state": {
+                        "description": "The state in which a placemark is.",
+                        "type": "string",
+                        "enum": [
+                          "unknown",
+                          "draft",
+                          "local",
+                          "private",
+                          "submitted",
+                          "published",
+                          "rejected"
+                        ]
+                      },
+                      "created_at": {
+                        "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2017-07-21T17:32:28.000Z"
+                      },
+                      "updated_at": {
+                        "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2017-07-21T17:32:28.000Z"
+                      }
                     },
-                    "metadata": {
-                      "description": "Metadata about the response's pagination.",
-                      "type": "object",
-                      "required": [
-                        "page",
-                        "per",
-                        "total"
-                      ],
-                      "properties": {
-                        "page": {
-                          "description": "A pagination page number.",
-                          "type": "integer",
-                          "minimum": 1,
-                          "example": 3
+                    "example": {
+                      "summary": "Example spot",
+                      "value": {
+                        "id": "4f9058b3-3f8f-4b10-b3c0-e28c654012e4",
+                        "name": "Espace de street workout Vincent Gâche",
+                        "latitude": 47.207423,
+                        "longitude": -1.547817,
+                        "kind": {
+                          "id": "calisthenics_park",
+                          "title": "Parc de street workout",
+                          "locale": "fr-FR"
                         },
-                        "per": {
-                          "description": "The number of paginated items per page.",
-                          "type": "integer",
-                          "minimum": 1,
-                          "example": 10
+                        "category": {
+                          "id": "spot",
+                          "title": "Spot",
+                          "locale": "fr-FR"
                         },
-                        "total": {
-                          "description": "The total count of elements in a paginated result. It represents the total in all pages, and **does not** depend on the number of items per page.",
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 42
-                        }
+                        "state": "published",
+                        "created_at": "2020-12-02T01:43:52.285Z",
+                        "updated_at": "2020-12-22T22:26:11.618Z"
                       }
                     }
-                  }
+                  },
+                  "example": [
+                    {
+                      "$ref": "#/components/examples/Spot1"
+                    },
+                    {
+                      "$ref": "#/components/examples/Spot2"
+                    }
+                  ]
                 },
-                {
+                "metadata": {
+                  "description": "Metadata about the response's pagination.",
                   "type": "object",
+                  "required": [
+                    "page",
+                    "per",
+                    "total"
+                  ],
                   "properties": {
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "description": "GeoJSON 'Feature' object",
-                        "externalDocs": {
-                          "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
-                        },
-                        "allOf": [
-                          {
-                            "externalDocs": {
-                              "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                            },
-                            "type": "object",
-                            "required": [
-                              "type"
-                            ],
-                            "discriminator": {
-                              "propertyName": "type"
-                            },
-                            "properties": {
-                              "type": {
-                                "type": "string",
-                                "enum": [
-                                  "Feature",
-                                  "FeatureCollection",
-                                  "Point",
-                                  "MultiPoint",
-                                  "LineString",
-                                  "MultiLineString",
-                                  "Polygon",
-                                  "MultiPolygon",
-                                  "GeometryCollection"
-                                ]
-                              },
-                              "bbox": {
-                                "type": "array",
-                                "minItems": 4,
-                                "items": {
-                                  "type": "number"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "type": "object",
-                            "required": [
-                              "geometry",
-                              "properties"
-                            ],
-                            "properties": {
-                              "geometry": {
-                                "allOf": [
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "externalDocs": {
-                                      "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                    },
-                                    "allOf": [
-                                      {
-                                        "externalDocs": {
-                                          "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                        },
-                                        "type": "object",
-                                        "required": [
-                                          "type"
-                                        ],
-                                        "discriminator": {
-                                          "propertyName": "type"
-                                        },
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "Feature",
-                                              "FeatureCollection",
-                                              "Point",
-                                              "MultiPoint",
-                                              "LineString",
-                                              "MultiLineString",
-                                              "Polygon",
-                                              "MultiPolygon",
-                                              "GeometryCollection"
-                                            ]
-                                          },
-                                          "bbox": {
-                                            "type": "array",
-                                            "minItems": 4,
-                                            "items": {
-                                              "type": "number"
-                                            }
-                                          }
-                                        }
-                                      },
-                                      {
-                                        "type": "object",
-                                        "required": [
-                                          "type"
-                                        ],
-                                        "discriminator": {
-                                          "propertyName": "type"
-                                        },
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "Point",
-                                              "MultiPoint",
-                                              "LineString",
-                                              "MultiLineString",
-                                              "Polygon",
-                                              "MultiPolygon",
-                                              "GeometryCollection"
-                                            ]
-                                          }
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              "properties": {
-                                "type": "object",
-                                "nullable": true
-                              },
-                              "id": {
-                                "oneOf": [
-                                  {
-                                    "type": "number"
-                                  },
-                                  {
-                                    "type": "string"
-                                  }
-                                ]
-                              }
-                            }
-                          }
-                        ]
-                      }
+                    "page": {
+                      "description": "A pagination page number.",
+                      "type": "integer",
+                      "minimum": 1,
+                      "example": 3
+                    },
+                    "per": {
+                      "description": "The number of paginated items per page.",
+                      "type": "integer",
+                      "minimum": 1,
+                      "example": 10
+                    },
+                    "total": {
+                      "description": "The total count of elements in a paginated result. It represents the total in all pages, and **does not** depend on the number of items per page.",
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 42
                     }
                   }
                 }
-              ]
+              }
             }
           }
         }

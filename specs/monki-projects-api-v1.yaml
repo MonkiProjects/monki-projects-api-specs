@@ -1081,14 +1081,7 @@ components:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: schemas.yaml#/Page
-              - type: object
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: geojson.yaml#/GeoJSONFeature
+            $ref: '#/components/schemas/PlacemarksPage'
     ListPlacemarks_BadRequest:
       description: Bad Request
       content:

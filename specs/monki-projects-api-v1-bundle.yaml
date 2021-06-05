@@ -1145,12 +1145,41 @@ components:
       description: An image `URL`.
       type: string
       format: uri
-    GeoJSONObject:
+    BBOX:
+      type: array
+      minItems: 4
+      items:
+        type: number
+    GeoJSONGeometry:
       externalDocs:
         url: 'https://tools.ietf.org/html/rfc7946#section-3'
       type: object
       required:
         - type
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+          enum:
+            - Point
+            - MultiPoint
+            - LineString
+            - MultiLineString
+            - Polygon
+            - MultiPolygon
+            - GeometryCollection
+        bbox:
+          $ref: '#/components/schemas/BBOX'
+    GeoJSONFeature:
+      description: GeoJSON 'Feature' object
+      externalDocs:
+        url: 'https://tools.ietf.org/html/rfc7946#section-3.2'
+      type: object
+      required:
+        - type
+        - geometry
+        - properties
       discriminator:
         propertyName: type
       properties:
@@ -1166,54 +1195,19 @@ components:
             - Polygon
             - MultiPolygon
             - GeometryCollection
+        geometry:
+          allOf:
+            - nullable: true
+            - $ref: '#/components/schemas/GeoJSONGeometry'
+        properties:
+          type: object
+          nullable: true
+        id:
+          oneOf:
+            - type: number
+            - type: string
         bbox:
-          type: array
-          minItems: 4
-          items:
-            type: number
-    GeoJSONGeometry:
-      externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3'
-      allOf:
-        - $ref: '#/components/schemas/GeoJSONObject'
-        - type: object
-          required:
-            - type
-          discriminator:
-            propertyName: type
-          properties:
-            type:
-              type: string
-              enum:
-                - Point
-                - MultiPoint
-                - LineString
-                - MultiLineString
-                - Polygon
-                - MultiPolygon
-                - GeometryCollection
-    GeoJSONFeature:
-      description: GeoJSON 'Feature' object
-      externalDocs:
-        url: 'https://tools.ietf.org/html/rfc7946#section-3.2'
-      allOf:
-        - $ref: '#/components/schemas/GeoJSONObject'
-        - type: object
-          required:
-            - geometry
-            - properties
-          properties:
-            geometry:
-              allOf:
-                - nullable: true
-                - $ref: '#/components/schemas/GeoJSONGeometry'
-            properties:
-              type: object
-              nullable: true
-            id:
-              oneOf:
-                - type: number
-                - type: string
+          $ref: '#/components/schemas/BBOX'
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.

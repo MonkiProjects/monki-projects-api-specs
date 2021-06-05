@@ -1,5 +1,10 @@
 # Adaptation of <https://gist.github.com/zit0un/3ac0575eb0f3aabdc645c3faad47ab4a>
 
+BBOX:
+  type: array
+  minItems: 4
+  items:
+    type: number
 GeoJSONObject:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3'
@@ -8,43 +13,37 @@ GeoJSONObject:
   discriminator:
     propertyName: type
   properties:
-    'type':
+    type:
       type: string
-      enum: [
-        Feature, FeatureCollection, Point, MultiPoint, LineString, MultiLineString,
-        Polygon, MultiPolygon, GeometryCollection
-      ]
-    'bbox':
-      type: array
-      minItems: 4
-      items:
-        type: number
+      enum: [Feature, FeatureCollection, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONGeometry:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3'
-  allOf:
-  - $ref: '#/GeoJSONObject'
-  - type: object
-    required: [type]
-    discriminator:
-      propertyName: type
-    properties:
-      'type':
-        type: string
-        enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+  type: object
+  required: [type]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONGeometryElement:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3'
-  allOf:
-  - $ref: '#/GeoJSONGeometry'
-  - type: object
-    required: [type]
-    discriminator:
-      propertyName: type
-    properties:
-      'type':
-        type: string
-        enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+  type: object
+  required: [type]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONPosition:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.1'
@@ -56,25 +55,35 @@ GeoJSONPosition:
 GeoJSONPoint:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.2'
-  allOf:
-    - $ref: '#/GeoJSONGeometryElement'
-    - type: object
-      required: [coordinates]
-      properties:
-        'coordinates':
-          $ref: '#/GeoJSONPosition'
+  type: object
+  required: [type, coordinates]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    coordinates:
+      $ref: '#/GeoJSONPosition'
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONMultiPoint:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.3'
-  allOf:
-    - $ref: '#/GeoJSONGeometryElement'
-    - type: object
-      required: [coordinates]
-      properties:
-        'coordinates':
-          type: array
-          items:
-            $ref: '#/GeoJSONPosition'
+  type: object
+  required: [type, coordinates]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    coordinates:
+      type: array
+      items:
+        $ref: '#/GeoJSONPosition'
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONLineStringCoordinates:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
@@ -85,25 +94,35 @@ GeoJSONLineStringCoordinates:
 GeoJSONLineString:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.4'
-  allOf:
-    - $ref: '#/GeoJSONGeometryElement'
-    - type: object
-      required: [coordinates]
-      properties:
-        'coordinates':
-          $ref: '#/GeoJSONLineStringCoordinates'
+  type: object
+  required: [type, coordinates]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    coordinates:
+      $ref: '#/GeoJSONLineStringCoordinates'
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONMultiLineString:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.5'
-  allOf:
-    - $ref: '#/GeoJSONGeometryElement'
-    - type: object
-      required: [coordinates]
-      properties:
-        'coordinates':
-          type: array
-          items:
-            $ref: '#/GeoJSONLineStringCoordinates'
+  type: object
+  required: [type, coordinates]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    coordinates:
+      type: array
+      items:
+        $ref: '#/GeoJSONLineStringCoordinates'
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONLinearRing:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
@@ -114,74 +133,98 @@ GeoJSONLinearRing:
 GeoJSONPolygon:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.6'
-  allOf:
-    - $ref: '#/GeoJSONGeometryElement'
-    - type: object
-      required: [coordinates]
-      properties:
-        'coordinates':
-          type: array
-          items:
-            $ref: '#/GeoJSONLinearRing'
+  type: object
+  required: [type, coordinates]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    coordinates:
+      type: array
+      items:
+        $ref: '#/GeoJSONLinearRing'
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONMultiPolygon:
   description: GeoJSON geometry
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.7'
-  allOf:
-    - $ref: '#/GeoJSONGeometryElement'
-    - type: object
-      required: [coordinates]
-      properties:
-        'coordinates':
-          type: array
-          items:
-            type: array
-            items:
-              $ref: '#/GeoJSONLinearRing'
-GeoJSONGeometryCollection:
   type: object
+  required: [type, coordinates]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon]
+    coordinates:
+      type: array
+      items:
+        type: array
+        items:
+          $ref: '#/GeoJSONLinearRing'
+    bbox:
+      $ref: '#/BBOX'
+GeoJSONGeometryCollection:
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.1.8'
-  allOf:
-    - $ref: '#/GeoJSONGeometry'
-    - type: object
-      required: [geometries]
-      properties:
-        'geometries':
-          type: array
-          items:
-            $ref: '#/GeoJSONGeometryElement'
-          minItems: 0
+  type: object
+  required: [type, geometries]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+    geometries:
+      type: array
+      items:
+        $ref: '#/GeoJSONGeometryElement'
+      minItems: 0
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONFeature:
   description: GeoJSON 'Feature' object
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.2'
-  allOf:
-  - $ref: '#/GeoJSONObject'
-  - type: object
-    required: [geometry, properties]
+  type: object
+  required: [type, geometry, properties]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Feature, FeatureCollection, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+    geometry:
+      allOf:
+      - nullable: true
+      - $ref: '#/GeoJSONGeometry'
     properties:
-      'geometry':
-        allOf:
-        - nullable: true
-        - $ref: '#/GeoJSONGeometry'
-      'properties':
-        type: object
-        nullable: true
-      'id':
-        oneOf:
-        - type: number
-        - type: string
+      type: object
+      nullable: true
+    id:
+      oneOf:
+      - type: number
+      - type: string
+    bbox:
+      $ref: '#/BBOX'
 GeoJSONFeatureCollection:
   description: GeoJSON 'FeatureCollection' object
   externalDocs:
     url: 'https://tools.ietf.org/html/rfc7946#section-3.3'
-  allOf:
-  - $ref: '#/GeoJSONObject'
-  - type: object
-    required: [features]
-    properties:
-      'features':
-        type: array
-        items:
-          $ref: '#/GeoJSONFeature'
+  type: object
+  required: [type, features]
+  discriminator:
+    propertyName: type
+  properties:
+    type:
+      type: string
+      enum: [Feature, FeatureCollection, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection]
+    features:
+      type: array
+      items:
+        $ref: '#/GeoJSONFeature'
+    bbox:
+      $ref: '#/BBOX'

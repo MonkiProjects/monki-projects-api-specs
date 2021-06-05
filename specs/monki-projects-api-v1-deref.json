@@ -875,138 +875,92 @@
                   "externalDocs": {
                     "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
                   },
-                  "allOf": [
-                    {
-                      "externalDocs": {
-                        "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                      },
-                      "type": "object",
-                      "required": [
-                        "type"
-                      ],
-                      "discriminator": {
-                        "propertyName": "type"
-                      },
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "Feature",
-                            "FeatureCollection",
-                            "Point",
-                            "MultiPoint",
-                            "LineString",
-                            "MultiLineString",
-                            "Polygon",
-                            "MultiPolygon",
-                            "GeometryCollection"
-                          ]
-                        },
-                        "bbox": {
-                          "type": "array",
-                          "minItems": 4,
-                          "items": {
-                            "type": "number"
-                          }
-                        }
-                      }
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "geometry",
+                    "properties"
+                  ],
+                  "discriminator": {
+                    "propertyName": "type"
+                  },
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "Feature",
+                        "FeatureCollection",
+                        "Point",
+                        "MultiPoint",
+                        "LineString",
+                        "MultiLineString",
+                        "Polygon",
+                        "MultiPolygon",
+                        "GeometryCollection"
+                      ]
                     },
-                    {
-                      "type": "object",
-                      "required": [
-                        "geometry",
-                        "properties"
-                      ],
-                      "properties": {
-                        "geometry": {
-                          "allOf": [
-                            {
-                              "nullable": true
-                            },
-                            {
-                              "externalDocs": {
-                                "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                              },
-                              "allOf": [
-                                {
-                                  "externalDocs": {
-                                    "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                  },
-                                  "type": "object",
-                                  "required": [
-                                    "type"
-                                  ],
-                                  "discriminator": {
-                                    "propertyName": "type"
-                                  },
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "Feature",
-                                        "FeatureCollection",
-                                        "Point",
-                                        "MultiPoint",
-                                        "LineString",
-                                        "MultiLineString",
-                                        "Polygon",
-                                        "MultiPolygon",
-                                        "GeometryCollection"
-                                      ]
-                                    },
-                                    "bbox": {
-                                      "type": "array",
-                                      "minItems": 4,
-                                      "items": {
-                                        "type": "number"
-                                      }
-                                    }
-                                  }
-                                },
-                                {
-                                  "type": "object",
-                                  "required": [
-                                    "type"
-                                  ],
-                                  "discriminator": {
-                                    "propertyName": "type"
-                                  },
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "Point",
-                                        "MultiPoint",
-                                        "LineString",
-                                        "MultiLineString",
-                                        "Polygon",
-                                        "MultiPolygon",
-                                        "GeometryCollection"
-                                      ]
-                                    }
-                                  }
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "properties": {
-                          "type": "object",
+                    "geometry": {
+                      "allOf": [
+                        {
                           "nullable": true
                         },
-                        "id": {
-                          "oneOf": [
-                            {
-                              "type": "number"
+                        {
+                          "externalDocs": {
+                            "url": "https://tools.ietf.org/html/rfc7946#section-3"
+                          },
+                          "type": "object",
+                          "required": [
+                            "type"
+                          ],
+                          "discriminator": {
+                            "propertyName": "type"
+                          },
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "Point",
+                                "MultiPoint",
+                                "LineString",
+                                "MultiLineString",
+                                "Polygon",
+                                "MultiPolygon",
+                                "GeometryCollection"
+                              ]
                             },
-                            {
-                              "type": "string"
+                            "bbox": {
+                              "type": "array",
+                              "minItems": 4,
+                              "items": {
+                                "type": "number"
+                              }
                             }
-                          ]
+                          }
                         }
+                      ]
+                    },
+                    "properties": {
+                      "type": "object",
+                      "nullable": true
+                    },
+                    "id": {
+                      "oneOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "bbox": {
+                      "type": "array",
+                      "minItems": 4,
+                      "items": {
+                        "type": "number"
                       }
                     }
-                  ]
+                  }
                 }
               }
             }
@@ -1516,138 +1470,92 @@
                   "externalDocs": {
                     "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
                   },
-                  "allOf": [
-                    {
-                      "externalDocs": {
-                        "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                      },
-                      "type": "object",
-                      "required": [
-                        "type"
-                      ],
-                      "discriminator": {
-                        "propertyName": "type"
-                      },
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "Feature",
-                            "FeatureCollection",
-                            "Point",
-                            "MultiPoint",
-                            "LineString",
-                            "MultiLineString",
-                            "Polygon",
-                            "MultiPolygon",
-                            "GeometryCollection"
-                          ]
-                        },
-                        "bbox": {
-                          "type": "array",
-                          "minItems": 4,
-                          "items": {
-                            "type": "number"
-                          }
-                        }
-                      }
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "geometry",
+                    "properties"
+                  ],
+                  "discriminator": {
+                    "propertyName": "type"
+                  },
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "Feature",
+                        "FeatureCollection",
+                        "Point",
+                        "MultiPoint",
+                        "LineString",
+                        "MultiLineString",
+                        "Polygon",
+                        "MultiPolygon",
+                        "GeometryCollection"
+                      ]
                     },
-                    {
-                      "type": "object",
-                      "required": [
-                        "geometry",
-                        "properties"
-                      ],
-                      "properties": {
-                        "geometry": {
-                          "allOf": [
-                            {
-                              "nullable": true
-                            },
-                            {
-                              "externalDocs": {
-                                "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                              },
-                              "allOf": [
-                                {
-                                  "externalDocs": {
-                                    "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                                  },
-                                  "type": "object",
-                                  "required": [
-                                    "type"
-                                  ],
-                                  "discriminator": {
-                                    "propertyName": "type"
-                                  },
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "Feature",
-                                        "FeatureCollection",
-                                        "Point",
-                                        "MultiPoint",
-                                        "LineString",
-                                        "MultiLineString",
-                                        "Polygon",
-                                        "MultiPolygon",
-                                        "GeometryCollection"
-                                      ]
-                                    },
-                                    "bbox": {
-                                      "type": "array",
-                                      "minItems": 4,
-                                      "items": {
-                                        "type": "number"
-                                      }
-                                    }
-                                  }
-                                },
-                                {
-                                  "type": "object",
-                                  "required": [
-                                    "type"
-                                  ],
-                                  "discriminator": {
-                                    "propertyName": "type"
-                                  },
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "Point",
-                                        "MultiPoint",
-                                        "LineString",
-                                        "MultiLineString",
-                                        "Polygon",
-                                        "MultiPolygon",
-                                        "GeometryCollection"
-                                      ]
-                                    }
-                                  }
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "properties": {
-                          "type": "object",
+                    "geometry": {
+                      "allOf": [
+                        {
                           "nullable": true
                         },
-                        "id": {
-                          "oneOf": [
-                            {
-                              "type": "number"
+                        {
+                          "externalDocs": {
+                            "url": "https://tools.ietf.org/html/rfc7946#section-3"
+                          },
+                          "type": "object",
+                          "required": [
+                            "type"
+                          ],
+                          "discriminator": {
+                            "propertyName": "type"
+                          },
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "Point",
+                                "MultiPoint",
+                                "LineString",
+                                "MultiLineString",
+                                "Polygon",
+                                "MultiPolygon",
+                                "GeometryCollection"
+                              ]
                             },
-                            {
-                              "type": "string"
+                            "bbox": {
+                              "type": "array",
+                              "minItems": 4,
+                              "items": {
+                                "type": "number"
+                              }
                             }
-                          ]
+                          }
                         }
+                      ]
+                    },
+                    "properties": {
+                      "type": "object",
+                      "nullable": true
+                    },
+                    "id": {
+                      "oneOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "bbox": {
+                      "type": "array",
+                      "minItems": 4,
+                      "items": {
+                        "type": "number"
                       }
                     }
-                  ]
+                  }
                 }
               }
             }
@@ -6251,13 +6159,56 @@
         "type": "string",
         "format": "uri"
       },
-      "GeoJSONObject": {
+      "BBOX": {
+        "type": "array",
+        "minItems": 4,
+        "items": {
+          "type": "number"
+        }
+      },
+      "GeoJSONGeometry": {
         "externalDocs": {
           "url": "https://tools.ietf.org/html/rfc7946#section-3"
         },
         "type": "object",
         "required": [
           "type"
+        ],
+        "discriminator": {
+          "propertyName": "type"
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Point",
+              "MultiPoint",
+              "LineString",
+              "MultiLineString",
+              "Polygon",
+              "MultiPolygon",
+              "GeometryCollection"
+            ]
+          },
+          "bbox": {
+            "type": "array",
+            "minItems": 4,
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "GeoJSONFeature": {
+        "description": "GeoJSON 'Feature' object",
+        "externalDocs": {
+          "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "geometry",
+          "properties"
         ],
         "discriminator": {
           "propertyName": "type"
@@ -6277,6 +6228,60 @@
               "GeometryCollection"
             ]
           },
+          "geometry": {
+            "allOf": [
+              {
+                "nullable": true
+              },
+              {
+                "externalDocs": {
+                  "url": "https://tools.ietf.org/html/rfc7946#section-3"
+                },
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "discriminator": {
+                  "propertyName": "type"
+                },
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "Point",
+                      "MultiPoint",
+                      "LineString",
+                      "MultiLineString",
+                      "Polygon",
+                      "MultiPolygon",
+                      "GeometryCollection"
+                    ]
+                  },
+                  "bbox": {
+                    "type": "array",
+                    "minItems": 4,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "properties": {
+            "type": "object",
+            "nullable": true
+          },
+          "id": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
           "bbox": {
             "type": "array",
             "minItems": 4,
@@ -6285,209 +6290,6 @@
             }
           }
         }
-      },
-      "GeoJSONGeometry": {
-        "externalDocs": {
-          "url": "https://tools.ietf.org/html/rfc7946#section-3"
-        },
-        "allOf": [
-          {
-            "externalDocs": {
-              "url": "https://tools.ietf.org/html/rfc7946#section-3"
-            },
-            "type": "object",
-            "required": [
-              "type"
-            ],
-            "discriminator": {
-              "propertyName": "type"
-            },
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "Feature",
-                  "FeatureCollection",
-                  "Point",
-                  "MultiPoint",
-                  "LineString",
-                  "MultiLineString",
-                  "Polygon",
-                  "MultiPolygon",
-                  "GeometryCollection"
-                ]
-              },
-              "bbox": {
-                "type": "array",
-                "minItems": 4,
-                "items": {
-                  "type": "number"
-                }
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
-              "type"
-            ],
-            "discriminator": {
-              "propertyName": "type"
-            },
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "Point",
-                  "MultiPoint",
-                  "LineString",
-                  "MultiLineString",
-                  "Polygon",
-                  "MultiPolygon",
-                  "GeometryCollection"
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "GeoJSONFeature": {
-        "description": "GeoJSON 'Feature' object",
-        "externalDocs": {
-          "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
-        },
-        "allOf": [
-          {
-            "externalDocs": {
-              "url": "https://tools.ietf.org/html/rfc7946#section-3"
-            },
-            "type": "object",
-            "required": [
-              "type"
-            ],
-            "discriminator": {
-              "propertyName": "type"
-            },
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "Feature",
-                  "FeatureCollection",
-                  "Point",
-                  "MultiPoint",
-                  "LineString",
-                  "MultiLineString",
-                  "Polygon",
-                  "MultiPolygon",
-                  "GeometryCollection"
-                ]
-              },
-              "bbox": {
-                "type": "array",
-                "minItems": 4,
-                "items": {
-                  "type": "number"
-                }
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
-              "geometry",
-              "properties"
-            ],
-            "properties": {
-              "geometry": {
-                "allOf": [
-                  {
-                    "nullable": true
-                  },
-                  {
-                    "externalDocs": {
-                      "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                    },
-                    "allOf": [
-                      {
-                        "externalDocs": {
-                          "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                        },
-                        "type": "object",
-                        "required": [
-                          "type"
-                        ],
-                        "discriminator": {
-                          "propertyName": "type"
-                        },
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "Feature",
-                              "FeatureCollection",
-                              "Point",
-                              "MultiPoint",
-                              "LineString",
-                              "MultiLineString",
-                              "Polygon",
-                              "MultiPolygon",
-                              "GeometryCollection"
-                            ]
-                          },
-                          "bbox": {
-                            "type": "array",
-                            "minItems": 4,
-                            "items": {
-                              "type": "number"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "type": "object",
-                        "required": [
-                          "type"
-                        ],
-                        "discriminator": {
-                          "propertyName": "type"
-                        },
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "Point",
-                              "MultiPoint",
-                              "LineString",
-                              "MultiLineString",
-                              "Polygon",
-                              "MultiPolygon",
-                              "GeometryCollection"
-                            ]
-                          }
-                        }
-                      }
-                    ]
-                  }
-                ]
-              },
-              "properties": {
-                "type": "object",
-                "nullable": true
-              },
-              "id": {
-                "oneOf": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
-              }
-            }
-          }
-        ]
       }
     },
     "responses": {
@@ -6600,138 +6402,92 @@
               "externalDocs": {
                 "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
               },
-              "allOf": [
-                {
-                  "externalDocs": {
-                    "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                  },
-                  "type": "object",
-                  "required": [
-                    "type"
-                  ],
-                  "discriminator": {
-                    "propertyName": "type"
-                  },
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "Feature",
-                        "FeatureCollection",
-                        "Point",
-                        "MultiPoint",
-                        "LineString",
-                        "MultiLineString",
-                        "Polygon",
-                        "MultiPolygon",
-                        "GeometryCollection"
-                      ]
-                    },
-                    "bbox": {
-                      "type": "array",
-                      "minItems": 4,
-                      "items": {
-                        "type": "number"
-                      }
-                    }
-                  }
+              "type": "object",
+              "required": [
+                "type",
+                "geometry",
+                "properties"
+              ],
+              "discriminator": {
+                "propertyName": "type"
+              },
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "Feature",
+                    "FeatureCollection",
+                    "Point",
+                    "MultiPoint",
+                    "LineString",
+                    "MultiLineString",
+                    "Polygon",
+                    "MultiPolygon",
+                    "GeometryCollection"
+                  ]
                 },
-                {
-                  "type": "object",
-                  "required": [
-                    "geometry",
-                    "properties"
-                  ],
-                  "properties": {
-                    "geometry": {
-                      "allOf": [
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "externalDocs": {
-                            "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                          },
-                          "allOf": [
-                            {
-                              "externalDocs": {
-                                "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                              },
-                              "type": "object",
-                              "required": [
-                                "type"
-                              ],
-                              "discriminator": {
-                                "propertyName": "type"
-                              },
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "enum": [
-                                    "Feature",
-                                    "FeatureCollection",
-                                    "Point",
-                                    "MultiPoint",
-                                    "LineString",
-                                    "MultiLineString",
-                                    "Polygon",
-                                    "MultiPolygon",
-                                    "GeometryCollection"
-                                  ]
-                                },
-                                "bbox": {
-                                  "type": "array",
-                                  "minItems": 4,
-                                  "items": {
-                                    "type": "number"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "type": "object",
-                              "required": [
-                                "type"
-                              ],
-                              "discriminator": {
-                                "propertyName": "type"
-                              },
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "enum": [
-                                    "Point",
-                                    "MultiPoint",
-                                    "LineString",
-                                    "MultiLineString",
-                                    "Polygon",
-                                    "MultiPolygon",
-                                    "GeometryCollection"
-                                  ]
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "properties": {
-                      "type": "object",
+                "geometry": {
+                  "allOf": [
+                    {
                       "nullable": true
                     },
-                    "id": {
-                      "oneOf": [
-                        {
-                          "type": "number"
+                    {
+                      "externalDocs": {
+                        "url": "https://tools.ietf.org/html/rfc7946#section-3"
+                      },
+                      "type": "object",
+                      "required": [
+                        "type"
+                      ],
+                      "discriminator": {
+                        "propertyName": "type"
+                      },
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "Point",
+                            "MultiPoint",
+                            "LineString",
+                            "MultiLineString",
+                            "Polygon",
+                            "MultiPolygon",
+                            "GeometryCollection"
+                          ]
                         },
-                        {
-                          "type": "string"
+                        "bbox": {
+                          "type": "array",
+                          "minItems": 4,
+                          "items": {
+                            "type": "number"
+                          }
                         }
-                      ]
+                      }
                     }
+                  ]
+                },
+                "properties": {
+                  "type": "object",
+                  "nullable": true
+                },
+                "id": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "bbox": {
+                  "type": "array",
+                  "minItems": 4,
+                  "items": {
+                    "type": "number"
                   }
                 }
-              ]
+              }
             }
           }
         }
@@ -7030,138 +6786,92 @@
               "externalDocs": {
                 "url": "https://tools.ietf.org/html/rfc7946#section-3.2"
               },
-              "allOf": [
-                {
-                  "externalDocs": {
-                    "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                  },
-                  "type": "object",
-                  "required": [
-                    "type"
-                  ],
-                  "discriminator": {
-                    "propertyName": "type"
-                  },
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "Feature",
-                        "FeatureCollection",
-                        "Point",
-                        "MultiPoint",
-                        "LineString",
-                        "MultiLineString",
-                        "Polygon",
-                        "MultiPolygon",
-                        "GeometryCollection"
-                      ]
-                    },
-                    "bbox": {
-                      "type": "array",
-                      "minItems": 4,
-                      "items": {
-                        "type": "number"
-                      }
-                    }
-                  }
+              "type": "object",
+              "required": [
+                "type",
+                "geometry",
+                "properties"
+              ],
+              "discriminator": {
+                "propertyName": "type"
+              },
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "Feature",
+                    "FeatureCollection",
+                    "Point",
+                    "MultiPoint",
+                    "LineString",
+                    "MultiLineString",
+                    "Polygon",
+                    "MultiPolygon",
+                    "GeometryCollection"
+                  ]
                 },
-                {
-                  "type": "object",
-                  "required": [
-                    "geometry",
-                    "properties"
-                  ],
-                  "properties": {
-                    "geometry": {
-                      "allOf": [
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "externalDocs": {
-                            "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                          },
-                          "allOf": [
-                            {
-                              "externalDocs": {
-                                "url": "https://tools.ietf.org/html/rfc7946#section-3"
-                              },
-                              "type": "object",
-                              "required": [
-                                "type"
-                              ],
-                              "discriminator": {
-                                "propertyName": "type"
-                              },
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "enum": [
-                                    "Feature",
-                                    "FeatureCollection",
-                                    "Point",
-                                    "MultiPoint",
-                                    "LineString",
-                                    "MultiLineString",
-                                    "Polygon",
-                                    "MultiPolygon",
-                                    "GeometryCollection"
-                                  ]
-                                },
-                                "bbox": {
-                                  "type": "array",
-                                  "minItems": 4,
-                                  "items": {
-                                    "type": "number"
-                                  }
-                                }
-                              }
-                            },
-                            {
-                              "type": "object",
-                              "required": [
-                                "type"
-                              ],
-                              "discriminator": {
-                                "propertyName": "type"
-                              },
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "enum": [
-                                    "Point",
-                                    "MultiPoint",
-                                    "LineString",
-                                    "MultiLineString",
-                                    "Polygon",
-                                    "MultiPolygon",
-                                    "GeometryCollection"
-                                  ]
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "properties": {
-                      "type": "object",
+                "geometry": {
+                  "allOf": [
+                    {
                       "nullable": true
                     },
-                    "id": {
-                      "oneOf": [
-                        {
-                          "type": "number"
+                    {
+                      "externalDocs": {
+                        "url": "https://tools.ietf.org/html/rfc7946#section-3"
+                      },
+                      "type": "object",
+                      "required": [
+                        "type"
+                      ],
+                      "discriminator": {
+                        "propertyName": "type"
+                      },
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "Point",
+                            "MultiPoint",
+                            "LineString",
+                            "MultiLineString",
+                            "Polygon",
+                            "MultiPolygon",
+                            "GeometryCollection"
+                          ]
                         },
-                        {
-                          "type": "string"
+                        "bbox": {
+                          "type": "array",
+                          "minItems": 4,
+                          "items": {
+                            "type": "number"
+                          }
                         }
-                      ]
+                      }
                     }
+                  ]
+                },
+                "properties": {
+                  "type": "object",
+                  "nullable": true
+                },
+                "id": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "bbox": {
+                  "type": "array",
+                  "minItems": 4,
+                  "items": {
+                    "type": "number"
                   }
                 }
-              ]
+              }
             }
           }
         }

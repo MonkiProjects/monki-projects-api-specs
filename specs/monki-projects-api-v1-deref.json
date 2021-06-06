@@ -752,8 +752,174 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "A Bearer token.",
-                  "type": "string"
+                  "description": "A connection token.",
+                  "type": "object",
+                  "required": [
+                    "value",
+                    "expires_at",
+                    "created_at"
+                  ],
+                  "properties": {
+                    "value": {
+                      "description": "A Bearer token.",
+                      "type": "string"
+                    },
+                    "expires_at": {
+                      "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6). Can be `null`/`nil`.",
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true,
+                      "example": "2017-07-21T17:32:28.000Z"
+                    },
+                    "created_at": {
+                      "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2017-07-21T17:32:28.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication information is missing or is invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "An error thrown by an API.",
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "reason"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/v1/me": {
+      "post": {
+        "summary": "Get Me",
+        "operationId": "getMe",
+        "tags": [
+          "auth"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Private details about a user.",
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "username",
+                    "display_name",
+                    "kind",
+                    "updated_at",
+                    "details",
+                    "email"
+                  ],
+                  "properties": {
+                    "id": {
+                      "description": "A `UUID` (or `GUID`).",
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "ad959e79-55c3-4445-8c51-a74b6d52691a"
+                    },
+                    "username": {
+                      "description": "A username (`@`).",
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 32,
+                      "pattern": "^[a-z0-9._-]{3,32}$",
+                      "example": "lorem_ipsum"
+                    },
+                    "display_name": {
+                      "description": "A user display name.",
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 32,
+                      "example": "Lorem Ipsum"
+                    },
+                    "avatar": {
+                      "type": "object"
+                    },
+                    "country": {
+                      "description": "The country of a user. Will generally show as a flag next to the user's display name.",
+                      "type": "string",
+                      "example": "FR"
+                    },
+                    "kind": {
+                      "description": "The kind of a user. Either a regular user or a bot.",
+                      "type": "string",
+                      "enum": [
+                        "user",
+                        "bot"
+                      ],
+                      "default": "user"
+                    },
+                    "updated_at": {
+                      "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2017-07-21T17:32:28.000Z"
+                    },
+                    "details": {
+                      "description": "Details about a user.",
+                      "type": "object",
+                      "required": [
+                        "experience",
+                        "social_usernames",
+                        "created_at"
+                      ],
+                      "properties": {
+                        "bio": {
+                          "description": "A user's bio (profile description).",
+                          "type": "string"
+                        },
+                        "location": {
+                          "description": "A user's location. It's not formatted nor checked as an existing place, so it could be anything.",
+                          "type": "string"
+                        },
+                        "experience": {
+                          "type": "object"
+                        },
+                        "social_usernames": {
+                          "type": "object"
+                        },
+                        "created_at": {
+                          "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2017-07-21T17:32:28.000Z"
+                        }
+                      }
+                    },
+                    "email": {
+                      "description": "An email address.",
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
                 }
               }
             }
@@ -4072,9 +4238,33 @@
           }
         }
       },
-      "BearerToken": {
-        "description": "A Bearer token.",
-        "type": "string"
+      "User.Token.Private": {
+        "description": "A connection token.",
+        "type": "object",
+        "required": [
+          "value",
+          "expires_at",
+          "created_at"
+        ],
+        "properties": {
+          "value": {
+            "description": "A Bearer token.",
+            "type": "string"
+          },
+          "expires_at": {
+            "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6). Can be `null`/`nil`.",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2017-07-21T17:32:28.000Z"
+          },
+          "created_at": {
+            "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-21T17:32:28.000Z"
+          }
+        }
       },
       "Placemark.Category.ID": {
         "description": "A placemark category `ID`.",
@@ -6206,6 +6396,17 @@
             "type": "string"
           }
         }
+      },
+      "BearerToken": {
+        "description": "A Bearer token.",
+        "type": "string"
+      },
+      "NullableDateTime": {
+        "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6). Can be `null`/`nil`.",
+        "type": "string",
+        "format": "date-time",
+        "nullable": true,
+        "example": "2017-07-21T17:32:28.000Z"
       },
       "Locale": {
         "description": "A locale, as described in [Language and Locale IDs](https://tinyurl.com/apple-language-and-locale-ids).",

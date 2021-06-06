@@ -3,14 +3,10 @@ info:
   version: 1.0.0
   title: Monki Projects' Auth API
 servers:
-  - url: 'https://{environment}.monkiprojects.com/auth/v1'
-    description: Monki Projects' Auth API v1
-    variables:
-      environment:
-        default: api     # Production server
-        enum:
-          - api          # Production server
-          - pre-prod.api # Development server
+  - description: Monki Projects' Auth API v1 (production)
+    url: 'https://api.monkiprojects.com/auth/v1'
+  - description: Monki Projects' Auth API v1 (staging / development)
+    url: 'https://staging.api.monkiprojects.com/auth/v1'
 tags:
   - name: auth
     description: Endpoints related to authentication.
@@ -28,19 +24,39 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BearerToken'
+                $ref: '#/components/schemas/User.Token.Private'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  '/me':
+    post:
+      summary: Get Me
+      operationId: getMe
+      tags: [auth]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: 'users-api-v1.yaml#/components/schemas/User.Private'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 components:
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
   schemas:
-    # ===== Auth =====
-    BearerToken:
-      description: A Bearer token.
-      type: string
+    # ===== Organisms =====
+    User.Token.Private:
+      description: A connection token.
+      type: object
+      required: [value, expires_at, created_at]
+      properties:
+        value:
+          $ref: 'schemas.yaml#/BearerToken'
+        expires_at:
+          $ref: 'schemas.yaml#/NullableDateTime'
+        created_at:
+          $ref: 'schemas.yaml#/DateTime'
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.

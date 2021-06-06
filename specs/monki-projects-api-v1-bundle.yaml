@@ -160,7 +160,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BearerToken'
+                $ref: '#/components/schemas/User.Token.Private'
+        '401':
+          $ref: '#/components/responses/AuthUnauthorizedError'
+  /auth/v1/me:
+    post:
+      summary: Get Me
+      operationId: getMe
+      tags:
+        - auth
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User.Private'
         '401':
           $ref: '#/components/responses/AuthUnauthorizedError'
   /placemarks/v1/:
@@ -545,9 +562,20 @@ components:
           $ref: '#/components/schemas/ArrayOfUsers'
         metadata:
           $ref: '#/components/schemas/PaginateMetadata'
-    BearerToken:
-      description: A Bearer token.
-      type: string
+    User.Token.Private:
+      description: A connection token.
+      type: object
+      required:
+        - value
+        - expires_at
+        - created_at
+      properties:
+        value:
+          $ref: '#/components/schemas/BearerToken'
+        expires_at:
+          $ref: '#/components/schemas/NullableDateTime'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
     Placemark.Category.ID:
       description: A placemark category `ID`.
       type: string
@@ -1133,6 +1161,18 @@ components:
           example: true
         reason:
           type: string
+    BearerToken:
+      description: A Bearer token.
+      type: string
+    NullableDateTime:
+      description: >-
+        A `Date` with time, as described in [RFC 3339, section
+        5.6](https://tools.ietf.org/html/rfc3339#section-5.6). Can be
+        `null`/`nil`.
+      type: string
+      format: date-time
+      nullable: true
+      example: '2017-07-21T17:32:28.000Z'
     Locale:
       description: >-
         A locale, as described in [Language and Locale

@@ -60,6 +60,11 @@ AvatarSource:
   type: object
   # TODO: Describe Dictionary
 
+# ===== Auth =====
+BearerToken:
+  description: A Bearer token.
+  type: string
+
 # ===== Errors =====
 Error:
   description: An error thrown by an API.
@@ -90,4 +95,10 @@ DateTime:
   description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).
   type: string
   format: date-time
+  example: '2017-07-21T17:32:28.000Z'
+NullableDateTime:
+  description: A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6). Can be `null`/`nil`.
+  type: string
+  format: date-time
+  nullable: true
   example: '2017-07-21T17:32:28.000Z'

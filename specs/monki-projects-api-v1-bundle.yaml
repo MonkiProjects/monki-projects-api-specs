@@ -3,14 +3,10 @@ info:
   version: 1.0.0
   title: Monki Projects API
 servers:
-  - url: 'https://{environment}.monkiprojects.com'
-    description: Monki Projects API v1
-    variables:
-      environment:
-        default: api
-        enum:
-          - api
-          - pre-prod.api
+  - description: Monki Projects' API v1 (production)
+    url: 'https://api.monkiprojects.com'
+  - description: Monki Projects' API v1 (staging / development)
+    url: 'https://staging.api.monkiprojects.com'
 tags:
   - name: users
     description: Endpoints related to users.
@@ -79,7 +75,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PaginatePage'
         - $ref: '#/components/parameters/PaginatePerPage'
-        - $ref: '#/components/parameters/UsersOrder'
       responses:
         '200':
           description: Success
@@ -369,16 +364,20 @@ components:
       type: http
       scheme: bearer
   schemas:
+    User.ID:
+      $ref: '#/components/schemas/ID'
     User.Username:
       description: A username (`@`).
       type: string
       minLength: 3
       maxLength: 32
-      pattern: '^[a-z0-9._]{3,32}$'
+      pattern: '^[a-z0-9._-]{3,32}$'
       example: lorem_ipsum
     User.DisplayName:
       description: A user display name.
       type: string
+      minLength: 3
+      maxLength: 32
       example: Lorem Ipsum
     User.Country:
       description: >-
@@ -421,6 +420,8 @@ components:
           $ref: '#/components/schemas/User.Username'
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
+        avatar:
+          $ref: '#/components/schemas/AvatarSource'
         country:
           $ref: '#/components/schemas/User.Country'
         kind:
@@ -443,6 +444,8 @@ components:
           $ref: '#/components/schemas/User.Experience'
         social_usernames:
           $ref: '#/components/schemas/User.SocialUsernames'
+        created_at:
+          $ref: '#/components/schemas/DateTime'
     User.Public.Full:
       description: Public informations about a user (including all details).
       type: object
@@ -460,6 +463,8 @@ components:
           $ref: '#/components/schemas/User.Username'
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
+        avatar:
+          $ref: '#/components/schemas/AvatarSource'
         country:
           $ref: '#/components/schemas/User.Country'
         kind:
@@ -486,6 +491,8 @@ components:
           $ref: '#/components/schemas/User.Username'
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
+        avatar:
+          $ref: '#/components/schemas/AvatarSource'
         country:
           $ref: '#/components/schemas/User.Country'
         kind:
@@ -497,6 +504,7 @@ components:
         email:
           $ref: '#/components/schemas/Email'
     User.Create:
+      description: Informations required to create a user.
       type: object
       required:
         - username
@@ -537,15 +545,6 @@ components:
           $ref: '#/components/schemas/ArrayOfUsers'
         metadata:
           $ref: '#/components/schemas/PaginateMetadata'
-    UsersOrder:
-      description: |-
-        The order of the users in an array:
-          * `last_joined`: From the latest created review to the oldest one
-          * `first_joined`: From the first created review to the latest one
-      type: string
-      enum:
-        - last_joined
-        - first_joined
     BearerToken:
       description: A Bearer token.
       type: string
@@ -1083,6 +1082,8 @@ components:
       type: string
       format: uuid
       example: ad959e79-55c3-4445-8c51-a74b6d52691a
+    AvatarSource:
+      type: object
     DateTime:
       description: >-
         A `Date` with time, as described in [RFC 3339, section
@@ -1459,12 +1460,6 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/ID'
-    UsersOrder:
-      in: query
-      name: sort_by
-      description: 'The results order. If not set, results won''t be ordered.'
-      schema:
-        $ref: '#/components/schemas/UsersOrder'
     PlacemarkId:
       in: path
       name: placemarkId

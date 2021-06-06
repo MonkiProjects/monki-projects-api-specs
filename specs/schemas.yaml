@@ -56,6 +56,9 @@ Password:
   description: A password.
   type: string
   minLength: 8
+AvatarSource:
+  type: object
+  # TODO: Describe Dictionary
 
 # ===== Errors =====
 Error:

@@ -6,17 +6,12 @@
   },
   "servers": [
     {
-      "url": "https://{environment}.monkiprojects.com",
-      "description": "Monki Projects API v1",
-      "variables": {
-        "environment": {
-          "default": "api",
-          "enum": [
-            "api",
-            "pre-prod.api"
-          ]
-        }
-      }
+      "description": "Monki Projects' API v1 (production)",
+      "url": "https://api.monkiprojects.com"
+    },
+    {
+      "description": "Monki Projects' API v1 (staging / development)",
+      "url": "https://staging.api.monkiprojects.com"
     }
   ],
   "tags": [
@@ -54,6 +49,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "description": "Informations required to create a user.",
                 "type": "object",
                 "required": [
                   "username",
@@ -68,12 +64,14 @@
                     "type": "string",
                     "minLength": 3,
                     "maxLength": 32,
-                    "pattern": "^[a-z0-9._]{3,32}$",
+                    "pattern": "^[a-z0-9._-]{3,32}$",
                     "example": "lorem_ipsum"
                   },
                   "display_name": {
                     "description": "A user display name.",
                     "type": "string",
+                    "minLength": 3,
+                    "maxLength": 32,
                     "example": "Lorem Ipsum"
                   },
                   "email": {
@@ -132,13 +130,18 @@
                       "type": "string",
                       "minLength": 3,
                       "maxLength": 32,
-                      "pattern": "^[a-z0-9._]{3,32}$",
+                      "pattern": "^[a-z0-9._-]{3,32}$",
                       "example": "lorem_ipsum"
                     },
                     "display_name": {
                       "description": "A user display name.",
                       "type": "string",
+                      "minLength": 3,
+                      "maxLength": 32,
                       "example": "Lorem Ipsum"
+                    },
+                    "avatar": {
+                      "type": "object"
                     },
                     "country": {
                       "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -182,6 +185,12 @@
                         },
                         "social_usernames": {
                           "type": "object"
+                        },
+                        "created_at": {
+                          "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2017-07-21T17:32:28.000Z"
                         }
                       }
                     },
@@ -330,19 +339,6 @@
               "minimum": 1,
               "example": 10
             }
-          },
-          {
-            "in": "query",
-            "name": "sort_by",
-            "description": "The results order. If not set, results won't be ordered.",
-            "schema": {
-              "description": "The order of the users in an array:\n  * `last_joined`: From the latest created review to the oldest one\n  * `first_joined`: From the first created review to the latest one",
-              "type": "string",
-              "enum": [
-                "last_joined",
-                "first_joined"
-              ]
-            }
           }
         ],
         "responses": {
@@ -383,13 +379,18 @@
                             "type": "string",
                             "minLength": 3,
                             "maxLength": 32,
-                            "pattern": "^[a-z0-9._]{3,32}$",
+                            "pattern": "^[a-z0-9._-]{3,32}$",
                             "example": "lorem_ipsum"
                           },
                           "display_name": {
                             "description": "A user display name.",
                             "type": "string",
+                            "minLength": 3,
+                            "maxLength": 32,
                             "example": "Lorem Ipsum"
+                          },
+                          "avatar": {
+                            "type": "object"
                           },
                           "country": {
                             "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -501,13 +502,18 @@
                       "type": "string",
                       "minLength": 3,
                       "maxLength": 32,
-                      "pattern": "^[a-z0-9._]{3,32}$",
+                      "pattern": "^[a-z0-9._-]{3,32}$",
                       "example": "lorem_ipsum"
                     },
                     "display_name": {
                       "description": "A user display name.",
                       "type": "string",
+                      "minLength": 3,
+                      "maxLength": 32,
                       "example": "Lorem Ipsum"
+                    },
+                    "avatar": {
+                      "type": "object"
                     },
                     "country": {
                       "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -551,6 +557,12 @@
                         },
                         "social_usernames": {
                           "type": "object"
+                        },
+                        "created_at": {
+                          "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2017-07-21T17:32:28.000Z"
                         }
                       }
                     }
@@ -3528,17 +3540,25 @@
       }
     },
     "schemas": {
+      "User.ID": {
+        "description": "A `UUID` (or `GUID`).",
+        "type": "string",
+        "format": "uuid",
+        "example": "ad959e79-55c3-4445-8c51-a74b6d52691a"
+      },
       "User.Username": {
         "description": "A username (`@`).",
         "type": "string",
         "minLength": 3,
         "maxLength": 32,
-        "pattern": "^[a-z0-9._]{3,32}$",
+        "pattern": "^[a-z0-9._-]{3,32}$",
         "example": "lorem_ipsum"
       },
       "User.DisplayName": {
         "description": "A user display name.",
         "type": "string",
+        "minLength": 3,
+        "maxLength": 32,
         "example": "Lorem Ipsum"
       },
       "User.Country": {
@@ -3591,13 +3611,18 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 32,
-            "pattern": "^[a-z0-9._]{3,32}$",
+            "pattern": "^[a-z0-9._-]{3,32}$",
             "example": "lorem_ipsum"
           },
           "display_name": {
             "description": "A user display name.",
             "type": "string",
+            "minLength": 3,
+            "maxLength": 32,
             "example": "Lorem Ipsum"
+          },
+          "avatar": {
+            "type": "object"
           },
           "country": {
             "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -3643,6 +3668,12 @@
           },
           "social_usernames": {
             "type": "object"
+          },
+          "created_at": {
+            "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+            "type": "string",
+            "format": "date-time",
+            "example": "2017-07-21T17:32:28.000Z"
           }
         }
       },
@@ -3669,13 +3700,18 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 32,
-            "pattern": "^[a-z0-9._]{3,32}$",
+            "pattern": "^[a-z0-9._-]{3,32}$",
             "example": "lorem_ipsum"
           },
           "display_name": {
             "description": "A user display name.",
             "type": "string",
+            "minLength": 3,
+            "maxLength": 32,
             "example": "Lorem Ipsum"
+          },
+          "avatar": {
+            "type": "object"
           },
           "country": {
             "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -3719,6 +3755,12 @@
               },
               "social_usernames": {
                 "type": "object"
+              },
+              "created_at": {
+                "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-07-21T17:32:28.000Z"
               }
             }
           }
@@ -3748,13 +3790,18 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 32,
-            "pattern": "^[a-z0-9._]{3,32}$",
+            "pattern": "^[a-z0-9._-]{3,32}$",
             "example": "lorem_ipsum"
           },
           "display_name": {
             "description": "A user display name.",
             "type": "string",
+            "minLength": 3,
+            "maxLength": 32,
             "example": "Lorem Ipsum"
+          },
+          "avatar": {
+            "type": "object"
           },
           "country": {
             "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -3798,6 +3845,12 @@
               },
               "social_usernames": {
                 "type": "object"
+              },
+              "created_at": {
+                "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
+                "type": "string",
+                "format": "date-time",
+                "example": "2017-07-21T17:32:28.000Z"
               }
             }
           },
@@ -3809,6 +3862,7 @@
         }
       },
       "User.Create": {
+        "description": "Informations required to create a user.",
         "type": "object",
         "required": [
           "username",
@@ -3823,12 +3877,14 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 32,
-            "pattern": "^[a-z0-9._]{3,32}$",
+            "pattern": "^[a-z0-9._-]{3,32}$",
             "example": "lorem_ipsum"
           },
           "display_name": {
             "description": "A user display name.",
             "type": "string",
+            "minLength": 3,
+            "maxLength": 32,
             "example": "Lorem Ipsum"
           },
           "email": {
@@ -3880,13 +3936,18 @@
               "type": "string",
               "minLength": 3,
               "maxLength": 32,
-              "pattern": "^[a-z0-9._]{3,32}$",
+              "pattern": "^[a-z0-9._-]{3,32}$",
               "example": "lorem_ipsum"
             },
             "display_name": {
               "description": "A user display name.",
               "type": "string",
+              "minLength": 3,
+              "maxLength": 32,
               "example": "Lorem Ipsum"
+            },
+            "avatar": {
+              "type": "object"
             },
             "country": {
               "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -3944,13 +4005,18 @@
                   "type": "string",
                   "minLength": 3,
                   "maxLength": 32,
-                  "pattern": "^[a-z0-9._]{3,32}$",
+                  "pattern": "^[a-z0-9._-]{3,32}$",
                   "example": "lorem_ipsum"
                 },
                 "display_name": {
                   "description": "A user display name.",
                   "type": "string",
+                  "minLength": 3,
+                  "maxLength": 32,
                   "example": "Lorem Ipsum"
+                },
+                "avatar": {
+                  "type": "object"
                 },
                 "country": {
                   "description": "The country of a user. Will generally show as a flag next to the user's display name.",
@@ -4005,14 +4071,6 @@
             }
           }
         }
-      },
-      "UsersOrder": {
-        "description": "The order of the users in an array:\n  * `last_joined`: From the latest created review to the oldest one\n  * `first_joined`: From the first created review to the latest one",
-        "type": "string",
-        "enum": [
-          "last_joined",
-          "first_joined"
-        ]
       },
       "BearerToken": {
         "description": "A Bearer token.",
@@ -6077,6 +6135,9 @@
         "type": "string",
         "format": "uuid",
         "example": "ad959e79-55c3-4445-8c51-a74b6d52691a"
+      },
+      "AvatarSource": {
+        "type": "object"
       },
       "DateTime": {
         "description": "A `Date` with time, as described in [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6).",
@@ -8295,19 +8356,6 @@
           "type": "string",
           "format": "uuid",
           "example": "ad959e79-55c3-4445-8c51-a74b6d52691a"
-        }
-      },
-      "UsersOrder": {
-        "in": "query",
-        "name": "sort_by",
-        "description": "The results order. If not set, results won't be ordered.",
-        "schema": {
-          "description": "The order of the users in an array:\n  * `last_joined`: From the latest created review to the oldest one\n  * `first_joined`: From the first created review to the latest one",
-          "type": "string",
-          "enum": [
-            "last_joined",
-            "first_joined"
-          ]
         }
       },
       "PlacemarkId": {

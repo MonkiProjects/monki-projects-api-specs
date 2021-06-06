@@ -3,14 +3,10 @@ info:
   version: 1.0.0
   title: Monki Projects' Users API
 servers:
-  - url: 'https://{environment}.monkiprojects.com/users/v1'
-    description: Monki Projects' Users API v1
-    variables:
-      environment:
-        default: api     # Production server
-        enum:
-          - api          # Production server
-          - pre-prod.api # Development server
+  - description: Monki Projects' Users API v1 (production)
+    url: 'https://api.monkiprojects.com/users/v1'
+  - description: Monki Projects' Users API v1 (staging / development)
+    url: 'https://staging.api.monkiprojects.com/users/v1'
 tags:
   - name: users
     description: Endpoints related to users.
@@ -71,7 +67,7 @@ paths:
       parameters:
         - $ref: 'parameters.yaml#/PaginatePage'
         - $ref: 'parameters.yaml#/PaginatePerPage'
-        - $ref: '#/components/parameters/UsersOrder'
+        # - $ref: '#/components/parameters/UsersOrder'
       responses:
         '200':
           description: Success
@@ -146,16 +142,20 @@ paths:
 components:
   schemas:
     # ===== Atoms =====
+    User.ID:
+      $ref: 'schemas.yaml#/ID'
     User.Username:
       description: A username (`@`).
       type: string
       minLength: 3
       maxLength: 32
-      pattern: '^[a-z0-9._]{3,32}$'
+      pattern: '^[a-z0-9._-]{3,32}$'
       example: lorem_ipsum
     User.DisplayName:
       description: A user display name.
       type: string
+      minLength: 3
+      maxLength: 32
       # TODO: Add pattern
       example: Lorem Ipsum
     User.Country:
@@ -190,11 +190,13 @@ components:
       required: [id, username, display_name, kind, updated_at]
       properties:
         id:
-          $ref: 'schemas.yaml#/ID'
+          $ref: '#/components/schemas/User.ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
+        avatar:
+          $ref: 'schemas.yaml#/AvatarSource'
         country:
           $ref: '#/components/schemas/User.Country'
         kind:
@@ -214,17 +216,21 @@ components:
           $ref: '#/components/schemas/User.Experience'
         social_usernames:
           $ref: '#/components/schemas/User.SocialUsernames'
+        created_at:
+          $ref: 'schemas.yaml#/DateTime'
     User.Public.Full:
       description: Public informations about a user (including all details).
       type: object
       required: [id, username, display_name, kind, updated_at, details]
       properties:
         id:
-          $ref: 'schemas.yaml#/ID'
+          $ref: '#/components/schemas/User.ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
+        avatar:
+          $ref: 'schemas.yaml#/AvatarSource'
         country:
           $ref: '#/components/schemas/User.Country'
         kind:
@@ -239,11 +245,13 @@ components:
       required: [id, username, display_name, kind, updated_at, details, email]
       properties:
         id:
-          $ref: 'schemas.yaml#/ID'
+          $ref: '#/components/schemas/User.ID'
         username:
           $ref: '#/components/schemas/User.Username'
         display_name:
           $ref: '#/components/schemas/User.DisplayName'
+        avatar:
+          $ref: 'schemas.yaml#/AvatarSource'
         country:
           $ref: '#/components/schemas/User.Country'
         kind:
@@ -255,6 +263,7 @@ components:
         email:
           $ref: 'schemas.yaml#/Email'
     User.Create:
+      description: Informations required to create a user.
       type: object
       required: [username, display_name, email, password, confirm_password]
       properties:
@@ -294,13 +303,13 @@ components:
         metadata:
           $ref: 'schemas.yaml#/PaginateMetadata'
     # === Ordering ===
-    UsersOrder:
-      description: >-
-        The order of the users in an array:
-          * `last_joined`: From the latest created review to the oldest one
-          * `first_joined`: From the first created review to the latest one
-      type: string
-      enum: [last_joined, first_joined]
+    # UsersOrder:
+    #   description: >-
+    #     The order of the users in an array:
+    #       * `last_joined`: From the latest created review to the oldest one
+    #       * `first_joined`: From the first created review to the latest one
+    #   type: string
+    #   enum: [last_joined, first_joined]
   responses:
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
@@ -321,12 +330,12 @@ components:
       required: true
       schema:
         $ref: 'schemas.yaml#/ID'
-    UsersOrder:
-      in: query
-      name: sort_by
-      description: The results order. If not set, results won't be ordered.
-      schema:
-        $ref: '#/components/schemas/UsersOrder'
+    # UsersOrder:
+    #   in: query
+    #   name: sort_by
+    #   description: The results order. If not set, results won't be ordered.
+    #   schema:
+    #     $ref: '#/components/schemas/UsersOrder'
   securitySchemes:
     BearerAuth:
       type: http

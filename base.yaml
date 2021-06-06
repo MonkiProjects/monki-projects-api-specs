@@ -3,14 +3,10 @@ info:
   version: 1.0.0
   title: Monki Projects API
 servers:
-  - url: 'https://{environment}.monkiprojects.com'
-    description: Monki Projects API v1
-    variables:
-      environment:
-        default: api     # Production server
-        enum:
-          - api          # Production server
-          - pre-prod.api # Development server
+  - description: Monki Projects' API v1 (production)
+    url: 'https://api.monkiprojects.com'
+  - description: Monki Projects' API v1 (staging / development)
+    url: 'https://staging.api.monkiprojects.com'
 components:
   securitySchemes:
     BasicAuth:

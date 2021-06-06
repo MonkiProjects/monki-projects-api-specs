@@ -64,3 +64,10 @@ components:
         application/json:
           schema:
             $ref: 'schemas.yaml#/Error'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer

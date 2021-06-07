@@ -1024,7 +1024,6 @@
                   "images": {
                     "description": "An array of image `URL`s.",
                     "type": "array",
-                    "uniqueItems": true,
                     "maxItems": 48,
                     "items": {
                       "description": "An image `URL`.",
@@ -1182,7 +1181,6 @@
                         "images": {
                           "description": "An array of image `URL`s.",
                           "type": "array",
-                          "uniqueItems": true,
                           "maxItems": 48,
                           "items": {
                             "description": "An image `URL`.",
@@ -1482,7 +1480,6 @@
                     "items": {
                       "description": "An array of placemarks.",
                       "type": "array",
-                      "uniqueItems": true,
                       "items": {
                         "description": "A placemark, with all its details.",
                         "type": "object",
@@ -1585,7 +1582,6 @@
                               "images": {
                                 "description": "An array of image `URL`s.",
                                 "type": "array",
-                                "uniqueItems": true,
                                 "maxItems": 48,
                                 "items": {
                                   "description": "An image `URL`.",
@@ -1958,7 +1954,6 @@
                         "images": {
                           "description": "An array of image `URL`s.",
                           "type": "array",
-                          "uniqueItems": true,
                           "maxItems": 48,
                           "items": {
                             "description": "An image `URL`.",
@@ -3140,7 +3135,6 @@
           "images": {
             "description": "An array of image `URL`s.",
             "type": "array",
-            "uniqueItems": true,
             "maxItems": 48,
             "items": {
               "description": "An image `URL`.",
@@ -3290,7 +3284,6 @@
               "images": {
                 "description": "An array of image `URL`s.",
                 "type": "array",
-                "uniqueItems": true,
                 "maxItems": 48,
                 "items": {
                   "description": "An image `URL`.",
@@ -3399,7 +3392,6 @@
           "images": {
             "description": "An array of image `URL`s.",
             "type": "array",
-            "uniqueItems": true,
             "maxItems": 48,
             "items": {
               "description": "An image `URL`.",
@@ -3472,7 +3464,6 @@
       "ArrayOfPlacemarks": {
         "description": "An array of placemarks.",
         "type": "array",
-        "uniqueItems": true,
         "items": {
           "description": "A placemark, with all its details.",
           "type": "object",
@@ -3575,7 +3566,6 @@
                 "images": {
                   "description": "An array of image `URL`s.",
                   "type": "array",
-                  "uniqueItems": true,
                   "maxItems": 48,
                   "items": {
                     "description": "An image `URL`.",
@@ -3716,7 +3706,6 @@
       "ArrayOfImageURLs": {
         "description": "An array of image `URL`s.",
         "type": "array",
-        "uniqueItems": true,
         "maxItems": 48,
         "items": {
           "description": "An image `URL`.",
@@ -3736,7 +3725,6 @@
           "items": {
             "description": "An array of placemarks.",
             "type": "array",
-            "uniqueItems": true,
             "items": {
               "description": "A placemark, with all its details.",
               "type": "object",
@@ -3839,7 +3827,6 @@
                     "images": {
                       "description": "An array of image `URL`s.",
                       "type": "array",
-                      "uniqueItems": true,
                       "maxItems": 48,
                       "items": {
                         "description": "An image `URL`.",
@@ -4306,7 +4293,6 @@
                     "images": {
                       "description": "An array of image `URL`s.",
                       "type": "array",
-                      "uniqueItems": true,
                       "maxItems": 48,
                       "items": {
                         "description": "An image `URL`.",
@@ -4494,7 +4480,6 @@
                 "items": {
                   "description": "An array of placemarks.",
                   "type": "array",
-                  "uniqueItems": true,
                   "items": {
                     "description": "A placemark, with all its details.",
                     "type": "object",
@@ -4597,7 +4582,6 @@
                           "images": {
                             "description": "An array of image `URL`s.",
                             "type": "array",
-                            "uniqueItems": true,
                             "maxItems": 48,
                             "items": {
                               "description": "An image `URL`.",
@@ -4886,7 +4870,6 @@
                     "images": {
                       "description": "An array of image `URL`s.",
                       "type": "array",
-                      "uniqueItems": true,
                       "maxItems": 48,
                       "items": {
                         "description": "An image `URL`.",

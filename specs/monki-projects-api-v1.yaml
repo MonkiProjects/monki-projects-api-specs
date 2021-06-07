@@ -675,7 +675,6 @@ components:
     ArrayOfPlacemarks:
       description: An array of placemarks.
       type: array
-      uniqueItems: true
       items:
         $ref: '#/components/schemas/Placemark.Public'
     ArrayOfPlacemarkPropertyIDs:
@@ -697,7 +696,6 @@ components:
     ArrayOfImageURLs:
       description: An array of image `URL`s.
       type: array
-      uniqueItems: true
       maxItems: 48
       items:
         $ref: schemas.yaml#/ImageURL

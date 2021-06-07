@@ -14,8 +14,6 @@ tags:
     description: Endpoints related to authentication.
   - name: placemarks
     description: Endpoints related to placemarks.
-  - name: placemark-submission
-    description: Endpoints related to placemark submissions.
   - name: localized
     description: Endpoints with localizable responses.
 paths:
@@ -217,7 +215,6 @@ paths:
         - $ref: parameters.yaml#/PaginatePage
         - $ref: parameters.yaml#/PaginatePerPage
         - $ref: '#/components/parameters/PlacemarkState'
-        - $ref: '#/components/parameters/PlacemarksOrder'
         - $ref: parameters.yaml#/Locale
       responses:
         '200':
@@ -263,99 +260,6 @@ paths:
           $ref: '#/components/responses/DeletePlacemark_Forbidden'
         '404':
           $ref: '#/components/responses/DeletePlacemark_NotFound'
-  '/placemarks/v1/{placemarkId}/submit':
-    post:
-      summary: Submit Placemark
-      description: Submits a placemark.
-      operationId: submitPlacemark
-      tags:
-        - placemarks
-        - placemark-submission
-      security:
-        - BearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/PlacemarkId'
-      responses:
-        '200':
-          $ref: '#/components/responses/SubmitPlacemark_Success'
-        '401':
-          $ref: '#/components/responses/Unauthorized_BearerAuth'
-        '403':
-          $ref: '#/components/responses/SubmitPlacemark_Forbidden'
-        '404':
-          $ref: '#/components/responses/SubmitPlacemark_NotFound'
-  '/placemarks/v1/{placemarkId}/submission':
-    get:
-      summary: Get Placemark Submission Report
-      description: Get a placemark's submission report.
-      operationId: getPlacemarkSubmissionReport
-      tags:
-        - placemarks
-        - placemark-submission
-      parameters:
-        - $ref: '#/components/parameters/PlacemarkId'
-      responses:
-        '200':
-          $ref: '#/components/responses/GetPlacemarkSubmissionReport_Success'
-        '404':
-          $ref: '#/components/responses/GetPlacemarkSubmissionReport_NotFound'
-        '412':
-          $ref: >-
-            #/components/responses/GetPlacemarkSubmissionReport_PreconditionFailed
-  '/placemarks/v1/{placemarkId}/submission/reviews':
-    post:
-      summary: Add Placemark Submission Review
-      description: Adds a submission review to a placemark.
-      operationId: addPlacemarkSubmissionReview
-      tags:
-        - placemarks
-        - placemark-submission
-      security:
-        - BearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/PlacemarkId'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Placemark.Submission.Review.Create'
-      responses:
-        '200':
-          $ref: '#/components/responses/AddPlacemarkSubmissionReview_Success'
-        '400':
-          $ref: '#/components/responses/AddPlacemarkSubmissionReview_BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized_BearerAuth'
-        '403':
-          $ref: '#/components/responses/AddPlacemarkSubmissionReview_Forbidden'
-        '404':
-          $ref: '#/components/responses/AddPlacemarkSubmissionReview_NotFound'
-        '412':
-          $ref: >-
-            #/components/responses/AddPlacemarkSubmissionReview_PreconditionFailed
-    get:
-      summary: List Placemark Submission Reviews
-      description: Lists a placemark's submission reviews.
-      operationId: listPlacemarkSubmissionReviews
-      tags:
-        - placemarks
-        - placemark-submission
-      parameters:
-        - $ref: '#/components/parameters/PlacemarkId'
-        - $ref: parameters.yaml#/PaginatePage
-        - $ref: parameters.yaml#/PaginatePerPage
-        - $ref: '#/components/parameters/PlacemarkSubmissionReviewOpinion'
-        - $ref: '#/components/parameters/PlacemarkSubmissionReviewsOrder'
-      responses:
-        '200':
-          $ref: '#/components/responses/ListPlacemarkSubmissionReviews_Success'
-        '401':
-          $ref: '#/components/responses/Unauthorized_BearerAuth'
-        '404':
-          $ref: '#/components/responses/ListPlacemarkSubmissionReviews_NotFound'
-        '412':
-          $ref: >-
-            #/components/responses/ListPlacemarkSubmissionReviews_PreconditionFailed
   /placemarks/v1/properties:
     get:
       summary: List Available Placemark Properties
@@ -576,18 +480,8 @@ components:
           $ref: schemas.yaml#/NullableDateTime
         created_at:
           $ref: schemas.yaml#/DateTime
-    Placemark.Category.ID:
-      description: A placemark category `ID`.
-      type: string
-      enum:
-        - unknown
-        - spot
-        - facility
-        - misc
-    Placemark.Kind.ID:
-      description: A placemark kind `ID`.
-      type: string
-      pattern: '^(?:[a-z0-9]+_)*[a-z0-9]+$'
+    Placemark.ID:
+      $ref: schemas.yaml#/ID
     Placemark.State:
       description: The state in which a placemark is.
       type: string
@@ -608,96 +502,42 @@ components:
       description: A placemark `caption`. Possibly empty.
       type: string
       nullable: true
+      example: A great training spot with good walls of different sizes.
     Placemark.City:
       description: The city in which a placemark is.
       type: string
       minLength: 1
+      example: Nantes
     Placemark.Country:
-      description: The country in which a placemark is.
+      description: The city in which a placemark is.
       type: string
       minLength: 1
+      example: France
+    Placemark.Category.ID:
+      description: A placemark category `ID`.
+      type: string
+      enum:
+        - unknown
+        - spot
+        - facility
+        - misc
+    Placemark.Kind.ID:
+      description: A placemark kind `ID`.
+      type: string
+      pattern: '^(?:[a-z0-9]+_)*[a-z0-9]+$'
     Placemark.Property.ID:
       description: A placemark property `ID`.
       type: string
       pattern: '^(?:[a-z0-9]+\+?_)*[a-z0-9]+$'
+      example: small_wall
     Placemark.Property.Kind:
-      description: A placemark property `ID`.
+      description: A placemark property kind.
       type: string
       enum:
         - feature
         - technique
         - benefit
         - hazard
-    Placemark.Issue:
-      description: A placemark issue.
-      type: object
-      required:
-        - id
-        - placemark
-        - issuer
-        - reason
-        - comment
-        - state
-        - created_at
-      properties:
-        id:
-          $ref: schemas.yaml#/ID
-        placemark:
-          $ref: schemas.yaml#/ID
-        issuer:
-          $ref: schemas.yaml#/ID
-        reason:
-          $ref: '#/components/schemas/Placemark.Issue.Reason'
-        comment:
-          $ref: '#/components/schemas/Placemark.Issue.Comment'
-        state:
-          $ref: '#/components/schemas/Placemark.Issue.State'
-        created_at:
-          $ref: schemas.yaml#/DateTime
-      example:
-        $ref: '#/components/examples/PlacemarkIssue1'
-    Placemark.Issue.Comment:
-      description: A comment in a placemark issue.
-      type: string
-      minLength: 4
-      example: There is no tree on this spot!
-    Placemark.Issue.Reason:
-      description: 'The reason of a placemark issue. For unhandled cases, use `other`.'
-      type: string
-      enum:
-        - name
-        - location
-        - type
-        - caption
-        - satellite_image
-        - images
-        - address
-        - properties
-        - other
-    Placemark.Issue.State:
-      description: The state of a placemark issue.
-      type: string
-      enum:
-        - submitted
-        - addressed
-        - denied
-    Placemark.Submission.State:
-      description: The state of a placemark submission.
-      type: string
-      enum:
-        - waiting_for_reviews
-        - needs_changes
-        - waiting_for_changes
-        - accepted
-        - rejected
-        - moderated
-    Placemark.Submission.Review.Opinion:
-      description: A user's opinion in a submission review.
-      type: string
-      enum:
-        - positive
-        - needs_changes
-        - negative
     Placemark.Category.Localized:
       description: A localized placemark `category`.
       type: object
@@ -740,10 +580,17 @@ components:
           $ref: '#/components/schemas/LocalizedTitle'
         kind:
           $ref: '#/components/schemas/Placemark.Property.Kind'
-      example:
-        $ref: '#/components/examples/Feature1'
-    Placemark.PropertiesDictionary:
+    Placemark.Location.Public:
+      description: The location (address) of a placemark.
       type: object
+      required:
+        - city
+        - country
+      properties:
+        city:
+          $ref: '#/components/schemas/Placemark.City'
+        country:
+          $ref: '#/components/schemas/Placemark.Country'
     Placemark.Create:
       description: An object with data required to create a new placemark.
       type: object
@@ -767,42 +614,8 @@ components:
         images:
           $ref: '#/components/schemas/ArrayOfImageURLs'
         properties:
-          $ref: '#/components/schemas/Placemark.PropertiesDictionary'
-    Placemark.Public.Small:
-      description: 'A placemark, with minimum data for rendering on a map.'
-      type: object
-      required:
-        - id
-        - name
-        - latitude
-        - longitude
-        - kind
-        - category
-        - state
-        - created_at
-        - updated_at
-      properties:
-        id:
-          $ref: schemas.yaml#/ID
-        name:
-          $ref: '#/components/schemas/Placemark.Name'
-        latitude:
-          $ref: '#/components/schemas/Latitude'
-        longitude:
-          $ref: '#/components/schemas/Longitude'
-        kind:
-          $ref: '#/components/schemas/Placemark.Kind.ID'
-        category:
-          $ref: '#/components/schemas/Placemark.Category.ID'
-        state:
-          $ref: '#/components/schemas/Placemark.State'
-        created_at:
-          $ref: schemas.yaml#/DateTime
-        updated_at:
-          $ref: schemas.yaml#/DateTime
-      example:
-        $ref: '#/components/examples/Spot1'
-    Placemark.Public.Full:
+          $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
+    Placemark.Public:
       description: 'A placemark, with all its details.'
       type: object
       required:
@@ -813,12 +626,8 @@ components:
         - kind
         - category
         - state
-        - caption
-        - satellite_image
-        - images
-        - city
-        - country
-        - properties
+        - creator
+        - details
         - created_at
         - updated_at
       properties:
@@ -836,104 +645,39 @@ components:
           $ref: '#/components/schemas/Placemark.Category.ID'
         state:
           $ref: '#/components/schemas/Placemark.State'
+        creator:
+          $ref: users-api-v1.yaml#/components/schemas/User.ID
+        details:
+          $ref: '#/components/schemas/Placemark.Details.Public'
+        created_at:
+          $ref: schemas.yaml#/DateTime
+        updated_at:
+          $ref: schemas.yaml#/DateTime
+    Placemark.Details.Public:
+      description: The details of a placemark.
+      type: object
+      required:
+        - caption
+        - satellite_image
+        - images
+        - properties
+      properties:
         caption:
           $ref: '#/components/schemas/Placemark.Caption'
         satellite_image:
           $ref: schemas.yaml#/ImageURL
         images:
           $ref: '#/components/schemas/ArrayOfImageURLs'
-        city:
-          $ref: '#/components/schemas/Placemark.City'
-        country:
-          $ref: '#/components/schemas/Placemark.Country'
+        location:
+          $ref: '#/components/schemas/Placemark.Location.Public'
         properties:
           $ref: '#/components/schemas/ArrayOfPlacemarkProperties'
-        created_at:
-          $ref: schemas.yaml#/DateTime
-        updated_at:
-          $ref: schemas.yaml#/DateTime
-    Placemark.Submission.Review.Create:
-      description: >-
-        An object with data required to create a new placemark submission
-        review.
-      type: object
-      required:
-        - opinion
-        - comment
-      properties:
-        opinion:
-          $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
-        comment:
-          $ref: '#/components/schemas/Review.Comment'
-        issues:
-          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
-        moderated:
-          $ref: '#/components/schemas/ModeratedFlag'
-      example:
-        $ref: '#/components/examples/CreatePlacemarkSubmissionReview1'
-    Placemark.Submission.Review:
-      description: A placemark submission review.
-      type: object
-      required:
-        - id
-        - placemark
-        - reviewer
-        - opinion
-        - comment
-        - created_at
-      properties:
-        id:
-          $ref: schemas.yaml#/ID
-        placemark:
-          $ref: schemas.yaml#/ID
-        reviewer:
-          $ref: schemas.yaml#/ID
-        opinion:
-          $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
-        comment:
-          $ref: '#/components/schemas/Review.Comment'
-        issues:
-          $ref: '#/components/schemas/ArrayOfPlacemarkIssues'
-        moderated:
-          $ref: '#/components/schemas/ModeratedFlag'
-        created_at:
-          $ref: schemas.yaml#/DateTime
-      example:
-        $ref: '#/components/examples/PlacemarkSubmissionReview1'
-    Placemark.Submission.Report:
-      description: A report about a placemark submission.
-      type: object
-      required:
-        - id
-        - placemark
-        - state
-        - reviews
-        - created_at
-        - updated_at
-      properties:
-        id:
-          $ref: schemas.yaml#/ID
-        placemark:
-          $ref: schemas.yaml#/ID
-        state:
-          $ref: '#/components/schemas/Placemark.Submission.State'
-        reviews:
-          $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
-        created_at:
-          $ref: schemas.yaml#/DateTime
-        updated_at:
-          $ref: schemas.yaml#/DateTime
-      example:
-        $ref: '#/components/examples/PlacemarkSubmissionReport1'
     ArrayOfPlacemarks:
       description: An array of placemarks.
       type: array
       uniqueItems: true
       items:
-        $ref: '#/components/schemas/Placemark.Public.Small'
-      example:
-        - $ref: '#/components/examples/Spot1'
-        - $ref: '#/components/examples/Spot2'
+        $ref: '#/components/schemas/Placemark.Public'
     ArrayOfPlacemarkPropertyIDs:
       description: An array of placemark property `ID`s.
       type: array
@@ -950,27 +694,6 @@ components:
       uniqueItems: true
       items:
         $ref: '#/components/schemas/Placemark.Property.Localized'
-      example:
-        - $ref: '#/components/examples/Feature1'
-        - $ref: '#/components/examples/Feature2'
-    ArrayOfPlacemarkIssues:
-      description: An array of placemark issues.
-      type: array
-      uniqueItems: true
-      items:
-        $ref: '#/components/schemas/Placemark.Issue'
-      example:
-        - $ref: '#/components/examples/PlacemarkIssue1'
-        - $ref: '#/components/examples/PlacemarkIssue2'
-    ArrayOfPlacemarkSubmissionReviews:
-      description: An array of placemark submission reviews.
-      type: array
-      uniqueItems: true
-      items:
-        $ref: '#/components/schemas/Placemark.Submission.Review'
-      example:
-        - $ref: '#/components/examples/PlacemarkSubmissionReview1'
-        - $ref: '#/components/examples/PlacemarkSubmissionReview2'
     ArrayOfImageURLs:
       description: An array of image `URL`s.
       type: array
@@ -989,42 +712,6 @@ components:
           $ref: '#/components/schemas/ArrayOfPlacemarks'
         metadata:
           $ref: schemas.yaml#/PaginateMetadata
-    PlacemarkSubmissionReviewsPage:
-      description: A paginated array of placemark submission reviews.
-      type: object
-      required:
-        - items
-        - metadata
-      properties:
-        items:
-          $ref: '#/components/schemas/ArrayOfPlacemarkSubmissionReviews'
-        metadata:
-          $ref: schemas.yaml#/PaginateMetadata
-    PlacemarksOrder:
-      description: >-
-        The order of the placemarks in an array:
-          * `last_created`: From the latest created placemark to the oldest one
-          * `first_created`: From the first created placemark to the latest one
-          * `last_published`: From the latest published placemark to the first one
-          * `first_published`: From the first published placemark to the last one
-        **Note:** Creation date and publication date are very different: One
-        could have created a placemark a while ago but published it just
-        recently.
-      type: string
-      enum:
-        - last_created
-        - first_created
-        - last_published
-        - first_published
-    PlacemarkSubmissionReviewsOrder:
-      description: |-
-        The order of the placemark submission reviews in an array:
-          * `last_created`: From the latest created review to the oldest one
-          * `first_created`: From the first created review to the latest one
-      type: string
-      enum:
-        - last_created
-        - first_created
     LocalizedTitle:
       description: A localized `title`.
       type: string
@@ -1085,7 +772,10 @@ components:
       content:
         application/json:
           schema:
-            $ref: geojson.yaml#/GeoJSONFeature
+            $ref: '#/components/schemas/Placemark.Public'
+          examples:
+            Created placemark:
+              $ref: '#/components/examples/NewPlacemark'
     CreatePlacemark_BadRequest:
       description: Bad Request
       content:
@@ -1134,7 +824,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: geojson.yaml#/GeoJSONFeature
+            $ref: '#/components/schemas/Placemark.Public'
     GetPlacemark_NotFound:
       description: Not Found
       content:
@@ -1162,119 +852,6 @@ components:
           examples:
             Placemark not found:
               $ref: '#/components/examples/PlacemarkNotFoundError'
-    SubmitPlacemark_Success:
-      description: Successfully Submitted
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Placemark.Submission.Report'
-    SubmitPlacemark_Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Not your placemark:
-              $ref: '#/components/examples/CannotSubmitSomeoneElsesPlacemarkError'
-            Already submitted:
-              $ref: '#/components/examples/CannotSubmitPlacemarkTwiceError'
-    SubmitPlacemark_NotFound:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not found:
-              $ref: '#/components/examples/PlacemarkNotFoundError'
-    GetPlacemarkSubmissionReport_Success:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Placemark.Submission.Report'
-    GetPlacemarkSubmissionReport_NotFound:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not found:
-              $ref: '#/components/examples/PlacemarkNotFoundError'
-    GetPlacemarkSubmissionReport_PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not submitted:
-              $ref: '#/components/examples/PlacemarkNotSubmittedError'
-    AddPlacemarkSubmissionReview_Success:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Placemark.Submission.Review'
-    AddPlacemarkSubmissionReview_BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-    AddPlacemarkSubmissionReview_Forbidden:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not found:
-              $ref: '#/components/examples/ForbiddenModeratedFlagError'
-    AddPlacemarkSubmissionReview_NotFound:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not found:
-              $ref: '#/components/examples/PlacemarkNotFoundError'
-    AddPlacemarkSubmissionReview_PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not submitted:
-              $ref: '#/components/examples/PlacemarkNotSubmittedError'
-    ListPlacemarkSubmissionReviews_Success:
-      description: Success
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PlacemarkSubmissionReviewsPage'
-    ListPlacemarkSubmissionReviews_NotFound:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not found:
-              $ref: '#/components/examples/PlacemarkNotFoundError'
-    ListPlacemarkSubmissionReviews_PreconditionFailed:
-      description: Precondition Failed
-      content:
-        application/json:
-          schema:
-            $ref: schemas.yaml#/Error
-          examples:
-            Placemark not submitted:
-              $ref: '#/components/examples/PlacemarkNotSubmittedError'
     ListPlacemarkProperties_Success:
       description: Success
       content:
@@ -1301,10 +878,10 @@ components:
     PlacemarkId:
       in: path
       name: placemarkId
-      description: A placemark `ID`.
+      description: A unique placemark identifier.
       required: true
       schema:
-        $ref: schemas.yaml#/ID
+        $ref: '#/components/schemas/Placemark.ID'
     PlacemarkState:
       in: query
       name: state
@@ -1318,26 +895,6 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/Placemark.Property.Kind'
-    PlacemarksOrder:
-      in: query
-      name: sort_by
-      description: 'The results order. If not set, results won''t be ordered.'
-      schema:
-        $ref: '#/components/schemas/PlacemarksOrder'
-    PlacemarkSubmissionReviewOpinion:
-      in: query
-      name: opinion
-      description: >-
-        An opinion to filter placemark submission reviews. If not set, results
-        won't be filtered.
-      schema:
-        $ref: '#/components/schemas/Placemark.Submission.Review.Opinion'
-    PlacemarkSubmissionReviewsOrder:
-      in: query
-      name: sort_by
-      description: 'The results order. If not set, results won''t be ordered.'
-      schema:
-        $ref: '#/components/schemas/PlacemarkSubmissionReviewsOrder'
   examples:
     NewPlacemark:
       summary: Newly created placemark
@@ -1353,13 +910,9 @@ components:
             https://res.cloudinary.com/monki-projects/image/upload/f_auto/satellite_images/satellite-view-placeholder.jpg
           caption: Test caption
           properties:
-            technique: []
-            benefit: []
-            hazard: []
-            feature:
-              - id: small_wall
-                title: Small Wall
-                kind: feature
+            - id: small_wall
+              title: Small Wall
+              kind: feature
         created_at: '2021-03-10T09:01:04Z'
         state: private
         id: FD58CE36-5504-4743-8E9F-955A6D18DAA1
@@ -1449,70 +1002,6 @@ components:
         id: security_cam
         title: Caméra de sécurité
         locale: fr-FR
-    CreatePlacemarkSubmissionReview1:
-      summary: Example placemark submission review creation
-      value:
-        opinion: positive
-        comment: Everything looks good.
-    PlacemarkSubmissionReview1:
-      summary: Example placemark submission review
-      value:
-        id: 5881cf6b-1d3a-48d2-a84c-9a625adbea20
-        placemark: f6236b3a-65f1-4157-84f7-f22d6cff8a0a
-        reviewer: e8636f06-5a1c-45a2-b1e9-5a693c98c9c8
-        opinion: positive
-        comment: ''
-        created_at: '2020-09-23T07:46:57.524Z'
-    PlacemarkSubmissionReview2:
-      summary: Example placemark submission review
-      value:
-        id: b1e642f9-f0cd-4169-bd3f-2441f37b2b88
-        placemark: 2f5bdf5a-8695-4ace-8def-41ba9f632a97
-        reviewer: 0350cf76-44ab-480c-8e62-77b47b386827
-        opinion: negative
-        comment: 'I know this place, there''s no spot here! This should not be accepted.'
-        issues:
-          - $ref: '#/components/examples/PlacemarkLocationIssue'
-        created_at: '2020-10-05T09:23:21.836Z'
-    PlacemarkSubmissionReport1:
-      summary: Example placemark submission report
-      value:
-        id: 24ffb61e-ad56-4244-bbd5-673944e74116
-        placemark: 6af987db-b1f9-4f9d-ab2e-c330b4ec78bd
-        reviews:
-          - $ref: '#/components/examples/PlacemarkSubmissionReview1'
-          - $ref: '#/components/examples/PlacemarkSubmissionReview2'
-        created_at: '2020-09-23T07:46:57.524Z'
-        updated_at: '2020-10-05T09:23:21.836Z'
-    PlacemarkIssue1:
-      summary: Example placemark issue
-      value:
-        id: 6037a4cd-0089-4212-a363-98b24d44d1e0
-        placemark: faf3c5c7-9d7e-4146-a810-ec3311efe2e9
-        issuer: 71b4c5ee-2d39-4262-9785-9352a8723418
-        reason: type
-        comment: 'This is not a training spot, it is a parkour facility!'
-        state: addressed
-        created_at: '2020-08-15T17:01:33.818Z'
-    PlacemarkIssue2:
-      summary: Example placemark issue
-      value:
-        id: 0d3b0767-611f-4be7-aa93-7f0c7383e0ea
-        placemark: a3723353-5e90-4db6-a6af-52ba29407c20
-        issuer: 185a29c1-2745-4493-8846-f2c1d776b227
-        reason: name
-        comment: Everyone refers to this spot as "The maze".
-        state: submitted
-        created_at: '2020-12-23T22:52:34.051Z'
-    PlacemarkLocationIssue:
-      summary: Issue about a placemark's location
-      value:
-        id: eb45729e-e407-4bec-b966-20f752040491
-        placemark: 2f5bdf5a-8695-4ace-8def-41ba9f632a97
-        reason: location
-        comment: 'I know this place, there''s no spot here!'
-        state: submitted
-        created_at: '2020-07-20T21:16:56.239Z'
     UnauthorizedError:
       description: Authentication information is missing or is invalid.
       value:
@@ -1570,16 +1059,6 @@ components:
       value:
         error: true
         reason: You cannot delete someone else's placemark!
-    CannotSubmitSomeoneElsesPlacemarkError:
-      description: You cannot submit someone else's placemark.
-      value:
-        error: true
-        reason: You cannot submit someone else's placemark!
-    CannotSubmitPlacemarkTwiceError:
-      description: You cannot submit a placemark twice.
-      value:
-        error: true
-        reason: You cannot submit a placemark twice!
     InvalidCoordinatesError:
       value:
         error: true

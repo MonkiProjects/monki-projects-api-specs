@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 1.0.0
+  version: 0.1.0
   title: Monki Projects' Placemarks API
 servers:
   - description: Monki Projects' Placemarks API v1 (production)

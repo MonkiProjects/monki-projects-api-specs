@@ -8,8 +8,8 @@ inputs:
     disputePrefix: Auth
     pathModification:
       prepend: /auth/v1
-  - inputFile: ./specs/placemarks-api-v1.yaml
-    disputePrefix: Placemarks
+  - inputFile: ./specs/places-api-v1.yaml
+    disputePrefix: Places
     pathModification:
-      prepend: /placemarks/v1
+      prepend: /places/v1
 output: ./specs/monki-projects-api-v1.yaml

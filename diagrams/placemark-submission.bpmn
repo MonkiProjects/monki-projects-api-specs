@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0lx5wp9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="8.0.1">
   <bpmn:collaboration id="Collaboration_1kjk1df">
-    <bpmn:participant id="Participant_1f9j35o" name="Placemark Creator" processRef="Process_1gqkmuq" />
+    <bpmn:participant id="Participant_1f9j35o" name="Place Creator" processRef="Process_1gqkmuq" />
     <bpmn:participant id="Participant_0yynwrh" name="Reviewers" processRef="Process_00cdk66" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1gqkmuq">
@@ -19,7 +19,7 @@
         <bpmn:flowNodeRef>Event_1q25ng6</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="StartEvent_0sf2adz" name="Create Placemark">
+    <bpmn:startEvent id="StartEvent_0sf2adz" name="Create Place">
       <bpmn:outgoing>Flow_1ywmk7x</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1je8efj" />
     </bpmn:startEvent>
@@ -30,23 +30,23 @@
         <bpmn:targetRef>DataStoreReference_1r7rj8b</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_10q59y7" name="Create New Placemark">
+    <bpmn:serviceTask id="Activity_10q59y7" name="Create New Place">
       <bpmn:incoming>Flow_1ywmk7x</bpmn:incoming>
       <bpmn:outgoing>Flow_0xf5jt5</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_178q9t5">
         <bpmn:targetRef>DataStoreReference_10u7i44</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Activity_04olmyf" name="Submit Placemark">
+    <bpmn:userTask id="Activity_04olmyf" name="Submit Place">
       <bpmn:incoming>Flow_0xf5jt5</bpmn:incoming>
       <bpmn:outgoing>Flow_1tmulsj</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0hsnahq" name="Change Placemark State (Submitted)">
+    <bpmn:serviceTask id="Activity_0hsnahq" name="Change Place State (Submitted)">
       <bpmn:incoming>Flow_1tmulsj</bpmn:incoming>
       <bpmn:outgoing>Flow_17xhogi</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:dataStoreReference id="DataStoreReference_1r7rj8b" name="Placemark Submission" />
-    <bpmn:dataStoreReference id="DataStoreReference_10u7i44" name="Placemark" />
+    <bpmn:dataStoreReference id="DataStoreReference_1r7rj8b" name="Place Submission" />
+    <bpmn:dataStoreReference id="DataStoreReference_10u7i44" name="Place" />
     <bpmn:startEvent id="Event_0zb7cao" name="Needs Changes">
       <bpmn:outgoing>Flow_0ulbskt</bpmn:outgoing>
       <bpmn:signalEventDefinition id="SignalEventDefinition_0d5m5v9" />
@@ -63,7 +63,7 @@
         <bpmn:targetRef>DataStoreReference_0kjnaww</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:dataStoreReference id="DataStoreReference_0kjnaww" name="New Placemark Submission" />
+    <bpmn:dataStoreReference id="DataStoreReference_0kjnaww" name="New Place Submission" />
     <bpmn:endEvent id="Event_13fe9v2" name="Submission Waiting For Reviews">
       <bpmn:incoming>Flow_1fnf1dv</bpmn:incoming>
       <bpmn:signalEventDefinition id="SignalEventDefinition_0dsg6c0" />
@@ -81,13 +81,13 @@
     <bpmn:sequenceFlow id="Flow_0pprx3t" sourceRef="Activity_07z6f00" targetRef="Activity_0pycgmk" />
     <bpmn:sequenceFlow id="Flow_1fnf1dv" sourceRef="Activity_0pycgmk" targetRef="Event_13fe9v2" />
     <bpmn:textAnnotation id="TextAnnotation_0q2awcf">
-      <bpmn:text>The user submits the placemark to show it to everyone.</bpmn:text>
+      <bpmn:text>The user submits the place to show it to everyone.</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1sm22f0">
-      <bpmn:text>The new placemark is private to the user.</bpmn:text>
+      <bpmn:text>The new place is private to the user.</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0p32cfi">
-      <bpmn:text>A placemark can have multiple submissions if some were marked as "needs changes".
+      <bpmn:text>A place can have multiple submissions if some were marked as "needs changes".
 This allows users to review multiple submissions but never the same twice.</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_16t7xqo">
@@ -143,7 +143,7 @@ This allows users to review multiple submissions but never the same twice.</bpmn
       <bpmn:sequenceFlow id="Flow_0t40afe" name="&#62; 2 negative reviews" sourceRef="Gateway_1qjpbsy" targetRef="Event_0bxoz0v" />
       <bpmn:sequenceFlow id="Flow_0b4c3fd" sourceRef="Event_1dvfek1" targetRef="Activity_1d7uzu9" />
       <bpmn:sequenceFlow id="Flow_0szqq7b" sourceRef="Activity_1d7uzu9" targetRef="Activity_1mkgnfj" />
-      <bpmn:serviceTask id="Activity_1nyibud" name="Change Placemark State (Accepted)">
+      <bpmn:serviceTask id="Activity_1nyibud" name="Change Place State (Accepted)">
         <bpmn:incoming>Flow_0h6vor1</bpmn:incoming>
         <bpmn:outgoing>Flow_0lg7smj</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -167,7 +167,7 @@ This allows users to review multiple submissions but never the same twice.</bpmn
       <bpmn:startEvent id="Event_1dvfek1">
         <bpmn:outgoing>Flow_0b4c3fd</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:serviceTask id="Activity_1etxtc7" name="Change Placemark State (Needs Changes)">
+      <bpmn:serviceTask id="Activity_1etxtc7" name="Change Place State (Needs Changes)">
         <bpmn:incoming>Flow_0gszk1e</bpmn:incoming>
         <bpmn:outgoing>Flow_1qz4c5m</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -246,15 +246,15 @@ This allows users to review multiple submissions but never the same twice.</bpmn
       <bpmn:sequenceFlow id="Flow_0be76ck" sourceRef="Activity_128v0gy" targetRef="Event_1huhtd0" />
       <bpmn:sequenceFlow id="Flow_1mhul8r" sourceRef="Activity_1uo4na2" targetRef="Event_1j0lwi1" />
       <bpmn:sequenceFlow id="Flow_1ppqu1f" sourceRef="Activity_06kwmkz" targetRef="Event_12o23p2" />
-      <bpmn:serviceTask id="Activity_128v0gy" name="Change Placemark State (Accepted)">
+      <bpmn:serviceTask id="Activity_128v0gy" name="Change Place State (Accepted)">
         <bpmn:incoming>Flow_033uo3g</bpmn:incoming>
         <bpmn:outgoing>Flow_0be76ck</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_06kwmkz" name="Change Placemark State (Needs Changes)">
+      <bpmn:serviceTask id="Activity_06kwmkz" name="Change Place State (Needs Changes)">
         <bpmn:incoming>Flow_1vx3rhk</bpmn:incoming>
         <bpmn:outgoing>Flow_1ppqu1f</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:serviceTask id="Activity_1uo4na2" name="Change Placemark State (Moderated)">
+      <bpmn:serviceTask id="Activity_1uo4na2" name="Change Place State (Moderated)">
         <bpmn:incoming>Flow_1f7ja9e</bpmn:incoming>
         <bpmn:outgoing>Flow_1mhul8r</bpmn:outgoing>
       </bpmn:serviceTask>
